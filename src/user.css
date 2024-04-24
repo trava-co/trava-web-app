@@ -1,0 +1,57 @@
+.input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(15, 15, 90); /* Matching the background from Assistant.css */
+  }
+
+  .input-section {
+    display: flex; /* Use flexbox to align children inline */
+    align-items: center; /* Vertically center the children */
+    justify-content: center; /* Horizontally center the content */
+  }
+  
+  .input-section textarea {
+    background-color: rgb(195, 195, 195);
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px; /* Space between textarea and button */
+    outline: none;
+    width: 500px; /* Adjust width as needed */
+    height: 100px; /* Adjust height as needed */
+    resize: none; /* Optional: Prevents resizing */
+    border-radius: 8px; /* Rounded edges */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Drop shadow */
+  }
+  
+  .input-section input {
+    background-color: rgb(37, 37, 37);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px; /* Space between input and button */
+    outline: none;
+    width: 300px; /* Adjust width as needed */
+  }
+  
+  .input-section button {
+    padding: 10px 20px;
+    background-color: white;
+    color: darkblue;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    margin-bottom: 50px;
+    margin-left: 50px;
+  }
+  
+  /* Style for the area where API data will be displayed */
+  .api-data-display {
+    width: 80%;
+    margin-top: 20px;
+    text-align: center;
+    color: white;
+  }

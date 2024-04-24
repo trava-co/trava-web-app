@@ -1,0 +1,137 @@
+.assistant-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    padding: 0 200px;
+    background-color: rgb(15, 15, 90);
+  }
+  
+  .destination-section, .days-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+  }
+  
+  .destination-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .destination-button {
+    background: none;
+    width: 100px; /* Ensure this is equal to the height for a perfect circle */
+    height: 100px; /* Ensure this is equal to the width for a perfect circle */
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    border-radius: 50%; /* Changed to make the border circular */
+  }
+  
+  button {
+    padding: 15px 30px; /* Adjust padding as needed */
+    font-size: 20px;
+    margin-top: 50px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: white;
+    color: darkblue;
+    border-radius: 50%; /* Apply this only if you want all buttons to be circular */
+  }
+
+  .loader {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 80px; /* Increase the size of the loader */
+    height: 80px; /* Increase the size of the loader */
+    animation: spin 2s linear infinite;
+    position: absolute; /* Use absolute positioning */
+    top: 50%; /* Center vertically */
+    left: 47%; /* Center horizontally */
+    transform: translate(-75%, -50%); /* Adjust the position to truly center the loader */
+  }
+
+  .loading-text {
+    color: rgb(0, 168, 0);
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    position: absolute;
+    top: 38%; /* Adjust based on your layout */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  /* Add this to manage the opacity transition */
+  .assistant-container.loading .loading-text {
+    opacity: 1;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+.destination-button img {
+    width: 100%;
+    height: 100%;
+    display: block; /* Ensure the image doesn't have any extra space around it */
+    border-radius: 10px; /* Ensure the image itself also has rounded edges */
+}
+
+.destination-button:focus, .destination-button:hover, .destination-button.active {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    border: 4px solid rgb(154, 230, 255); /* Thick light blue border for active/clicked state */
+}
+  
+.num-days-selector {
+    display: flex;
+    align-items: center; /* Keeps items aligned vertically */
+    justify-content: center; /* Centers the content horizontally */
+    color: white;
+  }
+  
+  .num-days-selector button {
+    padding: 10px 20px;
+    font-size: 18px;
+    color: white;
+    background-color: transparent; /* Make the inside transparent */
+    border: 2px solid grey; /* Add a grey outline */
+    cursor: pointer;
+    margin: 0 5px;
+  }
+  
+  .num-days-selector button:hover {
+    background-color: lightgrey; /* Light up the button on hover */
+  }
+  
+  .num-days-selector button:active {
+    background-color: lightgrey; /* Highlight the button during click */
+  }
+  
+  .num-days-selector span {
+    margin: 0 10px;
+    font-size: 20px; /* Increase font size */
+    font-weight: bold; /* Make the font bold */
+    align-self: center; /* Ensures the label is centered vertically with respect to the buttons */
+  }
+  
+  button {
+    padding: 15px 30px;
+    font-size: 20px;
+    margin-top: 50px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: white;
+    color: darkblue;
+    border-radius: 5px;
+  }
