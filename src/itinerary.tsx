@@ -22,13 +22,18 @@ function Itinerary() {
 
     useEffect(() => {
         getSheetData();
-        console.log(activityData);
     }, []);
     
     const location = useLocation();
     const { apiData } = location.state || {}; // Access apiData from the state
 
-    console.log(apiData);
+    setTimeout(() => {
+        console.log("Delayed log after 5 seconds");
+        console.log("activityData" + activityData);
+    }, 5000);
+    console.log("apiData" + apiData);
+
+    // var transformedData = transformData(apiData, activityData);
 
     // Use JSX to create the table instead of a template string
     const table = createTable(apiData);
@@ -40,11 +45,12 @@ function Itinerary() {
     );
 }
 
-function transformData(jsonData, activityData) {
-    return jsonData.map(item => {
+function transformData(gptOutput, ourSheetData) {
+    return gptOutput.map(item => {
       const probability = Math.floor(parseFloat(item.probability) * 4);
 
-      const matchingActivity = activityData.find(activity => activity.id === item.id);
+      const matchingActivity = ourSheetData.find(activity => activity.id === item.id);
+      console.log(matchingActivity.id);
       const name = matchingActivity ? matchingActivity.newId : item.id; // Assuming activityData contains newId
   
       return {

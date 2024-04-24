@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const openai = new OpenAI({
-    apiKey: "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"
+    apiKey: "sk-proj-f1EmiawwuEPtKJZj6sfET3BlbkFJ7e8mItCsNTLKlM0sXE9q"
 });
 
 const doData = XLSX.readFile("activity-excel.xlsx");
@@ -146,7 +146,6 @@ async function sendSysInstructions(numDays, destination) {
 }
 
 app.post('/file', async(req, res) => {
-    console.log(req);
     if (req.body.params.type === 'do') {
         res.json(activityData)
     } else if (req.body.type === 'eat') {
