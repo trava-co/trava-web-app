@@ -50,7 +50,7 @@ function transformData(jsonData, activityData) {
       return {
         name,
         probability: probability,
-        destination: item.destination,
+        ...item,
       };
     });
 }
@@ -78,7 +78,7 @@ function createTable(jsonData) {
               <td>{`${index + 1}`}</td>
               {dayActivities.map((activity, activityIndex) => (
                 <td key={activityIndex}>
-                  {`${activity.name}, ${activity.probability}, ${activity.description}`}
+                  {`${activity.id}, ${activity.probability}, ${activity.blurb}`}
                 </td>
               ))}
             </tr>
