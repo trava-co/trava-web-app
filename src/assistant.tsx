@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Assistant.css'; // Import the CSS file for styling
 import axios from 'axios';
@@ -14,7 +14,7 @@ function Assistant() {
     setIsLoading(true);
     setLoadingText("Thread requested for creation...");
     try {
-        var threadID = await axios.post('http://localhost:3001/ask', {
+        const response = await axios.post('http://localhost:3001/ask', {
           numDays,
           destination
         }, {
@@ -22,18 +22,19 @@ function Assistant() {
             'system': 'true'
           }
         });
-        setLoadingText(`Thread ${threadID.data} created!`)
+        setLoadingText(`Thread ${response.data} created!`);
         setTimeout(() => {
             navigate('/user', { state: { destination, numDays } });
         }, 2000);
-      } catch (error) {
+    } catch (error) {
         console.error('Error sending data:', error);
-      } finally {
+        setLoadingText("Failed to create thread!");
+    } finally {
         setTimeout(() => {
             setIsLoading(false);
         }, 2000);
-      }
-    };
+    }
+  };
 
   const incrementDays = () => setNumDays(numDays + 1);
   const decrementDays = () => setNumDays(numDays - 1 > 0 ? numDays - 1 : 1);
@@ -42,14 +43,8 @@ function Assistant() {
     setDestination(city);
   };
 
-  useEffect(() => {
-    if (!isLoading) {
-        setTimeout(() => setLoadingText(''), 500)
-    }
-  }, [isLoading]);
-
   return (
-    <div className={`assistant-container ${isLoading ? 'loading' : ''}`}>
+    <div className="assistant-container">
       {isLoading ? (
         <>
             <div className="loading-text">{loadingText}</div>
@@ -57,10 +52,10 @@ function Assistant() {
         </>
       ) : (
         <>
-            <div className="destination-section">
-            <h2>Pick a destination</h2>
-            <div className="destination-grid">
-            <button className={`destination-button ${destination === 'Chicago' ? 'active' : ''}`} onClick={() => handleDestinationSelect('Chicago')}>
+            <div className="section-container destination-section">
+                <h2>Pick a destination</h2>
+                <div className="destination-grid">
+                <button className={`destination-button ${destination === 'Chicago' ? 'active' : ''}`} onClick={() => handleDestinationSelect('Chicago')}>
                 <img src="https://cdn-icons-png.flaticon.com/512/2359/2359697.png" alt="Chicago" />
             </button>
             {/* Update other buttons similarly with their respective cities and conditions */}
@@ -73,17 +68,19 @@ function Assistant() {
             <button className={`destination-button ${destination === 'Miami' ? 'active' : ''}`} onClick={() => handleDestinationSelect('Miami')}>
                 <img src="https://vectorflags.s3.amazonaws.com/flags/in-circle-01.png" alt="Miami" />
             </button>
+                </div>
             </div>
-        </div>
-        <div className="days-section">
-            <h2>How many days are you visiting?</h2>
-            <div className="num-days-selector">
-            <button onClick={decrementDays}>-</button>
-            <span>{numDays}</span>
-            <button onClick={incrementDays}>+</button>
+            <div className="section-container days-section">
+                <h2>How many days are you visiting?</h2>
+                <div className="num-days-selector">
+                    <button onClick={decrementDays}>-</button>
+                    <span>{numDays}</span>
+                    <button onClick={incrementDays}>+</button>
+                </div>
             </div>
-        </div>
-        <button onClick={handleNext}>Next</button>
+            <div className="section-container next-section">
+                <button onClick={handleNext}>Next</button>
+            </div>
         </>
       )}
     </div>

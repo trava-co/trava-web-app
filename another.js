@@ -4,7 +4,7 @@ var assistantID;
 var threadID;
 
 const openai = new OpenAI({
-    apiKey: "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"
+    apiKey: ""
 });
 
 var assistant = await openai.beta.assistants.create({

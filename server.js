@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const openai = new OpenAI({
-    apiKey: "sk-proj-f1EmiawwuEPtKJZj6sfET3BlbkFJ7e8mItCsNTLKlM0sXE9q"
+    apiKey: ""
 });
 
 const doData = XLSX.readFile("activity-excel.xlsx");
@@ -24,12 +24,12 @@ var assistantID;
 var threadID;
 var runID;
 
-function ensureFormatting(theArray) {
-    console.log(theArray);
+function getFormattedArguments(theArray) {
     return theArray;
 }
 
 async function sendUserMsg(tripConcept) {
+    console.log("We're operating on thread: " + threadID);
     try {
         // [USERMSG] is sent and added to the thread.
         await openai.beta.threads.messages.create(threadID, {
@@ -40,14 +40,18 @@ async function sendUserMsg(tripConcept) {
         // Run our assistant so it can generate a response and add to thread.
         var run = await openai.beta.threads.runs.create(threadID, {
             assistant_id: assistantID,
-            // max_prompt_tokens: 100,
-            // max_completion_tokens: 20
+            // max_prompt_tokens: 1000,
+            // max_completion_tokens: 200
         })
         runID = run.id;
+        console.log("We just created a run at " + runID);
 
         while (run.status !== "completed") {
+            console.log(run.status);
             if (run.status === "requires_action") {
-                await openai.beta.threads.runs.submitToolOutputsAndPoll(threadID, runID, {tool_outputs: [{"tool_call_id": run.required_action.submit_tool_outputs.tool_calls[0].id, "output": ensureFormatting(run.required_action.submit_tool_outputs.tool_calls[0].function.arguments)}]})
+                console.log(run.status);
+                return run.required_action.submit_tool_outputs.tool_calls[0].function.arguments;
+                await openai.beta.threads.runs.submitToolOutputsAndPoll(threadID, runID, {tool_outputs: [{"tool_call_id": run.required_action.submit_tool_outputs.tool_calls[0].id, "output": getFormattedArguments(run.required_action.submit_tool_outputs.tool_calls[0].function.arguments)}]})
             }
             run = await openai.beta.threads.runs.retrieve(threadID, runID)
         }
@@ -69,45 +73,45 @@ async function sendSysInstructions(numDays, destination) {
         // New assistant is created with custom number of days based on how many days the user picks.
         var assistant = await openai.beta.assistants.create({
             model: 'gpt-4-turbo',
-            instructions: `You are an expert travel guide. Based on the given trip concept, respond with the top ${noOfItems} most relevant activities (pull strictly from the file). Don't reuse activities. The only output should be triplets of id (pulled from the file),  probability that the user wants that activity (be liberal from 0 to 1), and a very short blurb on why you recommended that. When users provide additional input, adjust the probabilities and return the new list.
+            instructions: `You are an expert travel guide. Based on the given trip concept, respond with the top ${noOfItems} most relevant activities (pull strictly from the file). Don't reuse activities. The only output should be triplets of id (pulled from the file), probability that the user wants that activity (be liberal from 0 to 1), and a very short blurb on why you recommended that. When users provide additional input, adjust the probabilities and return the new list.
 
-            Everything must be returned in JSON format.`,
+            You must run the provided getFormattedArguments function`,
             tools: [
-            // {
-            //     "type": "function",
-            //     "function": {
-            //         "name": "ensureFormatting",
-            //         "description": "Creates the correct formatted JSON output for probable activities.",
-            //         "parameters": {
-            //             "type": "object",
-            //             "properties": {
-            //                 "data": {
-            //                     "type": "array",
-            //                     "description": "An array of objects where each object contains an ID and a probability score.",
-            //                     "items": {
-            //                         "type": "object",
-            //                         "properties": {
-            //                             "id": {
-            //                                 "type": "string",
-            //                                 "description": "The unique identifier for an activity."
-            //                             },
-            //                             "probability": {
-            //                                 "type": "string",
-            //                                 "description": "The probability score associated with that activity."
-            //                             },
-            //                             "blurb": {
-            //                                 "type": "string",
-            //                                 "description": "A little explanation of why this activity is recommended."
-            //                             }
-            //                         },
-            //                         "required": ["id", "probability", "blurb"]
-            //                     }
-            //                 }
-            //             }, 
-            //             "required": ["data"]
-            //         }
-            //     }
-            // }, 
+            {
+                "type": "function",
+                "function": {
+                    "name": "getFormattedArguments",
+                    "description": "Must be ran with an array of triples",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "description": "An array of objects where each object contains the ID of the activity, a probability score, and a relevant text blurb.",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "description": "The unique identifier for an activity."
+                                        },
+                                        "probability": {
+                                            "type": "string",
+                                            "description": "The probability score associated with that activity."
+                                        },
+                                        "blurb": {
+                                            "type": "string",
+                                            "description": "A little explanation of why this activity is recommended."
+                                        }
+                                    },
+                                    "required": ["id", "probability", "blurb"]
+                                }
+                            }
+                        }, 
+                        "required": ["data"]
+                    }
+                }
+            }, 
             {
                 "type": "file_search",
             }
@@ -154,15 +158,8 @@ app.post('/file', async(req, res) => {
 });
 
 app.post('/ask', async(req, res) => {
-    var assistantID;
-    var threadID;
-    var runID;
 
     var response;
-
-    const openai = new OpenAI({
-        apiKey: "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"
-    });
 
     if (req.headers.system === "true") {
         response = await sendSysInstructions(req.body.numDays, req.body.destination);

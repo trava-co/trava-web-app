@@ -1,0 +1,51 @@
+body {
+    background-color: rgb(15, 15, 90); /* Set the background color of the page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    margin: 0; /* Remove default margin */
+}
+
+table {
+    width: 80%; /* Increased table width */
+    border: 3px solid black; /* Thicker border for the table */
+    border-collapse: collapse; /* Removes space between borders */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Adds a subtle bezel effect */
+    background-color: white; /* Set table background color to white */
+    color: black; /* Set text color to black for better contrast */
+    font-size: 18px; /* Increase font size */
+    margin-left: 10%;
+}
+
+th, td {
+    border: 1px solid black; /* Adds border to each cell */
+    height: 70px; /* Increased cell height for more space */
+    text-align: center; /* Centers text horizontally */
+    vertical-align: middle; /* Centers text vertically */
+    padding: 10px; /* Added padding for better spacing */
+}
+
+th {
+    height: 30px; /* Smaller height for header row */
+}
+
+th.day-column, td.day-column {
+    background-color: lightgrey; /* Sets background color for 'Day' column */
+}
+
+th:hover, td:hover {
+    background-color: rgba(154, 230, 255, 0.2); /* Super light shade of blue on hover */
+}
+
+div.id {
+    font-weight: bold; /* Makes text bold */
+}
+
+div.blurb {
+    font-style: italic; /* Makes text italic */
+}
+
+.id, .ev, .blurb {
+    margin-bottom: 10px; /* Adjust the value as needed */
+}

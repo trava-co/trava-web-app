@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './itinerary.css';
-import {utils} from 'xlsx';
 import axios from 'axios';
 
+// establishes all the states, renders the actual table
 function Itinerary() {
-    const [activityData, setActivityData] = useState(null);
 
+    // ---------------------------------------------------------------------------------------------------
+    // pulls in the activity-excel.xlsx as JSON
+    const [activityData, setActivityData] = useState(null);
+    const [table, setTable] = useState(null);
     const getSheetData = async () => {
         try {
             const response = await axios.post('http://localhost:3001/file', {
@@ -19,79 +22,80 @@ function Itinerary() {
             console.error('Error fetching activity data:', error);
         }
     }
-
     useEffect(() => {
         getSheetData();
-    }, []);
-    
+    }, [])
+    // ---------------------------------------------------------------------------------------------------
+
     const location = useLocation();
-    const { apiData } = location.state || {}; // Access apiData from the state
+    const { apiData } = location.state || {};
 
+    
     setTimeout(() => {
-        console.log("Delayed log after 5 seconds");
-        console.log("activityData" + activityData);
+        console.log(apiData);
+        setTable(createTable(apiData, activityData));
     }, 5000);
-    console.log("apiData" + apiData);
-
-    // var transformedData = transformData(apiData, activityData);
-
-    // Use JSX to create the table instead of a template string
-    const table = createTable(apiData);
 
     return (
         <div>
-        {table}
+            {table}
         </div>
     );
 }
 
+// 
 function transformData(gptOutput, ourSheetData) {
     return gptOutput.map(item => {
-      const probability = Math.floor(parseFloat(item.probability) * 4);
+       let EVright = Math.floor(parseFloat(item.probability) * 10);
 
-      const matchingActivity = ourSheetData.find(activity => activity.id === item.id);
-      console.log(matchingActivity.id);
-      const name = matchingActivity ? matchingActivity.newId : item.id; // Assuming activityData contains newId
+      const matchingActivity = ourSheetData.find(activity => activity[0] === item.id);
+      console.log(matchingActivity);
+      const name = matchingActivity ? matchingActivity[4] : item.id; // Assuming activityData contains newId
   
       return {
-        name,
-        probability: probability,
-        ...item,
+        id: name,
+        EVright: EVright,
+        blurb: item.blurb,
       };
     });
 }
 
-function createTable(jsonData) {
+function createTable(gptOutput, ourSheetData) {
+    gptOutput = transformData(gptOutput, ourSheetData);
+    console.log(gptOutput);
+
     // Group every three items for each day
     const days = [];
-    for (let i = 0; i < jsonData.length; i += 3) {
-      days.push(jsonData.slice(i, i + 3));
+    for (let i = 0; i < gptOutput.length; i += 3) {
+      days.push(gptOutput.slice(i, i + 3));
     }
   
     return (
-      <table style={{width: '100%', marginTop: '20px'}}>
-        <thead>
-          <tr>
-            <th>Day</th>
-            <th>Activity 1</th>
-            <th>Activity 2</th>
-            <th>Activity 3</th>
-          </tr>
-        </thead>
-        <tbody>
-          {days.map((dayActivities, index) => (
-            <tr key={index}>
-              <td>{`${index + 1}`}</td>
-              {dayActivities.map((activity, activityIndex) => (
-                <td key={activityIndex}>
-                  {`${activity.id}, ${activity.probability}, ${activity.blurb}`}
-                </td>
-              ))}
+        <table>
+          <thead>
+            <tr>
+              <th className="day-column">Day</th>
+              <th>Activity 1</th>
+              <th>Activity 2</th>
+              <th>Activity 3</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    );
+          </thead>
+          <tbody>
+            {days.map((dayActivities, index) => (
+              <tr key={index}>
+                <td className="day-column">{`${index + 1}`}</td>
+                {dayActivities.map((activity, activityIndex) => (
+                  <td key={activityIndex}>
+                    <div className="id">{activity.id}</div>
+                    <div className="ev">EV(← , →): {activity.EVright}  ,  {10-activity.EVright}</div>
+                    <div className="blurb">{activity.blurb}</div>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
   }
 
 export default Itinerary;
