@@ -20,14 +20,14 @@ function User() {
         }
       });
       
-      var cleanJson = JSON.parse(response.data.trim().replace(/^\`\`\`json|^\`\`\`|\`\`\`$/gi, '').trim());
+      console.log(response.data.data);
 
     //   let jsonData = JSON.parse(cleanJson);
     //   console.log(jsonData);
 
-      setApiData(cleanJson);
+      // setApiData(cleanJson);
       setLoading(true);
-      console.log(cleanJson);
+      // console.log(cleanJson);
     } catch (error) {
       console.error('Error sending data:', error);
       setApiData(null);

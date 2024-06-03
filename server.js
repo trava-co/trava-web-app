@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const openai = new OpenAI({
-    apiKey: ""
+    apiKey: "sk-proj-hyjLGEc4DDXJuOzMByUjT3BlbkFJq1GcsMAgmlNS36kWBVTl"
 });
 
 const doData = XLSX.readFile("activity-excel.xlsx");
@@ -40,8 +40,8 @@ async function sendUserMsg(tripConcept) {
         // Run our assistant so it can generate a response and add to thread.
         var run = await openai.beta.threads.runs.create(threadID, {
             assistant_id: assistantID,
-            // max_prompt_tokens: 1000,
-            // max_completion_tokens: 200
+            max_prompt_tokens: 5000,
+            max_completion_tokens: 500
         })
         runID = run.id;
         console.log("We just created a run at " + runID);
@@ -50,8 +50,8 @@ async function sendUserMsg(tripConcept) {
             console.log(run.status);
             if (run.status === "requires_action") {
                 console.log(run.status);
+                console.log(run.required_action.submit_tool_outputs.tool_calls[0].function.arguments)
                 return run.required_action.submit_tool_outputs.tool_calls[0].function.arguments;
-                await openai.beta.threads.runs.submitToolOutputsAndPoll(threadID, runID, {tool_outputs: [{"tool_call_id": run.required_action.submit_tool_outputs.tool_calls[0].id, "output": getFormattedArguments(run.required_action.submit_tool_outputs.tool_calls[0].function.arguments)}]})
             }
             run = await openai.beta.threads.runs.retrieve(threadID, runID)
         }

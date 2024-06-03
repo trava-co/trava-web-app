@@ -5,7 +5,6 @@ import User from './user.tsx';
 
 
 import './App.css';
-import axios from 'axios';
 import Itinerary from './itinerary.tsx';
 
 function App() {
@@ -14,24 +13,7 @@ function App() {
   const [numDays, setNumDays] = useState(0);
   const [destination, setDestination] = useState('');
 
-
-  const handleSend = async () => {
-    try {
-      const response = await axios.post('http://localhost:3001/ask', {
-          inputValue
-      }, {
-        headers: {
-          'system': 'false'
-        }
-      });
-      // Assuming the server response is the message directly
-      console.log(response.data);
-      setResponse(response.data);
-    } catch (error) {
-        console.error('Error asking question:', error);
-        setResponse('error');
-    }
-  };
+  
 
   return (
     <Router>

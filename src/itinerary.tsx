@@ -9,7 +9,7 @@ function Itinerary() {
     // ---------------------------------------------------------------------------------------------------
     // pulls in the activity-excel.xlsx as JSON
     const [activityData, setActivityData] = useState(null);
-    const [table, setTable] = useState(null);
+    const [table, setTable] = useState<React.ReactNode | null>(null);
     const getSheetData = async () => {
         try {
             const response = await axios.post('http://localhost:3001/file', {
