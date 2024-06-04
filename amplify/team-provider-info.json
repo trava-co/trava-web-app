@@ -1,0 +1,20 @@
+{
+  "anay": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-trava-anay-00341-authRole",
+      "UnauthRoleArn": "arn:aws:iam::736143825081:role/amplify-trava-anay-00341-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::736143825081:role/amplify-trava-anay-00341-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-trava-anay-00341-deployment",
+      "UnauthRoleName": "amplify-trava-anay-00341-unauthRole",
+      "StackName": "amplify-trava-anay-00341",
+      "StackId": "arn:aws:cloudformation:us-east-1:736143825081:stack/amplify-trava-anay-00341/48fa20d0-b751-11ee-97a3-0ec11d87e8a5",
+      "AmplifyAppId": "d3nzalola22yka"
+    },
+    "categories": {
+      "api": {
+        "trava": {}
+      }
+    }
+  }
+}

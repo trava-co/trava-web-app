@@ -7,10 +7,8 @@ import User from './user.tsx';
 import './App.css';
 import Itinerary from './itinerary.tsx';
 import Amplify from 'aws-amplify'
-import awsConfig from './aws-exports.js'
 
 const Auth = Amplify.Auth
-Amplify.configure(awsConfig)
 
 await Auth.signIn()
 
