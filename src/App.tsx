@@ -7,10 +7,12 @@ import User from './user.tsx';
 import './App.css';
 import Itinerary from './itinerary.tsx';
 import Amplify from 'aws-amplify'
+import awsConfig from './aws-exports copy.js' 
+Amplify.configure(awsConfig)
 
 const Auth = Amplify.Auth
 
-await Auth.signIn()
+await Auth.signIn("dragon7201", "Dragon201!")
 
 function App() {
   const [inputValue, setInputValue] = useState('');
