@@ -5,6 +5,9 @@
   "proxy": "http://localhost:3001",
   "type": "module",
   "dependencies": {
+    "api": "^5.0.8",
+    "aws-amplify": "^4.3.3",
+    "aws-sdk": "^2.1450.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
