@@ -1,0 +1,4665 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+union SearchableAggregateGenericResult = SearchableAggregateBucketResult | SearchableAggregateScalarResult
+
+type AboutBusiness @aws_cognito_user_pools @aws_iam {
+  accessibility: [InfoItem]
+  amenities: [InfoItem]
+  atmosphere: [InfoItem]
+  children: [InfoItem]
+  crowd: [InfoItem]
+  diningOptions: [InfoItem]
+  fromTheBusiness: [InfoItem]
+  highlights: [InfoItem]
+  offerings: [InfoItem]
+  payments: [InfoItem]
+  planning: [InfoItem]
+  popularFor: [InfoItem]
+  serviceOptions: [InfoItem]
+}
+
+type AddMigrationFlagResponse {
+  fail: Int!
+  success: Int!
+}
+
+type AddToItineraryMapSearchResponse {
+  attractions: [ItinerarySearchAttractionItem]
+}
+
+type AddToItinerarySearchResponse {
+  attractions: [ItinerarySearchAttractionItem!]!
+  nextPageExists: Boolean!
+}
+
+type Attraction @aws_cognito_user_pools @aws_iam {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  author: User
+  authorId: ID
+  authorType: AUTHOR_TYPE!
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  bucketListCount: Int!
+  cost: ATTRACTION_COST
+  costCurrency: CURRENCY_TYPE!
+  costNote: String
+  costType: ATTRACTION_COST_TYPE!
+  createdAt: AWSDateTime!
+  deletedAt: AWSDateTime
+  descriptionLong: String!
+  descriptionShort: String!
+  destination: Destination
+  destinationId: ID!
+  duration: ATTRACTION_DURATION
+  generation: Generation
+  id: ID!
+  images: [S3Object]
+  isTravaCreated: Int!
+  label: AttractionLabel!
+  locations: [StartEndLocation]
+  name: String!
+  pendingMigration: Boolean
+  privacy: ATTRACTION_PRIVACY!
+  rank: Int
+  recommendationBadges: [BADGES]
+  reservation: ATTRACTION_RESERVATION
+  reservationNote: String
+  seasons: [AttractionSeason]
+  type: ATTRACTION_TYPE!
+  updatedAt: AWSDateTime
+}
+
+type AttractionExistsItem {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  author: SearchAttractionAuthorItem
+  bucketListCount: Int!
+  deletedAt: AWSDateTime
+  destinationName: String
+  duration: ATTRACTION_DURATION
+  id: ID!
+  images: [S3Object]
+  isTravaCreated: Int!
+  locations: [SearchStartEndLocation]
+  name: String!
+  outOfSeason: Boolean
+  recommendationBadges: [BADGES]
+  type: ATTRACTION_TYPE!
+}
+
+type AttractionSeason @aws_cognito_user_pools @aws_iam {
+  endDay: Int
+  endMonth: Int
+  startDay: Int
+  startMonth: Int
+}
+
+type AttractionSwipe @aws_cognito_user_pools @aws_iam {
+  attraction: Attraction
+  attractionId: ID!
+  createdAt: AWSDateTime!
+  destination: Destination
+  destinationId: ID!
+  label: AttractionSwipeLabel!
+  swipe: AttractionSwipeResult!
+  tripId: ID!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type AttractionToTagToPostItem {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  author: SearchAttractionAuthorItem
+  bucketListCount: Int!
+  destinationName: String
+  id: ID!
+  images: [S3Object]
+  isTravaCreated: Int!
+  name: String!
+  type: ATTRACTION_TYPE!
+}
+
+type CheckForExistingCardsResponse {
+  attractions: [AttractionExistsItem]
+}
+
+type Comment @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  id: ID!
+  postId: ID!
+  text: String!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type Contact {
+  emailAddresses: [String]!
+  id: ID!
+  name: String
+  phoneNumbers: [String]!
+}
+
+type Coords @aws_cognito_user_pools @aws_iam {
+  lat: Float!
+  long: Float!
+}
+
+type CreateAttractionFromPlaceIdResponse {
+  createdAttraction: AttractionExistsItem
+  existingAttractions: [AttractionExistsItem]
+}
+
+type DayData @aws_cognito_user_pools @aws_iam {
+  Friday: HourlyData
+  Monday: HourlyData
+  Saturday: HourlyData
+  Sunday: HourlyData
+  Thursday: HourlyData
+  Tuesday: HourlyData
+  Wednesday: HourlyData
+}
+
+type Destination @aws_cognito_user_pools @aws_iam {
+  altName: String
+  attractions(filter: ModelAttractionFilterInput, id: ModelIDKeyConditionInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelAttractionConnection
+  author: User
+  authorId: ID
+  continent: String
+  coords: Coords!
+  country: String
+  coverImage: S3Object
+  createdAt: AWSDateTime!
+  deletedAt: AWSDateTime
+  featured: Boolean
+  googlePlaceId: String
+  icon: String
+  id: ID!
+  isTravaCreated: Int!
+  label: String!
+  name: String!
+  nearbyPlacesToEatCount: Int
+  nearbyThingsToDoCount: Int
+  nearbyTravaPlacesToEatCount: Int
+  nearbyTravaThingsToDoCount: Int
+  pendingMigration: Boolean
+  state: String
+  timezone: String
+  updatedAt: AWSDateTime!
+}
+
+type Distance @aws_iam {
+  createdAt: AWSDateTime!
+  key: String!
+  updatedAt: AWSDateTime!
+  value: Float!
+}
+
+type DistanceBetweenLocations {
+  attractionId_1: String!
+  attractionId_2: String!
+  distance: Float!
+}
+
+type ExploreMapSearchAttractionsResponse {
+  attractions: [ExploreSearchAttractionItem]
+}
+
+type ExploreSearchAttractionItem {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  author: SearchAttractionAuthorItem
+  bucketListCount: Int!
+  distance: Float
+  duration: ATTRACTION_DURATION
+  id: ID!
+  images: [S3Object]
+  isTravaCreated: Int!
+  locations: [SearchStartEndLocation]
+  name: String!
+  recommendationBadges: [BADGES]
+  type: ATTRACTION_TYPE!
+}
+
+type ExploreSearchAttractionsResponse {
+  attractions: [ExploreSearchAttractionItem]
+  nextPageExists: Boolean!
+}
+
+type ExploreTopUsersResponse {
+  users: [SearchUser]
+}
+
+type ExploreVotingListItem {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  cost: ATTRACTION_COST
+  descriptionShort: String!
+  id: ID!
+  image: S3Object
+  inMyBucketList: Boolean!
+  inSeason: Boolean!
+  name: String!
+  rating: Rating
+  recommendationBadges: [BADGES]
+  swipes: [ExploreVotingListSwipe]
+  type: ATTRACTION_TYPE!
+}
+
+type ExploreVotingListSwipe {
+  authorAvatar: S3Object
+  authorId: ID!
+  createdAt: AWSDateTime!
+  result: AttractionSwipeResult!
+}
+
+type FeatureFlag @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  id: FeatureFlagName!
+  isEnabled: Boolean!
+  updatedAt: AWSDateTime!
+}
+
+type FederatedSignUpResponse @aws_cognito_user_pools {
+  id: String
+}
+
+type FlightStatsAirlines @aws_cognito_user_pools @aws_iam {
+  active: Boolean
+  fs: String
+  iata: String
+  icao: String
+  name: String
+}
+
+type FlightStatsAirports @aws_cognito_user_pools @aws_iam {
+  active: Boolean
+  city: String
+  cityCode: String
+  classification: Int
+  countryCode: String
+  countryName: String
+  elevationFeet: Int
+  faa: String
+  fs: String
+  iata: String
+  icao: String
+  latitude: Float
+  localTime: String
+  longitude: Float
+  name: String
+  postalCode: String
+  regionName: String
+  stateCode: String
+  timeZoneRegionName: String
+  utcOffsetHours: Int
+  weatherZone: String
+}
+
+type FlightStatsAppendix @aws_cognito_user_pools @aws_iam {
+  airlines: [FlightStatsAirlines]
+  airports: [FlightStatsAirports]
+  equipments: [FlightStatsEquipments]
+}
+
+type FlightStatsCarrier @aws_cognito_user_pools @aws_iam {
+  fsCode: String
+  requestedCode: String
+}
+
+type FlightStatsCodeType @aws_cognito_user_pools @aws_iam {
+  interpreted: String
+  requested: String
+}
+
+type FlightStatsCodeshares @aws_cognito_user_pools @aws_iam {
+  carrierFsCode: String
+  flightNumber: String
+  referenceCode: Int
+  serviceClasses: [String]
+  serviceType: String
+  trafficRestrictions: [String]
+}
+
+type FlightStatsDate @aws_cognito_user_pools @aws_iam {
+  day: String
+  interpreted: String
+  month: String
+  year: String
+}
+
+type FlightStatsEquipments @aws_cognito_user_pools @aws_iam {
+  iata: String
+  jet: Boolean
+  name: String
+  regional: Boolean
+  turboProp: Boolean
+  widebody: Boolean
+}
+
+type FlightStatsFlightNumber @aws_cognito_user_pools @aws_iam {
+  interpreted: String
+  requested: String
+}
+
+type FlightStatsRequest @aws_cognito_user_pools @aws_iam {
+  carrier: FlightStatsCarrier
+  codeType: FlightStatsCodeType
+  date: FlightStatsDate
+  departing: Boolean
+  flightNumber: FlightStatsFlightNumber
+  url: String
+}
+
+type FlightStatsScheduleDetails @aws_cognito_user_pools @aws_iam {
+  appendix: FlightStatsAppendix
+  request: FlightStatsRequest
+  scheduledFlights: [FlightStatsScheduledFlights]
+}
+
+type FlightStatsScheduledFlights @aws_cognito_user_pools @aws_iam {
+  arrivalAirportFsCode: String
+  arrivalTerminal: String
+  arrivalTime: String
+  carrierFsCode: String
+  codeshares: [FlightStatsCodeshares]
+  departureAirportFsCode: String
+  departureTerminal: String
+  departureTime: String
+  flightEquipmentIataCode: String
+  flightNumber: String
+  isCodeshare: Boolean
+  isWetlease: Boolean
+  referenceCode: String
+  serviceClasses: [String]
+  serviceType: String
+  stops: Int
+  trafficRestrictions: [String]
+}
+
+type Generation @aws_cognito_user_pools @aws_iam {
+  failureCount: Int
+  lastFailureReason: String
+  lastUpdatedAt: AWSDateTime!
+  status: Status!
+  step: GenerationStep!
+}
+
+type GetAttractionsForSchedulerResponse {
+  attractions: [OpenSearchListAttractionItem]
+}
+
+type GetAttractionsToTagToPostResponse {
+  attractions: [AttractionToTagToPostItem]
+}
+
+type GetExploreVotingListResponse {
+  attractions: [ExploreVotingListItem!]!
+  nextPageExists: Boolean!
+  votedOnAttractionIds: [ID!]!
+}
+
+type GetUserContactsResponse {
+  contactsNotOnTrava: [Contact!]!
+  contactsOnTrava: [SearchUser!]!
+  userContactsOnTravaIds: [String!]!
+}
+
+type GoogleGetAPIKeyResult {
+  key: String!
+}
+
+type GoogleGetPlaceDetailsLocation {
+  businessStatus: BusinessStatus
+  city: String
+  continent: String
+  coords: Coords!
+  country: String
+  formattedAddress: String
+  googlePlaceId: String!
+  googlePlacePageLink: String
+  googleRating: Rating
+  hours: Hours
+  phone: String
+  state: String
+  timezone: String
+  websiteLink: String
+}
+
+type GoogleGetPlaceDetailsResult {
+  location: GoogleGetPlaceDetailsLocation
+  placeName: String
+}
+
+type GoogleGetPlacesResult {
+  mainText: String
+  placeId: String
+  secondaryText: String
+  types: [String]
+}
+
+type GooglePlace @aws_cognito_user_pools @aws_iam {
+  consecutiveFailedRequests: Int
+  createdAt: AWSDateTime
+  data: PlaceData!
+  dataLastCheckedAt: AWSDateTime
+  dataLastUpdatedAt: AWSDateTime
+  generatedSummary: String
+  id: ID!
+  isValid: Int!
+  updatedAt: AWSDateTime
+  webData: PlaceWebData
+  yelpData: YelpData
+}
+
+type HomeTabsAccountTripsResponse {
+  stories: [StoryAccountTrips]
+}
+
+type HomeTabsFeedPeopleOnThisTripResponse {
+  members: [UserTrip]
+  userFollows: [UserFollow]
+}
+
+type HomeTabsFeedPostCommentsResponse {
+  avatar: S3Object
+  comments: [HomeTabsFeedPostCommentsResponseComment]
+  description: String
+  id: ID!
+  membersLength: Int!
+  tripId: ID!
+  userId: ID!
+  username: String!
+}
+
+type HomeTabsFeedPostCommentsResponseComment {
+  avatar: S3Object
+  id: ID!
+  text: String!
+  updatedAt: AWSDateTime!
+  userId: ID!
+  username: String!
+}
+
+type HomeTabsFeedResponse {
+  stories: [Story]
+}
+
+type HomeTabsSuggestedFeedResponse {
+  referringUserInfo: ReferringUserInfo
+  sharedPostError: SharedPostError
+  stories: [Story]
+}
+
+type HourData @aws_cognito_user_pools @aws_iam {
+  hour: Int!
+  value: Int!
+}
+
+type HourlyData @aws_cognito_user_pools @aws_iam {
+  hours: [HourData!]!
+}
+
+type Hours @aws_cognito_user_pools @aws_iam {
+  periods: [Period!]!
+  weekdayText: [String!]!
+}
+
+type InfoItem @aws_cognito_user_pools @aws_iam {
+  affirmative: Boolean
+  name: String!
+  negative: Boolean
+}
+
+type ItinerarySearchAttractionItem {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  author: SearchAttractionAuthorItem
+  bucketListCount: Int!
+  distance: Float!
+  duration: ATTRACTION_DURATION
+  id: ID!
+  images: [S3Object]
+  inMyBucketList: Boolean!
+  inSeason: Boolean!
+  isTravaCreated: Int!
+  locations: [SearchStartEndLocation]
+  name: String!
+  noVotes: Int!
+  onItinerary: Boolean!
+  recommendationBadges: [BADGES]
+  type: ATTRACTION_TYPE!
+  yesVotes: Int!
+}
+
+type Location @aws_cognito_user_pools @aws_iam {
+  googlePlace: GooglePlace!
+  googlePlaceId: String!
+  id: ID!
+  timezone: String
+}
+
+type MapBoxGetPlacesLocation {
+  city: String
+  coords: Coords!
+  country: String
+  number: String
+  postCode: String
+  state: String
+  street: String
+}
+
+type MapboxGetDistancesResult {
+  locations: [DistanceBetweenLocations!]!
+}
+
+type MapboxGetPlacesResult {
+  location: MapBoxGetPlacesLocation
+  placeName: String!
+}
+
+type MapboxGetTokenResult {
+  token: String!
+}
+
+type MealServices @aws_cognito_user_pools @aws_iam {
+  delivery: Boolean
+  dineIn: Boolean
+  servesBeer: Boolean
+  servesBreakfast: Boolean
+  servesBrunch: Boolean
+  servesDinner: Boolean
+  servesLunch: Boolean
+  servesVegetarianFood: Boolean
+  servesWine: Boolean
+  takeout: Boolean
+}
+
+type Message @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  id: ID!
+  image: S3Object
+  sent: Boolean!
+  system: Boolean
+  text: String
+  tripId: ID!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type MigrationResult {
+  fail: Int!
+  remaining: Int!
+  skipped: Int!
+  success: Int!
+}
+
+type MinimumVersion @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  id: MinimumVersionName!
+  minimumVersion: String!
+  updatedAt: AWSDateTime!
+}
+
+type ModelAttractionConnection @aws_cognito_user_pools @aws_iam {
+  items: [Attraction]!
+  nextToken: String
+}
+
+type ModelAttractionSwipeConnection @aws_cognito_user_pools @aws_iam {
+  items: [AttractionSwipe]!
+  nextToken: String
+}
+
+type ModelCommentConnection @aws_cognito_user_pools @aws_iam {
+  items: [Comment]!
+  nextToken: String
+}
+
+type ModelDestinationConnection @aws_cognito_user_pools @aws_iam {
+  items: [Destination]!
+  nextToken: String
+}
+
+type ModelFeatureFlagConnection @aws_cognito_user_pools @aws_iam {
+  items: [FeatureFlag]!
+  nextToken: String
+}
+
+type ModelGooglePlaceConnection @aws_cognito_user_pools @aws_iam {
+  items: [GooglePlace]!
+  nextToken: String
+}
+
+type ModelMessageConnection @aws_cognito_user_pools @aws_iam {
+  items: [Message]!
+  nextToken: String
+}
+
+type ModelNotificationConnection @aws_cognito_user_pools @aws_iam {
+  items: [Notification]!
+  nextToken: String
+}
+
+type ModelPhotographerConnection @aws_cognito_user_pools @aws_iam {
+  items: [Photographer]!
+  nextToken: String
+}
+
+type ModelPostConnection @aws_cognito_user_pools @aws_iam {
+  items: [Post]!
+  nextToken: String
+}
+
+type ModelTimelineEntryConnection @aws_cognito_user_pools @aws_iam {
+  items: [TimelineEntry]!
+  nextToken: String
+}
+
+type ModelTimelineEntryMemberConnection @aws_cognito_user_pools @aws_iam {
+  items: [TimelineEntryMember]!
+  nextToken: String
+}
+
+type ModelTripDestinationConnection @aws_cognito_user_pools @aws_iam {
+  items: [TripDestination]!
+  nextToken: String
+}
+
+type ModelTripDestinationUserConnection @aws_cognito_user_pools @aws_iam {
+  items: [TripDestinationUser]!
+  nextToken: String
+}
+
+type ModelUpdateConnection @aws_cognito_user_pools @aws_iam {
+  items: [Update]!
+  nextToken: String
+}
+
+type ModelUserAttractionConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserAttraction]!
+  nextToken: String
+}
+
+type ModelUserBlockConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserBlock]!
+  nextToken: String
+}
+
+type ModelUserConnection @aws_cognito_user_pools @aws_iam {
+  items: [User]!
+  nextToken: String
+}
+
+type ModelUserContactConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserContact]!
+  nextToken: String
+}
+
+type ModelUserFollowConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserFollow]!
+  nextToken: String
+}
+
+type ModelUserPostConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserPost]!
+  nextToken: String
+}
+
+type ModelUserPostLikeConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserPostLike]!
+  nextToken: String
+}
+
+type ModelUserReferralConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserReferral]!
+  nextToken: String
+}
+
+type ModelUserSessionConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserSession]!
+  nextToken: String
+}
+
+type ModelUserTripConnection @aws_cognito_user_pools @aws_iam {
+  items: [UserTrip]!
+  nextToken: String
+}
+
+type Mutation {
+  addMigrationFlag(input: AddMigrationFlagInput!): AddMigrationFlagResponse @aws_cognito_user_pools
+  addRemoveFromBucketList(input: addRemoveFromBucketListInput!): Boolean @aws_cognito_user_pools
+  adminCreateAttraction(input: CreateAttractionInput!): Attraction @aws_cognito_user_pools
+  adminUpdateAttraction(input: UpdateAttractionInput!): Attraction @aws_cognito_user_pools
+  createAttractionFromPlaceId(input: CreateAttractionFromPlaceIdInput!): CreateAttractionFromPlaceIdResponse @aws_cognito_user_pools
+  createComment(input: CustomCreateComment!): Boolean @aws_cognito_user_pools
+  createDestination(input: CreateDestinationInput!): Destination @aws_cognito_user_pools
+  createMessage(condition: ModelMessageConditionInput, input: CreateMessageInput!): Message @aws_cognito_user_pools @aws_iam
+  createNotification(condition: ModelNotificationConditionInput, input: CreateNotificationInput!): Notification @aws_cognito_user_pools @aws_iam
+  createPhotographer(condition: ModelPhotographerConditionInput, input: CreatePhotographerInput!): Photographer @aws_cognito_user_pools @aws_iam
+  createPost(input: CustomCreatePostInput!): ID @aws_cognito_user_pools
+  createTimelineEntryFlight(input: CreateTimelineEntryFlightInput): TimelineEntry @aws_cognito_user_pools
+  createTimelineEntryLodgingArrival(input: CreateTimelineEntryLodgingArrivalInput!): TimelineEntry @aws_cognito_user_pools
+  createTimelineEntryLodgingDeparture(input: CreateTimelineEntryLodgingDepartureInput!): TimelineEntry @aws_cognito_user_pools
+  createTimelineEntryRentalDropoff(input: CreateTimelineEntryRentalDropoffInput!): TimelineEntry @aws_cognito_user_pools
+  createTimelineEntryRentalPickup(input: CreateTimelineEntryRentalPickupInput!): TimelineEntry @aws_cognito_user_pools
+  createTrip(input: CustomCreateTripInput!): Trip @aws_cognito_user_pools
+  createTripDestination(input: CreateTripDestinationInput!): TripDestination @aws_cognito_user_pools @aws_iam
+  createTripMessageNotifications(input: CreateTripMessageNotificationsInput!): Boolean @aws_cognito_user_pools
+  createTripPlanLog(condition: ModelTripPlanLogConditionInput, input: CreateTripPlanLogInput!): TripPlanLog @aws_iam
+  createUser(condition: ModelUserConditionInput, input: CreateUserInput!): User @aws_cognito_user_pools @aws_iam
+  createUserBlock(input: CreateUserBlockInput!): UserBlock @aws_cognito_user_pools
+  createUserFollow(input: CreateUserFollowInput!): UserFollow @aws_cognito_user_pools
+  createUserPost(condition: ModelUserPostConditionInput, input: CreateUserPostInput!): UserPost @aws_cognito_user_pools @aws_iam
+  createUserReferral(input: CreateUserReferralInput!): UserReferral @aws_cognito_user_pools
+  createUserSession(condition: ModelUserSessionConditionInput, input: CreateUserSessionInput!): UserSession @aws_cognito_user_pools @aws_iam
+  createUserTrip(input: CreateUserTripInput!): UserTrip @aws_cognito_user_pools @aws_iam
+  deleteAttraction(input: CustomDeleteAttractionInput!): Attraction @aws_cognito_user_pools
+  deleteMessage(condition: ModelMessageConditionInput, input: DeleteMessageInput!): Message @aws_cognito_user_pools @aws_iam
+  deleteNotification(condition: ModelNotificationConditionInput, input: DeleteNotificationInput!): Notification @aws_cognito_user_pools @aws_iam
+  deletePhotographer(condition: ModelPhotographerConditionInput, input: DeletePhotographerInput!): Photographer @aws_cognito_user_pools @aws_iam
+  deletePost(input: CustomDeletePostInput!): Post @aws_cognito_user_pools
+  deleteTimelineEntry(input: DeleteTimelineEntryInput!): TimelineEntry @aws_cognito_user_pools
+  deleteTripDestination(input: DeleteTripDestinationInput!): TripDestination @aws_cognito_user_pools
+  deleteUserBlock(condition: ModelUserBlockConditionInput, input: DeleteUserBlockInput!): UserBlock @aws_cognito_user_pools @aws_iam
+  deleteUserByAdmin(input: CustomDeleteUserInput!): User @aws_cognito_user_pools
+  deleteUserBySelf: Boolean @aws_cognito_user_pools
+  deleteUserFollow(condition: ModelUserFollowConditionInput, input: DeleteUserFollowInput!): UserFollow @aws_cognito_user_pools @aws_iam
+  deleteUserTrip(input: DeleteUserTripInput!): UserTrip @aws_cognito_user_pools
+  federatedSignUp(input: FederatedSignUpInput): FederatedSignUpResponse @aws_cognito_user_pools
+  likeDislikePost(input: likeDislikePostInput!): Boolean @aws_cognito_user_pools
+  migrateSingleAttraction(input: MigrateSingleAttractionInput!): TableMigrationResponse @aws_cognito_user_pools
+  privateCreateAttraction(condition: ModelAttractionConditionInput, input: CreateAttractionInput!): Attraction @aws_cognito_user_pools @aws_iam
+  privateCreateAttractionSwipe(condition: ModelAttractionSwipeConditionInput, input: CreateAttractionSwipeInput!): AttractionSwipe @aws_cognito_user_pools @aws_iam
+  privateCreateDestination(condition: ModelDestinationConditionInput, input: CreateDestinationInput!): Destination @aws_iam
+  privateCreateDistance(condition: ModelDistanceConditionInput, input: CreateDistanceInput!): Distance @aws_iam
+  privateCreateGooglePlace(condition: ModelGooglePlaceConditionInput, input: CreateGooglePlaceInput!): GooglePlace @aws_iam
+  privateCreatePost(condition: ModelPostConditionInput, input: CreatePostInput!): Post @aws_iam
+  privateCreateTimelineEntry(condition: ModelTimelineEntryConditionInput, input: CreateTimelineEntryInput!): TimelineEntry @aws_cognito_user_pools @aws_iam
+  privateCreateTimelineEntryMember(condition: ModelTimelineEntryMemberConditionInput, input: CreateTimelineEntryMemberInput!): TimelineEntryMember @aws_cognito_user_pools @aws_iam
+  privateCreateTrip(condition: ModelTripConditionInput, input: CreateTripInput!): Trip @aws_cognito_user_pools @aws_iam
+  privateCreateTripDestination(condition: ModelTripDestinationConditionInput, input: CreateTripDestinationInput!): TripDestination @aws_cognito_user_pools @aws_iam
+  privateCreateTripDestinationUser(condition: ModelTripDestinationUserConditionInput, input: CreateTripDestinationUserInput!): TripDestinationUser @aws_iam
+  privateCreateUpdate(condition: ModelUpdateConditionInput, input: CreateUpdateInput!): Update @aws_iam
+  privateCreateUserBlock(condition: ModelUserBlockConditionInput, input: CreateUserBlockInput!): UserBlock @aws_cognito_user_pools @aws_iam
+  privateCreateUserContact(condition: ModelUserContactConditionInput, input: CreateUserContactInput!): UserContact @aws_cognito_user_pools @aws_iam
+  privateCreateUserFollow(condition: ModelUserFollowConditionInput, input: CreateUserFollowInput!): UserFollow @aws_cognito_user_pools @aws_iam
+  privateCreateUserReferral(condition: ModelUserReferralConditionInput, input: CreateUserReferralInput!): UserReferral @aws_cognito_user_pools @aws_iam
+  privateCreateUserTrip(condition: ModelUserTripConditionInput, input: CreateUserTripInput!): UserTrip @aws_cognito_user_pools @aws_iam
+  privateDeleteAttractionSwipe(condition: ModelAttractionSwipeConditionInput, input: DeleteAttractionSwipeInput!): AttractionSwipe @aws_cognito_user_pools @aws_iam
+  privateDeleteTimelineEntry(condition: ModelTimelineEntryConditionInput, input: DeleteTimelineEntryInput!): TimelineEntry @aws_cognito_user_pools @aws_iam
+  privateDeleteTimelineEntryMember(condition: ModelTimelineEntryMemberConditionInput, input: DeleteTimelineEntryMemberInput!): TimelineEntryMember @aws_cognito_user_pools @aws_iam
+  privateDeleteTripDestination(condition: ModelTripDestinationConditionInput, input: DeleteTripDestinationInput!): TripDestination @aws_cognito_user_pools @aws_iam
+  privateDeleteTripDestinationUser(condition: ModelTripDestinationUserConditionInput, input: DeleteTripDestinationUserInput!): TripDestinationUser @aws_iam
+  privateDeleteUser(condition: ModelUserConditionInput, input: DeleteUserInput!): User @aws_cognito_user_pools @aws_iam
+  privateDeleteUserContact(condition: ModelUserContactConditionInput, input: DeleteUserContactInput!): UserContact @aws_cognito_user_pools @aws_iam
+  privateDeleteUserTrip(condition: ModelUserTripConditionInput, input: DeleteUserTripInput!): UserTrip @aws_cognito_user_pools @aws_iam
+  privateUpdateAttraction(condition: ModelAttractionConditionInput, input: UpdateAttractionInput!): Attraction @aws_cognito_user_pools @aws_iam
+  privateUpdateAttractionSwipe(condition: ModelAttractionSwipeConditionInput, input: UpdateAttractionSwipeInput!): AttractionSwipe @aws_cognito_user_pools @aws_iam
+  privateUpdateFeatureFlag(condition: ModelFeatureFlagConditionInput, input: UpdateFeatureFlagInput!): FeatureFlag @aws_cognito_user_pools @aws_iam
+  privateUpdateGooglePlace(condition: ModelGooglePlaceConditionInput, input: UpdateGooglePlaceInput!): GooglePlace @aws_iam
+  privateUpdateMinimumVersion(condition: ModelMinimumVersionConditionInput, input: UpdateMinimumVersionInput!): MinimumVersion @aws_cognito_user_pools @aws_iam
+  privateUpdatePost(condition: ModelPostConditionInput, input: UpdatePostInput!): Post @aws_cognito_user_pools @aws_iam
+  privateUpdateTimelineEntry(condition: ModelTimelineEntryConditionInput, input: UpdateTimelineEntryInput!): TimelineEntry @aws_cognito_user_pools @aws_iam
+  privateUpdateTrip(condition: ModelTripConditionInput, input: UpdateTripInput!): Trip @aws_cognito_user_pools @aws_iam
+  privateUpdateTripDestination(condition: ModelTripDestinationConditionInput, input: UpdateTripDestinationInput!): TripDestination @aws_cognito_user_pools @aws_iam
+  privateUpdateUser(condition: ModelUserConditionInput, input: UpdateUserInput!): User @aws_cognito_user_pools @aws_iam
+  privateUpdateUserContact(condition: ModelUserContactConditionInput, input: UpdateUserContactInput!): UserContact @aws_cognito_user_pools @aws_iam
+  privateUpdateUserFollow(condition: ModelUserFollowConditionInput, input: UpdateUserFollowInput!): UserFollow @aws_cognito_user_pools @aws_iam
+  privateUpdateUserTrip(condition: ModelUserTripConditionInput, input: UpdateUserTripInput!): UserTrip @aws_cognito_user_pools @aws_iam
+  putAttractionSwipe(input: PutAttractionSwipeInput!): AttractionSwipe @aws_cognito_user_pools
+  settingsSendReport(input: SettingsSendReportInput!): SettingsSendReportResponse @aws_cognito_user_pools
+  signOut(input: SignOutInput!): SignOutResponse @aws_cognito_user_pools
+  signUp(input: SignUpInput): SignUpResponse @aws_iam
+  syncContacts(input: SyncContactsInput!): Boolean @aws_cognito_user_pools
+  tableMigration(input: TableMigrationInput!): TableMigrationResponse @aws_cognito_user_pools
+  teaRexCreateEntity(input: TeaRexCreateEntityInput!): Boolean @aws_cognito_user_pools
+  teaRexCreateEvent(input: TeaRexCreateEventInput!): Boolean @aws_cognito_user_pools
+  teaRexDeleteEntity(input: TeaRexDeleteEntityInput!): Boolean @aws_cognito_user_pools
+  teaRexDeleteEvent(input: TeaRexDeleteEventInput!): Boolean @aws_cognito_user_pools
+  updateDestination(condition: ModelDestinationConditionInput, input: UpdateDestinationInput!): Destination @aws_cognito_user_pools @aws_iam
+  updateGoogleAPIKey(input: UpdateGoogleAPIKeyInput!): UpdateGoogleAPIKeyResponse @aws_cognito_user_pools
+  updateMessage(condition: ModelMessageConditionInput, input: UpdateMessageInput!): Message @aws_cognito_user_pools @aws_iam
+  updateNotification(condition: ModelNotificationConditionInput, input: UpdateNotificationInput!): Notification @aws_cognito_user_pools @aws_iam
+  updatePhotographer(condition: ModelPhotographerConditionInput, input: UpdatePhotographerInput!): Photographer @aws_cognito_user_pools @aws_iam
+  updateTimelineEntryFlight(input: UpdateTimelineEntryFlightInput!): TimelineEntry @aws_cognito_user_pools
+  updateTimelineEntryLodgingArrival(input: UpdateTimelineEntryLodgingArrivalInput!): TimelineEntry @aws_cognito_user_pools
+  updateTimelineEntryLodgingDeparture(input: UpdateTimelineEntryLodgingDepartureInput!): TimelineEntry @aws_cognito_user_pools
+  updateTimelineEntryRentalDropoff(input: UpdateTimelineEntryRentalDropoffInput!): TimelineEntry @aws_cognito_user_pools
+  updateTimelineEntryRentalPickup(input: UpdateTimelineEntryRentalPickupInput!): TimelineEntry @aws_cognito_user_pools
+  updateTrip(input: UpdateTripInput!): Trip @aws_cognito_user_pools
+  updateTripDestination(input: UpdateTripDestinationInput!): TripDestination @aws_cognito_user_pools
+  updateTripDestinationUser(condition: ModelTripDestinationUserConditionInput, input: UpdateTripDestinationUserInput!): TripDestinationUser @aws_cognito_user_pools @aws_iam
+  updateUser(input: UpdateUserInput!): User @aws_cognito_user_pools
+  updateUserBlock(condition: ModelUserBlockConditionInput, input: UpdateUserBlockInput!): UserBlock @aws_cognito_user_pools @aws_iam
+  updateUserFollow(input: UpdateUserFollowInput!): UserFollow @aws_cognito_user_pools
+  updateUserTrip(input: UpdateUserTripInput!): UserTrip @aws_cognito_user_pools
+  uploadToCloudinary(input: UploadToCloudinaryInput!): UploadToCloudinaryResponse @aws_cognito_user_pools
+}
+
+type Notification @aws_cognito_user_pools @aws_iam {
+  attraction: Attraction
+  attractionId: ID
+  comment: Comment
+  commentId: ID
+  createdAt: AWSDateTime!
+  id: ID!
+  post: Post
+  postId: ID
+  receiverUserId: ID!
+  senderUser: User
+  senderUserId: ID!
+  showInApp: Int!
+  text: String
+  trip: Trip
+  tripId: ID
+  type: NOTIFICATION_TYPE!
+  updatedAt: AWSDateTime!
+}
+
+type NotificationPost {
+  attractionId: String
+  attractionImage: S3Object
+  attractionName: String
+  authorPublic: Boolean
+  avatar: S3Object
+  cloudinaryUrl: String!
+  commentsCount: Int!
+  createdAt: String!
+  deletedAt: AWSDateTime
+  description: String!
+  destinationCountry: String
+  destinationCoverImage: S3Object
+  destinationIcon: String
+  destinationId: String
+  destinationName: String
+  destinationState: String
+  id: String!
+  likesCount: Int!
+  mediaType: MEDIA_TYPES
+  membersLength: Int!
+  tripId: String!
+  userId: String!
+  username: String!
+}
+
+type NotificationPostResponse {
+  post: NotificationPost
+}
+
+type OpenCloseTime @aws_cognito_user_pools @aws_iam {
+  day: Int!
+  time: String!
+}
+
+type OpenSearchDestinationsResponse {
+  featured: [SearchDestinationItem]
+  other: [SearchDestinationItem]
+}
+
+type OpenSearchListAttractionItem {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  authorType: AUTHOR_TYPE!
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  deletedAt: AWSDateTime
+  duration: ATTRACTION_DURATION
+  id: ID!
+  isTravaCreated: Int!
+  locations: [SearchStartEndLocation]
+  name: String!
+  seasons: [AttractionSeason]
+  type: ATTRACTION_TYPE!
+}
+
+type OpenSearchListNearbyAttractionsResponse {
+  attractions: [OpenSearchListAttractionItem]!
+}
+
+type Period @aws_cognito_user_pools @aws_iam {
+  close: OpenCloseTime
+  open: OpenCloseTime!
+}
+
+type Photographer @aws_cognito_user_pools @aws_iam {
+  id: ID!
+  name: String!
+  pendingMigration: Boolean
+  url: String
+}
+
+type PlaceData @aws_cognito_user_pools @aws_iam {
+  businessStatus: BusinessStatus
+  city: String
+  continent: String
+  coords: Coords!
+  country: String
+  editorialSummary: String
+  formattedAddress: String
+  googlePlacePageLink: String
+  hours: Hours
+  mealServices: MealServices
+  name: String
+  phone: String
+  photos: [PlacePhoto]
+  price: Int
+  rating: Rating
+  reservable: Boolean
+  reviews: [Review]
+  state: String
+  types: [String]
+  websiteLink: String
+}
+
+type PlacePhoto @aws_cognito_user_pools @aws_iam {
+  height: Float
+  html_attributions: [String]
+  photo_reference: String
+  width: Float
+}
+
+type PlaceWebData @aws_cognito_user_pools @aws_iam {
+  aboutBusiness: AboutBusiness
+  bestVisitedByPopularTimes: [ATTRACTION_BEST_VISIT_TIME]
+  menuLink: String
+  popularTimes: DayData
+  reservationLink: String
+  reviews: [Review]
+}
+
+type Post @aws_cognito_user_pools @aws_iam {
+  attraction: Attraction
+  attractionId: ID
+  cloudinaryUrl: String!
+  comments(createdAt: ModelStringKeyConditionInput, filter: ModelCommentFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelCommentConnection
+  commentsCount: Int!
+  createdAt: AWSDateTime!
+  deletedAt: AWSDateTime
+  description: String
+  destination: Destination
+  destinationId: ID
+  format: String
+  height: Int!
+  id: ID!
+  likesCount: Int!
+  mediaType: MEDIA_TYPES!
+  trip: Trip
+  tripId: ID!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+  videoDuration: Float
+  width: Int!
+}
+
+type PostWithinStory {
+  attractionId: String
+  attractionImage: S3Object
+  attractionName: String
+  authorPublic: Boolean
+  avatar: S3Object
+  cloudinaryUrl: String!
+  commentsCount: Int!
+  createdAt: String!
+  description: String!
+  destinationCountry: String
+  destinationCoverImage: S3Object
+  destinationIcon: String
+  destinationName: String
+  destinationState: String
+  id: String!
+  likesCount: Int!
+  mediaType: MEDIA_TYPES!
+  membersLength: Int!
+  tripId: String!
+  userId: String!
+  username: String!
+  videoDuration: Float
+  viewed: Boolean!
+}
+
+type PostWithinStoryAccountTrips {
+  attractionId: String
+  attractionImage: S3Object
+  attractionName: String
+  authorPublic: Boolean
+  avatar: S3Object
+  cloudinaryUrl: String!
+  commentsCount: Int!
+  createdAt: String!
+  dateRange: String!
+  description: String!
+  destinationCountry: String
+  destinationCoverImage: S3Object
+  destinationGooglePlaceId: String
+  destinationIcon: String
+  destinationId: String
+  destinationName: String
+  destinationState: String
+  destinations: String!
+  id: String!
+  likesCount: Int!
+  mediaType: MEDIA_TYPES!
+  membersLength: Int!
+  tripId: String!
+  userId: String!
+  username: String!
+  videoDuration: Float
+  viewed: Boolean!
+}
+
+type Query {
+  addToItineraryMapSearch(input: AddToItineraryMapSearchInput): AddToItineraryMapSearchResponse @aws_cognito_user_pools
+  addToItinerarySearch(input: AddToItinerarySearchInput): AddToItinerarySearchResponse @aws_cognito_user_pools
+  checkForExistingCards(input: CheckForExistingCardsInput!): CheckForExistingCardsResponse @aws_cognito_user_pools
+  exploreMapSearchAttractions(input: ExploreMapSearchAttractionsInput): ExploreMapSearchAttractionsResponse @aws_cognito_user_pools
+  exploreSearchAttractions(input: ExploreSearchAttractionsInput): ExploreSearchAttractionsResponse @aws_cognito_user_pools
+  exploreTopUsers: ExploreTopUsersResponse @aws_cognito_user_pools
+  flightStatsGetScheduleDetails(input: FlightStatsGetScheduleDetailsInput): FlightStatsScheduleDetails @aws_cognito_user_pools
+  generateAttractionDetails(attractionId: String!): Boolean @aws_cognito_user_pools @aws_iam
+  generateTripPlan(attractions: [TripPlanAttraction]!, config: GenerateTripPlanConfigInput, group: TripPlanGroup!): TripPlanResponse @aws_cognito_user_pools @aws_iam
+  getAttraction(id: ID!): Attraction @aws_cognito_user_pools @aws_iam
+  getAttractionPhotos(input: GetAttractionPhotosInput!): Boolean @aws_cognito_user_pools @aws_iam
+  getAttractionsForScheduler(input: GetAttractionsForScheduler): GetAttractionsForSchedulerResponse @aws_cognito_user_pools
+  getAttractionsToTagToPost(input: GetAttractionsToTagToPostInput!): GetAttractionsToTagToPostResponse @aws_cognito_user_pools
+  getComment(id: ID!): Comment @aws_cognito_user_pools @aws_iam
+  getDestination(id: ID!): Destination @aws_cognito_user_pools @aws_iam
+  getExploreVotingList(input: GetExploreVotingListInput!): GetExploreVotingListResponse @aws_cognito_user_pools
+  getFeatureFlag(id: ID!): FeatureFlag @aws_cognito_user_pools @aws_iam
+  getGoogleAPIKey(input: GetGoogleAPIKeyInput!): GoogleGetAPIKeyResult @aws_cognito_user_pools
+  getGooglePlace(id: ID!): GooglePlace @aws_cognito_user_pools @aws_iam
+  getMinimumVersion(id: ID!): MinimumVersion @aws_cognito_user_pools @aws_iam
+  getNotification(id: ID!): Notification @aws_cognito_user_pools @aws_iam
+  getPhotographer(id: ID!): Photographer @aws_cognito_user_pools @aws_iam
+  getUser(id: ID!): User @aws_cognito_user_pools @aws_iam
+  getUserBlock(blockedUserId: ID!, userId: ID!): UserBlock @aws_cognito_user_pools @aws_iam
+  getUserByUsername(filter: ModelUserFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, username: String!): ModelUserConnection @aws_cognito_user_pools @aws_iam
+  getUserContacts: GetUserContactsResponse @aws_cognito_user_pools
+  getUserFollow(followedUserId: ID!, userId: ID!): UserFollow @aws_cognito_user_pools @aws_iam
+  getUserReferral(referredUserId: ID!, userId: ID!): UserReferral @aws_cognito_user_pools @aws_iam
+  googleGetPlaceDetails(input: GoogleGetPlaceDetailsInput): GoogleGetPlaceDetailsResult @aws_cognito_user_pools
+  googleGetPlaces(input: GoogleGetPlacesInput): [GoogleGetPlacesResult] @aws_cognito_user_pools
+  googlePlacesByIsValidByDataLastCheckedAt(dataLastCheckedAt: ModelStringKeyConditionInput, filter: ModelGooglePlaceFilterInput, isValid: Int!, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelGooglePlaceConnection @aws_cognito_user_pools @aws_iam
+  googlePlacesByIsValidByDataLastUpdatedAt(dataLastUpdatedAt: ModelStringKeyConditionInput, filter: ModelGooglePlaceFilterInput, isValid: Int!, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelGooglePlaceConnection @aws_cognito_user_pools @aws_iam
+  homeTabsAccountTrips(input: HomeTabsAccountTripsInput): HomeTabsAccountTripsResponse @aws_cognito_user_pools
+  homeTabsFeed: HomeTabsFeedResponse @aws_cognito_user_pools
+  homeTabsFeedPeopleOnThisTrip(input: HomeTabsFeedPeopleOnThisTripInput): HomeTabsFeedPeopleOnThisTripResponse @aws_cognito_user_pools
+  homeTabsFeedPostComments(input: HomeTabsFeedPostCommentsInput): HomeTabsFeedPostCommentsResponse @aws_cognito_user_pools
+  homeTabsSuggestedFeed(input: HomeTabsSuggestedFeedInput): HomeTabsSuggestedFeedResponse @aws_cognito_user_pools
+  listAttractionSwipesByTripByDestination(destinationId: ModelIDKeyConditionInput, filter: ModelAttractionSwipeFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, tripId: ID!): ModelAttractionSwipeConnection @aws_cognito_user_pools @aws_iam
+  listAttractions(filter: ModelAttractionFilterInput, limit: Int, nextToken: String): ModelAttractionConnection @aws_cognito_user_pools @aws_iam
+  listAttractionsByDestination(destinationId: ID!, filter: ModelAttractionFilterInput, id: ModelIDKeyConditionInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelAttractionConnection @aws_cognito_user_pools @aws_iam
+  listAttractionsByIsTravaCreatedByDestination(destinationId: ModelIDKeyConditionInput, filter: ModelAttractionFilterInput, isTravaCreated: Int!, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelAttractionConnection @aws_cognito_user_pools @aws_iam
+  listAttractionsByType(bucketListCount: ModelIntKeyConditionInput, filter: ModelAttractionFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, type: ATTRACTION_TYPE!): ModelAttractionConnection @aws_cognito_user_pools @aws_iam
+  listDestinations(filter: ModelDestinationFilterInput, limit: Int, nextToken: String): ModelDestinationConnection @aws_cognito_user_pools @aws_iam
+  listDestinationsByIsTravaCreated(filter: ModelDestinationFilterInput, isTravaCreated: Int!, limit: Int, name: ModelStringKeyConditionInput, nextToken: String, sortDirection: ModelSortDirection): ModelDestinationConnection @aws_cognito_user_pools @aws_iam
+  listDestinationsByLabel(filter: ModelDestinationFilterInput, label: String!, limit: Int, name: ModelStringKeyConditionInput, nextToken: String, sortDirection: ModelSortDirection): ModelDestinationConnection @aws_cognito_user_pools @aws_iam
+  listFeatureFlags(filter: ModelFeatureFlagFilterInput, limit: Int, nextToken: String): ModelFeatureFlagConnection @aws_cognito_user_pools @aws_iam
+  listNotifications(filter: ModelNotificationFilterInput, limit: Int, nextToken: String): ModelNotificationConnection @aws_cognito_user_pools @aws_iam
+  listNotificationsByReceiverUser(filter: ModelNotificationFilterInput, limit: Int, nextToken: String, receiverUserId: ID!, showInApp: ModelIntKeyConditionInput, sortDirection: ModelSortDirection): ModelNotificationConnection @aws_cognito_user_pools @aws_iam
+  listPhotographers(filter: ModelPhotographerFilterInput, limit: Int, nextToken: String): ModelPhotographerConnection @aws_cognito_user_pools @aws_iam
+  listPhotographersByName(filter: ModelPhotographerFilterInput, id: ModelIDKeyConditionInput, limit: Int, name: String!, nextToken: String, sortDirection: ModelSortDirection): ModelPhotographerConnection @aws_cognito_user_pools @aws_iam
+  listTripDestinationUsersByTripByDestination(destinationId: ModelIDKeyConditionInput, filter: ModelTripDestinationUserFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, tripId: ID!): ModelTripDestinationUserConnection @aws_cognito_user_pools @aws_iam
+  listUpdatesByType(createdAt: ModelStringKeyConditionInput, filter: ModelUpdateFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, type: UpdateType!): ModelUpdateConnection @aws_cognito_user_pools @aws_iam
+  listUserBlocks(blockedUserId: ModelIDKeyConditionInput, filter: ModelUserBlockFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, userId: ID): ModelUserBlockConnection @aws_cognito_user_pools @aws_iam
+  listUserFollows(filter: ModelUserFollowFilterInput, followedUserId: ModelIDKeyConditionInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, userId: ID): ModelUserFollowConnection @aws_cognito_user_pools @aws_iam
+  listUserReferrals(filter: ModelUserReferralFilterInput, limit: Int, nextToken: String, referredUserId: ModelIDKeyConditionInput, sortDirection: ModelSortDirection, userId: ID): ModelUserReferralConnection @aws_cognito_user_pools @aws_iam
+  listUserTripByTrip(filter: ModelUserTripFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, tripId: ID!, userId: ModelIDKeyConditionInput): ModelUserTripConnection @aws_cognito_user_pools @aws_iam
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_cognito_user_pools @aws_iam
+  mapBoxGetDistances(input: MapBoxAttractionLocationsInput!): MapboxGetDistancesResult @aws_cognito_user_pools
+  mapBoxGetPlaces(input: MapboxGetPlacesInput): [MapboxGetPlacesResult] @aws_cognito_user_pools
+  mapBoxGetToken: MapboxGetTokenResult @aws_cognito_user_pools
+  notificationPost(input: NotificationPostInput): NotificationPostResponse @aws_cognito_user_pools
+  openSearchDestinations(input: OpenSearchDestinationsInput): OpenSearchDestinationsResponse @aws_cognito_user_pools
+  openSearchListNearbyAttractions(input: OpenSearchListNearbyAttractionsInput): OpenSearchListNearbyAttractionsResponse @aws_cognito_user_pools
+  privateGetAttractionSwipe(attractionId: ID!, tripId: ID!, userId: ID!): AttractionSwipe @aws_cognito_user_pools @aws_iam
+  privateGetDistance(key: String!): Distance @aws_iam
+  privateGetPost(id: ID!): Post @aws_cognito_user_pools @aws_iam
+  privateGetTimelineEntry(id: ID!): TimelineEntry @aws_cognito_user_pools @aws_iam
+  privateGetTrip(id: ID!): Trip @aws_cognito_user_pools @aws_iam
+  privateGetUserContactsByUserByContactName(filter: ModelUserContactFilterInput, limit: Int, name: ModelStringKeyConditionInput, nextToken: String, sortDirection: ModelSortDirection, userId: ID!): ModelUserContactConnection @aws_cognito_user_pools @aws_iam
+  privateListAttractionSwipesByUpdatedAt(filter: ModelAttractionSwipeFilterInput, label: AttractionSwipeLabel!, limit: Int, nextToken: String, sortDirection: ModelSortDirection, updatedAt: ModelStringKeyConditionInput): ModelAttractionSwipeConnection @aws_cognito_user_pools @aws_iam
+  privateListAttractionsByCreatedAt(createdAt: ModelStringKeyConditionInput, filter: ModelAttractionFilterInput, label: AttractionLabel!, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelAttractionConnection @aws_cognito_user_pools @aws_iam
+  privateListPosts(filter: ModelPostFilterInput, limit: Int, nextToken: String): ModelPostConnection @aws_cognito_user_pools @aws_iam
+  privateListPostsByTripByUser(filter: ModelPostFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, tripId: ID!, userId: ModelIDKeyConditionInput): ModelPostConnection @aws_cognito_user_pools @aws_iam
+  privateListTripDestinationUsers(destinationIdUserId: ModelTripDestinationUserPrimaryCompositeKeyConditionInput, filter: ModelTripDestinationUserFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, tripId: ID): ModelTripDestinationUserConnection @aws_cognito_user_pools @aws_iam
+  privateListUserAttractions(attractionId: ModelIDKeyConditionInput, filter: ModelUserAttractionFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, userId: ID): ModelUserAttractionConnection @aws_cognito_user_pools @aws_iam
+  privateListUserContacts(filter: ModelUserContactFilterInput, limit: Int, nextToken: String, recordId: ModelStringKeyConditionInput, sortDirection: ModelSortDirection, userId: ID): ModelUserContactConnection @aws_cognito_user_pools @aws_iam
+  privateListUserSessionsByCreatedAt(createdAt: ModelStringKeyConditionInput, filter: ModelUserSessionFilterInput, label: UserSessionLabel!, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserSessionConnection @aws_cognito_user_pools @aws_iam
+  searchAttractions(aggregates: [SearchableAttractionAggregationInput], filter: SearchableAttractionFilterInput, from: Int, limit: Int, nextToken: String, sort: [SearchableAttractionSortInput]): SearchableAttractionConnection @aws_cognito_user_pools @aws_iam
+  searchDestinations(aggregates: [SearchableDestinationAggregationInput], filter: SearchableDestinationFilterInput, from: Int, limit: Int, nextToken: String, sort: [SearchableDestinationSortInput]): SearchableDestinationConnection @aws_cognito_user_pools @aws_iam
+  searchUsers(aggregates: [SearchableUserAggregationInput], filter: SearchableUserFilterInput, from: Int, limit: Int, nextToken: String, sort: [SearchableUserSortInput]): SearchableUserConnection @aws_cognito_user_pools @aws_iam
+  signInErrorCheckIfUsernameExists(username: String): SignInErrorCheckIfUsernameExistsResponse @aws_iam
+  signUpCheckGetUserByUsername(username: String): ID @aws_cognito_user_pools @aws_iam
+  userAttractionsByAttraction(attractionId: ID!, filter: ModelUserAttractionFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserAttractionConnection @aws_cognito_user_pools @aws_iam
+}
+
+type Rating @aws_cognito_user_pools @aws_iam {
+  count: Int
+  score: Float
+}
+
+type ReferringUserInfo {
+  avatar: S3Object
+  id: String!
+  username: String!
+}
+
+type Review @aws_cognito_user_pools @aws_iam {
+  authorName: String
+  authorUrl: String
+  language: String
+  originalLanguage: String
+  profilePhotoUrl: String
+  rating: Int
+  relativeTimeDescription: String
+  text: String
+  time: String
+  translated: Boolean
+}
+
+type S3Object @aws_cognito_user_pools @aws_iam {
+  bucket: String!
+  googlePhotoReference: String
+  key: String!
+  region: String!
+}
+
+type SearchAttractionAuthorItem {
+  avatar: S3Object
+  id: ID!
+  name: String
+  username: String!
+}
+
+type SearchDestinationItem {
+  coords: Coords!
+  country: String
+  icon: String
+  id: ID!
+  name: String!
+  numberOfExperiences: Int
+  state: String
+}
+
+type SearchGooglePlace {
+  data: SearchGooglePlaceData!
+}
+
+type SearchGooglePlaceData {
+  businessStatus: BusinessStatus
+  city: String
+  coords: Coords!
+  formattedAddress: String
+  hours: Hours
+  name: String
+  rating: Rating
+}
+
+type SearchLocation {
+  googlePlace: SearchGooglePlace
+  googlePlaceId: String!
+  id: ID!
+  timezone: String
+}
+
+type SearchStartEndLocation {
+  deleted: Boolean
+  displayOrder: Int
+  endLoc: SearchLocation!
+  id: ID!
+  startLoc: SearchLocation!
+}
+
+type SearchUser {
+  avatar: S3Object
+  bucketListsCollected: Int
+  createdAt: AWSDateTime!
+  email: String
+  id: ID!
+  name: String
+  phone: String
+  updatedAt: AWSDateTime!
+  username: String
+}
+
+type SearchableAggregateBucketResult @aws_cognito_user_pools @aws_iam {
+  buckets: [SearchableAggregateBucketResultItem]
+}
+
+type SearchableAggregateBucketResultItem @aws_cognito_user_pools @aws_iam {
+  doc_count: Int!
+  key: String!
+}
+
+type SearchableAggregateResult @aws_cognito_user_pools @aws_iam {
+  name: String!
+  result: SearchableAggregateGenericResult
+}
+
+type SearchableAggregateScalarResult @aws_cognito_user_pools @aws_iam {
+  value: Float!
+}
+
+type SearchableAttractionConnection @aws_cognito_user_pools @aws_iam {
+  aggregateItems: [SearchableAggregateResult]!
+  items: [Attraction]!
+  nextToken: String
+  total: Int
+}
+
+type SearchableDestinationConnection @aws_cognito_user_pools @aws_iam {
+  aggregateItems: [SearchableAggregateResult]!
+  items: [Destination]!
+  nextToken: String
+  total: Int
+}
+
+type SearchableUserConnection @aws_cognito_user_pools @aws_iam {
+  aggregateItems: [SearchableAggregateResult]!
+  items: [User]!
+  nextToken: String
+  total: Int
+}
+
+type SettingsSendReportResponse @aws_cognito_user_pools @aws_iam {
+  messageId: String!
+}
+
+type SharedPostError {
+  authorAvatar: S3Object
+  authorId: String
+  authorUsername: String
+  type: SHARED_POST_ERROR_TYPE!
+}
+
+type SignInErrorCheckIfUsernameExistsResponse @aws_iam {
+  provider: PROVIDER
+}
+
+type SignOutResponse @aws_cognito_user_pools {
+  id: String
+}
+
+type SignUpResponse @aws_iam {
+  destination: String
+  id: String
+}
+
+type StartEndLocation @aws_cognito_user_pools @aws_iam {
+  deleted: Boolean
+  displayOrder: Int!
+  endLoc: Location!
+  id: ID!
+  startLoc: Location!
+}
+
+type Story {
+  story: [PostWithinStory]!
+  storyId: String!
+}
+
+type StoryAccountTrips {
+  story: [PostWithinStoryAccountTrips]!
+  storyId: String!
+}
+
+type Subscription {
+  onCreateMessage(tripId: ID!): Message @aws_subscribe(mutations : ["createMessage"])
+  onCreateTripDestination(tripId: ID!): TripDestination @aws_subscribe(mutations : ["createTripDestination"])
+  onCreateUserTripByTripId(tripId: ID!): UserTrip @aws_subscribe(mutations : ["createUserTrip"])
+  onDeleteTripDestination(tripId: ID!): TripDestination @aws_subscribe(mutations : ["deleteTripDestination"])
+  onDeleteUserTrip(userId: ID!): UserTrip @aws_subscribe(mutations : ["deleteUserTrip"])
+  onDeleteUserTripByTripId(tripId: ID!): UserTrip @aws_subscribe(mutations : ["deleteUserTrip"])
+  onPutAttractionSwipeByTripIdByDestinationId(destinationId: ID!, tripId: ID!): AttractionSwipe @aws_subscribe(mutations : ["privateCreateAttractionSwipe", "privateUpdateAttractionSwipe"])
+  onUpdateAttraction(id: ID!): Attraction @aws_subscribe(mutations : ["privateUpdateAttraction"])
+  onUpdateFeatureFlag(id: FeatureFlagName!): FeatureFlag @aws_subscribe(mutations : ["privateUpdateFeatureFlag"])
+  onUpdateTripDestinationByTripId(tripId: ID!): TripDestination @aws_subscribe(mutations : ["updateTripDestination"])
+  onUpdateTripDestinationUserByTripId(tripId: ID!): TripDestinationUser @aws_subscribe(mutations : ["updateTripDestinationUser"])
+}
+
+type TableMigrationResponse {
+  imageResult: MigrationResult!
+  mainTableResult: MigrationResult!
+}
+
+type TeaRexEntity {
+  id: ID!
+  label: TeaRexLabel!
+}
+
+type TestQueryResponse @aws_iam {
+  id: String
+}
+
+type TimelineEntry @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  date: Int!
+  flightDetails: FlightStatsScheduleDetails
+  id: ID!
+  lodgingArrivalNameAndAddress: String
+  lodgingDepartureNameAndAddress: String
+  members(filter: ModelTimelineEntryMemberFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelTimelineEntryMemberConnection
+  notes: String
+  rentalDropoffLocation: String
+  rentalPickupLocation: String
+  time: Int!
+  timelineEntryType: TimelineEntryType!
+  tripId: ID!
+  updatedAt: AWSDateTime!
+}
+
+type TimelineEntryMember @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  timelineEntryId: ID!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type Trip @aws_cognito_user_pools @aws_iam {
+  attractionSwipes(destinationId: ModelIDKeyConditionInput, filter: ModelAttractionSwipeFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelAttractionSwipeConnection
+  attractionSwipesByUser(filter: ModelAttractionSwipeFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, userId: ModelIDKeyConditionInput): ModelAttractionSwipeConnection
+  completed: Boolean
+  createdAt: AWSDateTime!
+  id: ID!
+  link: String
+  members(filter: ModelUserTripFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, userId: ModelIDKeyConditionInput): ModelUserTripConnection
+  messages(createdAt: ModelStringKeyConditionInput, filter: ModelMessageFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelMessageConnection
+  name: String!
+  timelineEntries(date: ModelIntKeyConditionInput, filter: ModelTimelineEntryFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelTimelineEntryConnection
+  tripDestinations(destinationId: ModelIDKeyConditionInput, filter: ModelTripDestinationFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelTripDestinationConnection
+  updatedAt: AWSDateTime!
+}
+
+type TripDestination @aws_cognito_user_pools @aws_iam {
+  attractionSwipes(filter: ModelAttractionSwipeFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelAttractionSwipeConnection
+  createdAt: AWSDateTime!
+  destination: Destination
+  destinationId: ID!
+  endDate: Int
+  endTime: TripDestinationTime
+  startDate: Int
+  startTime: TripDestinationTime
+  tripDestinationUsers(filter: ModelTripDestinationUserFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelTripDestinationUserConnection
+  tripId: ID!
+  tripPlan: [TripPlanDay]
+  updatedAt: AWSDateTime!
+}
+
+type TripDestinationUser @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  destinationId: ID!
+  isReady: Boolean!
+  tripId: ID!
+  tripPlanViewedAt: AWSDateTime
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type TripPlanDay @aws_cognito_user_pools @aws_iam {
+  dayOfYear: Int!
+  tripPlanDayItems: [TripPlanDayItem]!
+}
+
+type TripPlanDayItem @aws_cognito_user_pools @aws_iam {
+  attraction: Attraction
+  attractionId: ID!
+  locId: ID!
+}
+
+type TripPlanItem @aws_cognito_user_pools @aws_iam {
+  attractionId: String!
+  day: Int!
+  locId: String!
+  order: Int!
+}
+
+type TripPlanLog @aws_iam {
+  createdAt: AWSDateTime!
+  id: ID!
+  tripPlan: [TripPlanLogDay!]!
+  updatedAt: AWSDateTime!
+}
+
+type TripPlanLogDay @aws_iam {
+  dayOfYear: Int!
+  tripPlanDayItems: [TripPlanLogItem]!
+}
+
+type TripPlanLogItem @aws_iam {
+  attractionId: ID!
+  locId: ID!
+}
+
+type TripPlanResponse @aws_cognito_user_pools @aws_iam {
+  plan: [[TripPlanItem]]!
+}
+
+type Update @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  id: ID!
+  parityLastProcessed: Parity!
+  type: UpdateType!
+  updatedAt: AWSDateTime!
+}
+
+type UpdateGoogleAPIKeyResponse {
+  envsFailed: [BACKEND_ENV_NAME!]!
+  envsUpdated: [BACKEND_ENV_NAME!]!
+}
+
+type UploadToCloudinaryResponse {
+  cloudinaryUrl: String!
+  format: String!
+  height: Int!
+  videoDuration: Float
+  width: Int!
+}
+
+type User @aws_cognito_user_pools @aws_iam {
+  appleId: String
+  avatar: S3Object
+  blockedBy(filter: ModelUserBlockFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, userId: ModelIDKeyConditionInput): ModelUserBlockConnection
+  blocks(blockedUserId: ModelIDKeyConditionInput, filter: ModelUserBlockFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserBlockConnection
+  bucketList(attractionId: ModelIDKeyConditionInput, filter: ModelUserAttractionFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserAttractionConnection
+  contactEmail: String
+  createdAt: AWSDateTime!
+  dateOfBirth: AWSDate
+  description: String
+  email: String
+  facebookId: String
+  fcmToken: String
+  followedBy(filter: ModelUserFollowFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, userId: ModelIDKeyConditionInput): ModelUserFollowConnection
+  follows(filter: ModelUserFollowFilterInput, followedUserId: ModelIDKeyConditionInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserFollowConnection
+  googleId: String
+  id: ID!
+  likedPosts(createdAt: ModelStringKeyConditionInput, filter: ModelUserPostLikeFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserPostLikeConnection
+  location: String
+  myCards(filter: ModelAttractionFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelAttractionConnection
+  name: String
+  phone: String
+  posts(createdAt: ModelStringKeyConditionInput, filter: ModelPostFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelPostConnection
+  privacy: PRIVACY
+  pushNotifications: Boolean
+  referralLink: String
+  referrals(filter: ModelUserReferralFilterInput, limit: Int, nextToken: String, referredUserId: ModelIDKeyConditionInput, sortDirection: ModelSortDirection): ModelUserReferralConnection
+  updatedAt: AWSDateTime!
+  userFollowByMe: UserFollow
+  userTrips(filter: ModelUserTripFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection, tripId: ModelIDKeyConditionInput): ModelUserTripConnection
+  username: String
+  viewedPosts(createdAt: ModelStringKeyConditionInput, filter: ModelUserPostFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserPostConnection
+}
+
+type UserAttraction @aws_cognito_user_pools @aws_iam {
+  attraction: Attraction
+  attractionId: ID!
+  authorId: ID
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime!
+  userId: ID!
+}
+
+type UserBlock @aws_cognito_user_pools @aws_iam {
+  blockedUser: User
+  blockedUserId: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type UserContact @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  email: [String]
+  name: String
+  phone: [String]
+  recordId: String!
+  travaUserIds: [String]
+  updatedAt: AWSDateTime!
+  userId: ID!
+}
+
+type UserFollow @aws_cognito_user_pools @aws_iam {
+  approved: Boolean!
+  createdAt: AWSDateTime!
+  followedUser: User
+  followedUserId: ID!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type UserPost @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  post: Post
+  postId: ID!
+  updatedAt: AWSDateTime!
+  userId: ID!
+}
+
+type UserPostLike @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  postId: ID!
+  updatedAt: AWSDateTime!
+  userId: ID!
+}
+
+type UserReferral @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  matchGuaranteed: Boolean
+  referralType: REFERRAL_TYPES!
+  referredUser: User
+  referredUserId: ID!
+  sourceOS: String
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type UserSession @aws_cognito_user_pools @aws_iam {
+  appVersion: String!
+  createdAt: AWSDateTime!
+  deviceType: PLATFORM!
+  id: ID!
+  label: UserSessionLabel!
+  updatedAt: AWSDateTime!
+  userId: ID!
+}
+
+type UserTrip @aws_cognito_user_pools @aws_iam {
+  createdAt: AWSDateTime!
+  inviteLink: String
+  invitedByUser: User
+  invitedByUserId: ID!
+  lastMessageReadDate: AWSDateTime
+  status: UserTripStatus!
+  trip: Trip
+  tripId: ID!
+  updatedAt: AWSDateTime!
+  user: User
+  userId: ID!
+}
+
+type YelpData @aws_cognito_user_pools @aws_iam {
+  amenities: [InfoItem]
+  categories: [String]
+  id: String
+  price: Int
+  reviews: [Review]
+  url: String
+}
+
+enum ATTRACTION_BEST_VISIT_TIME {
+  AFTERNOON
+  BREAKFAST
+  DINNER
+  EVENING
+  LUNCH
+  MORNING
+  NON_APPLICABLE
+  SNACK
+}
+
+enum ATTRACTION_CATEGORY_TYPE {
+  ACTION_AND_ADVENTURE
+  ARTS_AND_CULTURE
+  ENTERTAINMENT
+  LEISURE
+  NATURE
+  NIGHTLIFE_AND_DRINKING
+  NON_APPLICABLE
+  SHOPPING
+  SIGHTS_AND_LANDMARKS
+}
+
+enum ATTRACTION_COST {
+  FIFTY_TO_SEVENTY_FIVE
+  FREE
+  OVER_SEVENTY_FIVE
+  OVER_SIXTY
+  TEN_TO_THIRTY
+  THIRTY_TO_SIXTY
+  TWENTY_FIVE_TO_FIFTY
+  UNDER_TEN
+  UNDER_TWENTY_FIVE
+}
+
+enum ATTRACTION_COST_TYPE {
+  GROUP
+  PERSON
+}
+
+enum ATTRACTION_CUISINE_TYPE {
+  AFRICAN
+  AMERICAN_NEW
+  AMERICAN_TRADITIONAL
+  BAKERY
+  BARBEQUE
+  BREAKFAST
+  BRUNCH
+  BURGERS
+  CAJUN_CREOLE
+  CARIBBEAN
+  CHINESE
+  COFFEE_AND_TEA
+  CUBAN
+  EUROPEAN
+  FARMERS_MARKET
+  FAST_FOOD
+  FINE_DINING
+  FOOD_HALL
+  FRENCH
+  FUSION
+  GERMAN
+  GREEK
+  HAWAIIAN
+  ICE_CREAM_AND_DESSERTS
+  INDIAN
+  ITALIAN
+  JAPANESE
+  KOREAN
+  LATIN_AMERICAN
+  MEDITERRANEAN
+  MEXICAN
+  MIDDLE_EASTERN
+  MODERN
+  OTHER
+  PERUVIAN
+  PIZZA
+  PUB
+  SANDWICHES
+  SEAFOOD
+  SOUL
+  SOUTHERN
+  SOUTHWESTERN
+  SPANISH
+  STEAKHOUSE
+  SUSHI
+  TAPAS_AND_SMALL_PLATES
+  TEX
+  THAI
+  VEGAN
+  VEGETARIAN
+  VIETNAMESE
+}
+
+enum ATTRACTION_DURATION {
+  LESS_THAN_AN_HOUR
+  MORE_THAN_THREE_HOURS
+  ONE_TWO_HOURS
+  TWO_THREE_HOURS
+}
+
+enum ATTRACTION_PRIVACY {
+  PRIVATE
+  PUBLIC
+}
+
+enum ATTRACTION_RESERVATION {
+  NOT_TAKEN
+  OPTIONAL
+  RECOMMENDED
+  REQUIRED
+}
+
+enum ATTRACTION_TARGET_GROUP {
+  BACHELOR
+  COUPLE
+  KID
+  LARGE_GROUP
+  OUTDOOR
+  PET
+  RAINY
+  VEGETARIAN
+}
+
+enum ATTRACTION_TYPE {
+  DO
+  EAT
+}
+
+enum AUTHOR_TYPE {
+  ADMIN
+  USER
+}
+
+enum AttractionLabel {
+  ATTRACTION
+}
+
+enum AttractionSwipeLabel {
+  SWIPE
+}
+
+enum AttractionSwipeResult {
+  DISLIKE
+  LIKE
+}
+
+enum BACKEND_ENV_NAME {
+  ANAY
+  DEV
+  DIMA
+  NEAL
+  NICK
+  PROD
+  RN
+  STAGING
+}
+
+enum BADGES {
+  CONDE_NAST
+  EATER
+  INFATUATION
+  MICHELIN_BIB_GOURMAND
+  MICHELIN_ONE_STAR
+  MICHELIN_THREE_STAR
+  MICHELIN_TWO_STAR
+  THRILLIST
+  TIMEOUT
+  TRAVAS_CHOICE
+  TRIP_ADVISOR
+}
+
+enum BUCKET_LIST_ACTION_INPUT {
+  ADD
+  REMOVE
+}
+
+enum BusinessStatus {
+  CLOSED_PERMANENTLY
+  CLOSED_TEMPORARILY
+  OPERATIONAL
+}
+
+enum CURRENCY_TYPE {
+  USD
+}
+
+enum DistanceType {
+  FARTHER_AWAY
+  NEARBY
+}
+
+enum FeatureFlagName {
+  MAINTENANCE_MODE
+}
+
+enum GenerationStep {
+  GET_DETAILS
+  GET_PHOTOS
+}
+
+enum LIKE_DISLIKE_ACTION_INPUT {
+  ADD
+  REMOVE
+}
+
+enum MEDIA_TYPES {
+  IMAGE
+  VIDEO
+}
+
+enum MinimumVersionName {
+  MINIMUM_VERSION_REQUIRED
+}
+
+enum ModelAttributeTypes {
+  _null
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+enum NOTIFICATION_TYPE {
+  ADD_CAR_RENTAL
+  ADD_DESTINATION
+  ADD_FLIGHT
+  ADD_LODGING
+  BUCKET_LIST_ATTRACTION
+  COMMENT_POST
+  CREATE_CALENDAR
+  EDIT_CALENDAR
+  EDIT_DATES
+  FOLLOW_REQUEST_ACCEPTED
+  FOLLOW_REQUEST_SENT
+  INVITE_MEMBER
+  JOIN_TRIP
+  LEAVE_TRIP
+  LIKE_POST
+  NEW_FOLLOW
+  RECALCULATE_CALENDAR
+  REFERRAL_JOINED
+  REFERRAL_ONBOARDING
+  REMOVE_CAR_RENTAL
+  REMOVE_DESTINATION
+  REMOVE_FLIGHT
+  REMOVE_LODGING
+  REMOVE_MEMBER
+  RENAME_TRIP
+  TRIP_INVITATION_ACCEPTED
+  TRIP_INVITATION_SENT
+  USER_MESSAGE
+}
+
+enum OPERATION_TYPE {
+  INSERT
+  PUT
+}
+
+enum PLATFORM {
+  ANDROID
+  IOS
+}
+
+enum PRIVACY {
+  PRIVATE
+  PUBLIC
+}
+
+enum PROVIDER {
+  APPLE
+  FACEBOOK
+  GOOGLE
+  NONE
+}
+
+enum Parity {
+  ALL
+  EVEN
+  ODD
+}
+
+enum REFERRAL_TYPES {
+  ATTRACTION_SHARE
+  PLATFORM_INVITE
+  POST_SHARE
+  TRIP_INVITE
+}
+
+enum SHARED_POST_ERROR_TYPE {
+  BLOCKED_AUTHOR
+  BLOCKED_USER
+  POST_DELETED
+  POST_NOT_FOUND
+  PRIVATE_POST
+}
+
+enum SearchableAggregateType {
+  avg
+  max
+  min
+  sum
+  terms
+}
+
+enum SearchableAttractionAggregateField {
+  attractionCategories
+  attractionCuisine
+  attractionTargetGroups
+  authorId
+  authorType
+  bestVisited
+  bucketListCount
+  cost
+  costCurrency
+  costNote
+  costType
+  createdAt
+  deletedAt
+  descriptionLong
+  descriptionShort
+  destinationId
+  duration
+  id
+  isTravaCreated
+  label
+  name
+  pendingMigration
+  privacy
+  rank
+  recommendationBadges
+  reservation
+  reservationNote
+  type
+  updatedAt
+}
+
+enum SearchableAttractionSortableFields {
+  authorId
+  bucketListCount
+  costNote
+  createdAt
+  deletedAt
+  descriptionLong
+  descriptionShort
+  destinationId
+  id
+  isTravaCreated
+  name
+  pendingMigration
+  rank
+  reservationNote
+  updatedAt
+}
+
+enum SearchableDestinationAggregateField {
+  altName
+  authorId
+  continent
+  country
+  createdAt
+  deletedAt
+  featured
+  googlePlaceId
+  icon
+  id
+  isTravaCreated
+  label
+  name
+  nearbyPlacesToEatCount
+  nearbyThingsToDoCount
+  nearbyTravaPlacesToEatCount
+  nearbyTravaThingsToDoCount
+  pendingMigration
+  state
+  timezone
+  updatedAt
+}
+
+enum SearchableDestinationSortableFields {
+  altName
+  authorId
+  continent
+  country
+  createdAt
+  deletedAt
+  featured
+  googlePlaceId
+  icon
+  id
+  isTravaCreated
+  label
+  name
+  nearbyPlacesToEatCount
+  nearbyThingsToDoCount
+  nearbyTravaPlacesToEatCount
+  nearbyTravaThingsToDoCount
+  pendingMigration
+  state
+  timezone
+  updatedAt
+}
+
+enum SearchableSortDirection {
+  asc
+  desc
+}
+
+enum SearchableUserAggregateField {
+  appleId
+  contactEmail
+  createdAt
+  dateOfBirth
+  description
+  email
+  facebookId
+  fcmToken
+  googleId
+  id
+  location
+  name
+  phone
+  privacy
+  pushNotifications
+  referralLink
+  updatedAt
+  username
+}
+
+enum SearchableUserSortableFields {
+  appleId
+  contactEmail
+  createdAt
+  dateOfBirth
+  description
+  email
+  facebookId
+  fcmToken
+  googleId
+  id
+  location
+  name
+  phone
+  pushNotifications
+  referralLink
+  updatedAt
+  username
+}
+
+enum Status {
+  FAILED
+  IN_PROGRESS
+  PENDING
+  SUCCEEDED
+}
+
+enum TeaRexEventLabel {
+  SWIPE
+  WATCHED
+}
+
+enum TeaRexLabel {
+  Attraction
+  Post
+  User
+}
+
+enum TimelineEntryType {
+  FLIGHT
+  LODGING_ARRIVAL
+  LODGING_DEPARTURE
+  RENTAL_DROPOFF
+  RENTAL_PICKUP
+}
+
+enum TripDestinationTime {
+  AFTERNOON
+  EVENING
+  MORNING
+}
+
+enum UpdateType {
+  DESTINATION_NEARBY_ATTRACTION_COUNT
+}
+
+enum UserSessionLabel {
+  SESSION
+}
+
+enum UserTripStatus {
+  APPROVED
+  PENDING
+}
+
+enum VIDEO_FORMATS {
+  mov
+  mp4
+}
+
+input AboutBusinessInput {
+  accessibility: [InfoItemInput]
+  amenities: [InfoItemInput]
+  atmosphere: [InfoItemInput]
+  children: [InfoItemInput]
+  crowd: [InfoItemInput]
+  diningOptions: [InfoItemInput]
+  fromTheBusiness: [InfoItemInput]
+  highlights: [InfoItemInput]
+  offerings: [InfoItemInput]
+  payments: [InfoItemInput]
+  planning: [InfoItemInput]
+  popularFor: [InfoItemInput]
+  serviceOptions: [InfoItemInput]
+}
+
+input AddMigrationFlagInput {
+  sourceEnv: BACKEND_ENV_NAME!
+  tableName: String!
+}
+
+input AddToItineraryMapSearchInput {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionType: ATTRACTION_TYPE
+  attractionVotingResults: [AttractionVotingResultsInput!]
+  boundingBox: BoundingBoxInput!
+  centerCoords: CoordsInput!
+  destinationDates: [String!]!
+  destinationId: ID!
+  searchString: String
+  selectedAttractionId: ID
+  tripId: ID!
+}
+
+input AddToItinerarySearchInput {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionType: ATTRACTION_TYPE
+  attractionVotingResults: [AttractionVotingResultsInput!]
+  centerCoords: CoordsInput!
+  destinationDates: [String!]!
+  destinationId: ID!
+  excludeAttractionIds: [ID]
+  insideBoundingBox: BoundingBoxInput!
+  outsideBoundingBox: BoundingBoxInput
+  searchString: String
+  selectedAttractionId: ID
+  tripId: ID!
+}
+
+input AttractionSeasonInput {
+  endDay: Int
+  endMonth: Int
+  startDay: Int
+  startMonth: Int
+}
+
+input AttractionVotingResultsInput {
+  attractionId: ID!
+  votingResults: VotingResultsInput!
+}
+
+input BoundingBoxInput {
+  bottomRightCoords: CoordsInput!
+  topLeftCoords: CoordsInput!
+}
+
+input CheckForExistingCardsInput {
+  destinationDates: [String]
+  googlePlaceId: String!
+}
+
+input CloudinaryInput {
+  cloudinaryUrl: String!
+  format: String!
+  height: Int!
+  videoDuration: Float
+  width: Int!
+}
+
+input CoordsInput {
+  lat: Float!
+  long: Float!
+}
+
+input CreateAttractionFromPlaceIdInput {
+  authorType: AUTHOR_TYPE!
+  destinationDates: [String]
+  googlePlaceId: String!
+  recommendationBadges: [BADGES!]
+}
+
+input CreateAttractionInput {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  authorId: ID
+  authorType: AUTHOR_TYPE!
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  bucketListCount: Int!
+  cost: ATTRACTION_COST
+  costCurrency: CURRENCY_TYPE!
+  costNote: String
+  costType: ATTRACTION_COST_TYPE!
+  createdAt: AWSDateTime
+  deletedAt: AWSDateTime
+  descriptionLong: String!
+  descriptionShort: String!
+  destinationId: ID
+  duration: ATTRACTION_DURATION
+  generation: GenerationInput
+  id: ID
+  images: [S3ObjectInput]
+  isTravaCreated: Int!
+  label: AttractionLabel!
+  locations: [StartEndLocationInput]
+  name: String!
+  privacy: ATTRACTION_PRIVACY!
+  rank: Int
+  recommendationBadges: [BADGES]
+  reservation: ATTRACTION_RESERVATION
+  reservationNote: String
+  seasons: [AttractionSeasonInput]
+  type: ATTRACTION_TYPE!
+  updatedAt: AWSDateTime
+}
+
+input CreateAttractionSwipeInput {
+  attractionId: ID!
+  createdAt: AWSDateTime
+  destinationId: ID!
+  label: AttractionSwipeLabel!
+  swipe: AttractionSwipeResult!
+  tripId: ID!
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input CreateDestinationInput {
+  authorId: ID
+  continent: String
+  coords: CoordsInput!
+  country: String
+  coverImage: S3ObjectInput
+  featured: Boolean
+  googlePlaceId: String
+  icon: String
+  id: ID
+  isTravaCreated: Int!
+  label: String
+  name: String
+  state: String
+  timezone: String
+}
+
+input CreateDistanceInput {
+  key: String!
+  value: Float!
+}
+
+input CreateGooglePlaceInput {
+  consecutiveFailedRequests: Int
+  createdAt: AWSDateTime
+  data: PlaceDataInput!
+  dataLastCheckedAt: AWSDateTime
+  dataLastUpdatedAt: AWSDateTime
+  generatedSummary: String
+  id: ID
+  isValid: Int!
+  updatedAt: AWSDateTime
+  webData: PlaceWebDataInput
+  yelpData: YelpDataInput
+}
+
+input CreateMessageInput {
+  createdAt: AWSDateTime
+  id: ID
+  image: S3ObjectInput
+  sent: Boolean!
+  system: Boolean
+  text: String
+  tripId: ID!
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input CreateNotificationInput {
+  attractionId: ID
+  commentId: ID
+  id: ID
+  postId: ID
+  receiverUserId: ID!
+  senderUserId: ID!
+  showInApp: Int!
+  text: String
+  tripId: ID
+  type: NOTIFICATION_TYPE!
+}
+
+input CreatePhotographerInput {
+  id: ID
+  name: String!
+  pendingMigration: Boolean
+  url: String
+}
+
+input CreatePostInput {
+  attractionId: ID
+  cloudinaryUrl: String!
+  commentsCount: Int!
+  createdAt: AWSDateTime
+  deletedAt: AWSDateTime
+  description: String
+  destinationId: ID
+  format: String
+  height: Int!
+  id: ID
+  likesCount: Int!
+  mediaType: MEDIA_TYPES!
+  tripId: ID!
+  updatedAt: AWSDateTime
+  userId: ID!
+  videoDuration: Float
+  width: Int!
+}
+
+input CreateTimelineEntryFlightInput {
+  date: Int!
+  flightDetails: FlightStatsScheduleDetailsInput!
+  memberIds: [String!]!
+  notes: String
+  time: Int!
+  tripId: ID!
+}
+
+input CreateTimelineEntryInput {
+  date: Int!
+  flightDetails: FlightStatsScheduleDetailsInput
+  id: ID
+  lodgingArrivalNameAndAddress: String
+  lodgingDepartureNameAndAddress: String
+  notes: String
+  rentalDropoffLocation: String
+  rentalPickupLocation: String
+  time: Int!
+  timelineEntryType: TimelineEntryType!
+  tripId: ID!
+}
+
+input CreateTimelineEntryLodgingArrivalInput {
+  date: Int!
+  lodgingArrivalNameAndAddress: String!
+  memberIds: [String!]!
+  notes: String
+  time: Int!
+  tripId: ID!
+}
+
+input CreateTimelineEntryLodgingDepartureInput {
+  date: Int!
+  lodgingDepartureNameAndAddress: String!
+  memberIds: [String!]!
+  notes: String
+  time: Int!
+  tripId: ID!
+}
+
+input CreateTimelineEntryMemberInput {
+  timelineEntryId: ID!
+  userId: ID!
+}
+
+input CreateTimelineEntryRentalDropoffInput {
+  date: Int!
+  memberIds: [String!]!
+  notes: String
+  rentalDropoffLocation: String!
+  time: Int!
+  tripId: ID!
+}
+
+input CreateTimelineEntryRentalPickupInput {
+  date: Int!
+  memberIds: [String!]!
+  notes: String
+  rentalPickupLocation: String!
+  time: Int!
+  tripId: ID!
+}
+
+input CreateTripDestinationInput {
+  destinationId: ID!
+  endDate: Int
+  endTime: TripDestinationTime
+  startDate: Int
+  startTime: TripDestinationTime
+  tripId: ID!
+  tripPlan: [TripPlanDayInput]
+}
+
+input CreateTripDestinationUserInput {
+  destinationId: ID!
+  isReady: Boolean!
+  tripId: ID!
+  tripPlanViewedAt: AWSDateTime
+  userId: ID!
+}
+
+input CreateTripInput {
+  completed: Boolean
+  id: ID
+  link: String
+  name: String!
+}
+
+input CreateTripMessageNotificationsInput {
+  text: String
+  tripId: ID!
+  type: NOTIFICATION_TYPE!
+}
+
+input CreateTripPlanLogInput {
+  createdAt: AWSDateTime
+  id: ID
+  tripPlan: [TripPlanLogDayInput!]!
+}
+
+input CreateUpdateInput {
+  createdAt: AWSDateTime
+  id: ID
+  parityLastProcessed: Parity!
+  type: UpdateType!
+  updatedAt: AWSDateTime
+}
+
+input CreateUserBlockInput {
+  blockedUserId: ID!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input CreateUserContactInput {
+  createdAt: AWSDateTime
+  email: [String]
+  name: String
+  phone: [String]
+  recordId: String!
+  travaUserIds: [String]
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input CreateUserFollowInput {
+  approved: Boolean!
+  createdAt: AWSDateTime
+  followedUserId: ID!
+  updatedAt: AWSDateTime
+  userFollowUserId: ID
+  userId: ID!
+}
+
+input CreateUserInput {
+  appleId: String
+  avatar: S3ObjectInput
+  contactEmail: String
+  createdAt: AWSDateTime
+  dateOfBirth: AWSDate
+  description: String
+  email: String
+  facebookId: String
+  fcmToken: String
+  googleId: String
+  id: ID
+  location: String
+  name: String
+  phone: String
+  privacy: PRIVACY
+  pushNotifications: Boolean
+  referralLink: String
+  username: String
+}
+
+input CreateUserPostInput {
+  createdAt: AWSDateTime
+  postId: ID!
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input CreateUserReferralInput {
+  createdAt: AWSDateTime
+  matchGuaranteed: Boolean
+  referralType: REFERRAL_TYPES!
+  referredUserId: ID!
+  sourceOS: String
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input CreateUserSessionInput {
+  appVersion: String!
+  createdAt: AWSDateTime
+  deviceType: PLATFORM!
+  id: ID
+  label: UserSessionLabel!
+  userId: ID!
+}
+
+input CreateUserTripInput {
+  inviteLink: String
+  invitedByUserId: ID!
+  status: UserTripStatus!
+  tripId: ID!
+  userId: ID!
+}
+
+input CustomCreateComment {
+  postId: ID!
+  text: String!
+}
+
+input CustomCreatePostInput {
+  attractionId: ID
+  bufferItem: S3ObjectInput
+  cloudinaryInput: CloudinaryInput
+  description: String
+  destinationId: ID
+  format: String
+  height: Int
+  id: ID
+  mediaType: MEDIA_TYPES!
+  tripId: ID!
+  userId: ID!
+  width: Int
+}
+
+input CustomCreateTripInput {
+  completed: Boolean
+  destinationIdsWithDates: [destinationIdWithDates!]!
+  id: ID
+  link: String
+  name: String!
+  userIds: [String!]!
+}
+
+input CustomDeleteAttractionInput {
+  id: ID!
+}
+
+input CustomDeletePostInput {
+  id: ID!
+}
+
+input CustomDeleteUserInput {
+  id: ID!
+}
+
+input DayDataInput {
+  Friday: HourlyDataInput
+  Monday: HourlyDataInput
+  Saturday: HourlyDataInput
+  Sunday: HourlyDataInput
+  Thursday: HourlyDataInput
+  Tuesday: HourlyDataInput
+  Wednesday: HourlyDataInput
+}
+
+input DeleteAttractionSwipeInput {
+  attractionId: ID!
+  tripId: ID!
+  userId: ID!
+}
+
+input DeleteMessageInput {
+  id: ID!
+}
+
+input DeleteNotificationInput {
+  id: ID!
+}
+
+input DeletePhotographerInput {
+  id: ID!
+}
+
+input DeleteTimelineEntryInput {
+  id: ID!
+}
+
+input DeleteTimelineEntryMemberInput {
+  timelineEntryId: ID!
+  userId: ID!
+}
+
+input DeleteTripDestinationInput {
+  destinationId: ID!
+  tripId: ID!
+}
+
+input DeleteTripDestinationUserInput {
+  destinationId: ID!
+  tripId: ID!
+  userId: ID!
+}
+
+input DeleteUserBlockInput {
+  blockedUserId: ID!
+  userId: ID!
+}
+
+input DeleteUserContactInput {
+  recordId: String!
+  userId: ID!
+}
+
+input DeleteUserFollowInput {
+  followedUserId: ID!
+  userId: ID!
+}
+
+input DeleteUserInput {
+  id: ID!
+}
+
+input DeleteUserTripInput {
+  tripId: ID!
+  userId: ID!
+}
+
+input ExploreMapSearchAttractionsInput {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionType: ATTRACTION_TYPE
+  boundingBox: BoundingBoxInput!
+  centerCoords: CoordsInput!
+  searchString: String
+  selectedAttractionId: ID
+  sortByDistance: Boolean!
+}
+
+input ExploreSearchAttractionsInput {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionType: ATTRACTION_TYPE
+  centerCoords: CoordsInput
+  excludeAttractionIds: [ID]
+  insideBoundingBox: BoundingBoxInput
+  outsideBoundingBox: BoundingBoxInput
+  searchString: String
+  selectedAttractionId: ID
+  sortByDistance: Boolean!
+}
+
+input FederatedSignUpInput {
+  appleId: String
+  dateOfBirth: AWSDate!
+  email: String
+  facebookId: String
+  googleId: String
+  name: String!
+  phone: String
+  privacy: String!
+  sub: String!
+  username: String!
+}
+
+input FlightStatsAirlinesInput {
+  active: Boolean
+  fs: String
+  iata: String
+  icao: String
+  name: String
+}
+
+input FlightStatsAirportsInput {
+  active: Boolean
+  city: String
+  cityCode: String
+  classification: Int
+  countryCode: String
+  countryName: String
+  elevationFeet: Int
+  faa: String
+  fs: String
+  iata: String
+  icao: String
+  latitude: Float
+  localTime: String
+  longitude: Float
+  name: String
+  postalCode: String
+  regionName: String
+  stateCode: String
+  timeZoneRegionName: String
+  utcOffsetHours: Int
+  weatherZone: String
+}
+
+input FlightStatsAppendixInput {
+  airlines: [FlightStatsAirlinesInput]
+  airports: [FlightStatsAirportsInput]
+  equipments: [FlightStatsEquipmentsInput]
+}
+
+input FlightStatsCarrierInput {
+  fsCode: String
+  requestedCode: String
+}
+
+input FlightStatsCodeTypeInput {
+  interpreted: String
+  requested: String
+}
+
+input FlightStatsCodesharesInput {
+  carrierFsCode: String
+  flightNumber: String
+  referenceCode: Int
+  serviceClasses: [String]
+  serviceType: String
+  trafficRestrictions: [String]
+}
+
+input FlightStatsDateInput {
+  day: String
+  interpreted: String
+  month: String
+  year: String
+}
+
+input FlightStatsEquipmentsInput {
+  iata: String
+  jet: Boolean
+  name: String
+  regional: Boolean
+  turboProp: Boolean
+  widebody: Boolean
+}
+
+input FlightStatsFlightNumberInput {
+  interpreted: String
+  requested: String
+}
+
+input FlightStatsGetScheduleDetailsInput {
+  carrier: String!
+  codeType: String
+  day: Int!
+  flightNumber: Int!
+  month: Int!
+  year: Int!
+}
+
+input FlightStatsRequestInput {
+  carrier: FlightStatsCarrierInput
+  codeType: FlightStatsCodeTypeInput
+  date: FlightStatsDateInput
+  departing: Boolean
+  flightNumber: FlightStatsFlightNumberInput
+  url: String
+}
+
+input FlightStatsScheduleDetailsInput {
+  appendix: FlightStatsAppendixInput
+  request: FlightStatsRequestInput
+  scheduledFlights: [FlightStatsScheduledFlightsInput]
+}
+
+input FlightStatsScheduledFlightsInput {
+  arrivalAirportFsCode: String
+  arrivalTerminal: String
+  arrivalTime: String
+  carrierFsCode: String
+  codeshares: [FlightStatsCodesharesInput]
+  departureAirportFsCode: String
+  departureTerminal: String
+  departureTime: String
+  flightEquipmentIataCode: String
+  flightNumber: String
+  isCodeshare: Boolean
+  isWetlease: Boolean
+  referenceCode: String
+  serviceClasses: [String]
+  serviceType: String
+  stops: Int
+  trafficRestrictions: [String]
+}
+
+input GenerateTripPlanConfigInput {
+  breakfast: Boolean
+  busyness: Int
+  maxPreferredTimes: Int
+  thresholds: TripPlanThresholds
+  weights: TripPlanWeights
+}
+
+input GenerationInput {
+  failureCount: Int
+  lastFailureReason: String
+  lastUpdatedAt: AWSDateTime!
+  status: Status!
+  step: GenerationStep!
+}
+
+input GetAttractionPhotosInput {
+  attractionId: ID!
+  photos: [PlacePhotoInput]
+}
+
+input GetAttractionsForScheduler {
+  centerCoords: CoordsInput!
+  destinationId: ID!
+  radius: Int!
+  tripId: ID!
+}
+
+input GetAttractionsToTagToPostInput {
+  destinationCoords: CoordsInput
+  radius: Int
+  searchString: String
+}
+
+input GetExploreVotingListInput {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionType: ATTRACTION_TYPE
+  destinationCoords: CoordsInput!
+  destinationDates: [String!]
+  destinationId: ID!
+  distanceType: DistanceType!
+  excludeAttractionIds: [ID]
+  isViewingMyRecentVotes: Boolean!
+  pageSize: Int
+  searchString: String
+  selectedAttractionId: ID
+  tripId: ID!
+}
+
+input GetGoogleAPIKeyInput {
+  isDev: Boolean!
+  platform: PLATFORM!
+}
+
+input GoogleCoordinates {
+  latitude: Float!
+  longitude: Float!
+}
+
+input GoogleGetPlaceDetailsInput {
+  placeId: String!
+}
+
+input GoogleGetPlacesInput {
+  input: String!
+  language: String
+  location: GoogleCoordinates
+  radius: Float
+  strictbounds: Boolean
+  types: [String!]
+}
+
+input HomeTabsAccountTripsInput {
+  id: ID!
+}
+
+input HomeTabsFeedPeopleOnThisTripInput {
+  tripId: String!
+  userId: String!
+}
+
+input HomeTabsFeedPostCommentsInput {
+  postId: String!
+}
+
+input HomeTabsSuggestedFeedInput {
+  referringUserId: String
+  sharedPostId: String
+}
+
+input HourDataInput {
+  hour: Int!
+  value: Int!
+}
+
+input HourlyDataInput {
+  hours: [HourDataInput!]!
+}
+
+input HoursInput {
+  periods: [PeriodInput!]!
+  weekdayText: [String!]!
+}
+
+input InfoItemInput {
+  affirmative: Boolean
+  name: String!
+  negative: Boolean
+}
+
+input LocationInput {
+  googlePlaceId: String!
+  id: ID
+  timezone: String
+}
+
+input MapBoxAttractionLocationInput {
+  attractionId: String!
+  lat: Float!
+  long: Float!
+}
+
+input MapBoxAttractionLocationsInput {
+  locations: [[MapBoxAttractionLocationInput!]!]!
+}
+
+input MapboxGetPlacesInput {
+  bounds: [Float]
+  language: String
+  limit: Int
+  location: String!
+  types: [String!]!
+}
+
+input MealServicesInput {
+  delivery: Boolean
+  dineIn: Boolean
+  servesBeer: Boolean
+  servesBreakfast: Boolean
+  servesBrunch: Boolean
+  servesDinner: Boolean
+  servesLunch: Boolean
+  servesVegetarianFood: Boolean
+  servesWine: Boolean
+  takeout: Boolean
+}
+
+input MigrateSingleAttractionInput {
+  attractionId: ID!
+  sourceEnv: BACKEND_ENV_NAME!
+  targetEnv: BACKEND_ENV_NAME!
+}
+
+input ModelATTRACTION_BEST_VISIT_TIMEListInput {
+  contains: ATTRACTION_BEST_VISIT_TIME
+  eq: [ATTRACTION_BEST_VISIT_TIME]
+  ne: [ATTRACTION_BEST_VISIT_TIME]
+  notContains: ATTRACTION_BEST_VISIT_TIME
+}
+
+input ModelATTRACTION_CATEGORY_TYPEListInput {
+  contains: ATTRACTION_CATEGORY_TYPE
+  eq: [ATTRACTION_CATEGORY_TYPE]
+  ne: [ATTRACTION_CATEGORY_TYPE]
+  notContains: ATTRACTION_CATEGORY_TYPE
+}
+
+input ModelATTRACTION_COSTInput {
+  eq: ATTRACTION_COST
+  ne: ATTRACTION_COST
+}
+
+input ModelATTRACTION_COST_TYPEInput {
+  eq: ATTRACTION_COST_TYPE
+  ne: ATTRACTION_COST_TYPE
+}
+
+input ModelATTRACTION_CUISINE_TYPEListInput {
+  contains: ATTRACTION_CUISINE_TYPE
+  eq: [ATTRACTION_CUISINE_TYPE]
+  ne: [ATTRACTION_CUISINE_TYPE]
+  notContains: ATTRACTION_CUISINE_TYPE
+}
+
+input ModelATTRACTION_DURATIONInput {
+  eq: ATTRACTION_DURATION
+  ne: ATTRACTION_DURATION
+}
+
+input ModelATTRACTION_PRIVACYInput {
+  eq: ATTRACTION_PRIVACY
+  ne: ATTRACTION_PRIVACY
+}
+
+input ModelATTRACTION_RESERVATIONInput {
+  eq: ATTRACTION_RESERVATION
+  ne: ATTRACTION_RESERVATION
+}
+
+input ModelATTRACTION_TARGET_GROUPListInput {
+  contains: ATTRACTION_TARGET_GROUP
+  eq: [ATTRACTION_TARGET_GROUP]
+  ne: [ATTRACTION_TARGET_GROUP]
+  notContains: ATTRACTION_TARGET_GROUP
+}
+
+input ModelATTRACTION_TYPEInput {
+  eq: ATTRACTION_TYPE
+  ne: ATTRACTION_TYPE
+}
+
+input ModelAUTHOR_TYPEInput {
+  eq: AUTHOR_TYPE
+  ne: AUTHOR_TYPE
+}
+
+input ModelAttractionConditionInput {
+  and: [ModelAttractionConditionInput]
+  attractionCategories: ModelATTRACTION_CATEGORY_TYPEListInput
+  attractionCuisine: ModelATTRACTION_CUISINE_TYPEListInput
+  attractionTargetGroups: ModelATTRACTION_TARGET_GROUPListInput
+  authorId: ModelIDInput
+  authorType: ModelAUTHOR_TYPEInput
+  bestVisited: ModelATTRACTION_BEST_VISIT_TIMEListInput
+  bucketListCount: ModelIntInput
+  cost: ModelATTRACTION_COSTInput
+  costCurrency: ModelCURRENCY_TYPEInput
+  costNote: ModelStringInput
+  costType: ModelATTRACTION_COST_TYPEInput
+  createdAt: ModelStringInput
+  deletedAt: ModelStringInput
+  descriptionLong: ModelStringInput
+  descriptionShort: ModelStringInput
+  destinationId: ModelIDInput
+  duration: ModelATTRACTION_DURATIONInput
+  isTravaCreated: ModelIntInput
+  label: ModelAttractionLabelInput
+  name: ModelStringInput
+  not: ModelAttractionConditionInput
+  or: [ModelAttractionConditionInput]
+  pendingMigration: ModelBooleanInput
+  privacy: ModelATTRACTION_PRIVACYInput
+  rank: ModelIntInput
+  recommendationBadges: ModelBADGESListInput
+  reservation: ModelATTRACTION_RESERVATIONInput
+  reservationNote: ModelStringInput
+  type: ModelATTRACTION_TYPEInput
+  updatedAt: ModelStringInput
+}
+
+input ModelAttractionFilterInput {
+  and: [ModelAttractionFilterInput]
+  attractionCategories: ModelATTRACTION_CATEGORY_TYPEListInput
+  attractionCuisine: ModelATTRACTION_CUISINE_TYPEListInput
+  attractionTargetGroups: ModelATTRACTION_TARGET_GROUPListInput
+  authorId: ModelIDInput
+  authorType: ModelAUTHOR_TYPEInput
+  bestVisited: ModelATTRACTION_BEST_VISIT_TIMEListInput
+  bucketListCount: ModelIntInput
+  cost: ModelATTRACTION_COSTInput
+  costCurrency: ModelCURRENCY_TYPEInput
+  costNote: ModelStringInput
+  costType: ModelATTRACTION_COST_TYPEInput
+  createdAt: ModelStringInput
+  deletedAt: ModelStringInput
+  descriptionLong: ModelStringInput
+  descriptionShort: ModelStringInput
+  destinationId: ModelIDInput
+  duration: ModelATTRACTION_DURATIONInput
+  id: ModelIDInput
+  isTravaCreated: ModelIntInput
+  label: ModelAttractionLabelInput
+  name: ModelStringInput
+  not: ModelAttractionFilterInput
+  or: [ModelAttractionFilterInput]
+  pendingMigration: ModelBooleanInput
+  privacy: ModelATTRACTION_PRIVACYInput
+  rank: ModelIntInput
+  recommendationBadges: ModelBADGESListInput
+  reservation: ModelATTRACTION_RESERVATIONInput
+  reservationNote: ModelStringInput
+  type: ModelATTRACTION_TYPEInput
+  updatedAt: ModelStringInput
+}
+
+input ModelAttractionLabelInput {
+  eq: AttractionLabel
+  ne: AttractionLabel
+}
+
+input ModelAttractionSwipeConditionInput {
+  and: [ModelAttractionSwipeConditionInput]
+  createdAt: ModelStringInput
+  destinationId: ModelIDInput
+  label: ModelAttractionSwipeLabelInput
+  not: ModelAttractionSwipeConditionInput
+  or: [ModelAttractionSwipeConditionInput]
+  swipe: ModelAttractionSwipeResultInput
+  updatedAt: ModelStringInput
+}
+
+input ModelAttractionSwipeFilterInput {
+  and: [ModelAttractionSwipeFilterInput]
+  attractionId: ModelIDInput
+  createdAt: ModelStringInput
+  destinationId: ModelIDInput
+  label: ModelAttractionSwipeLabelInput
+  not: ModelAttractionSwipeFilterInput
+  or: [ModelAttractionSwipeFilterInput]
+  swipe: ModelAttractionSwipeResultInput
+  tripId: ModelIDInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelAttractionSwipeLabelInput {
+  eq: AttractionSwipeLabel
+  ne: AttractionSwipeLabel
+}
+
+input ModelAttractionSwipePrimaryCompositeKeyConditionInput {
+  beginsWith: ModelAttractionSwipePrimaryCompositeKeyInput
+  between: [ModelAttractionSwipePrimaryCompositeKeyInput]
+  eq: ModelAttractionSwipePrimaryCompositeKeyInput
+  ge: ModelAttractionSwipePrimaryCompositeKeyInput
+  gt: ModelAttractionSwipePrimaryCompositeKeyInput
+  le: ModelAttractionSwipePrimaryCompositeKeyInput
+  lt: ModelAttractionSwipePrimaryCompositeKeyInput
+}
+
+input ModelAttractionSwipePrimaryCompositeKeyInput {
+  attractionId: ID
+  tripId: ID
+}
+
+input ModelAttractionSwipeResultInput {
+  eq: AttractionSwipeResult
+  ne: AttractionSwipeResult
+}
+
+input ModelBADGESListInput {
+  contains: BADGES
+  eq: [BADGES]
+  ne: [BADGES]
+  notContains: BADGES
+}
+
+input ModelBooleanInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  eq: Boolean
+  ne: Boolean
+}
+
+input ModelCURRENCY_TYPEInput {
+  eq: CURRENCY_TYPE
+  ne: CURRENCY_TYPE
+}
+
+input ModelCommentFilterInput {
+  and: [ModelCommentFilterInput]
+  createdAt: ModelStringInput
+  id: ModelIDInput
+  not: ModelCommentFilterInput
+  or: [ModelCommentFilterInput]
+  postId: ModelIDInput
+  text: ModelStringInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelDestinationConditionInput {
+  altName: ModelStringInput
+  and: [ModelDestinationConditionInput]
+  authorId: ModelIDInput
+  continent: ModelStringInput
+  country: ModelStringInput
+  deletedAt: ModelStringInput
+  featured: ModelBooleanInput
+  googlePlaceId: ModelStringInput
+  icon: ModelStringInput
+  isTravaCreated: ModelIntInput
+  label: ModelStringInput
+  name: ModelStringInput
+  nearbyPlacesToEatCount: ModelIntInput
+  nearbyThingsToDoCount: ModelIntInput
+  nearbyTravaPlacesToEatCount: ModelIntInput
+  nearbyTravaThingsToDoCount: ModelIntInput
+  not: ModelDestinationConditionInput
+  or: [ModelDestinationConditionInput]
+  pendingMigration: ModelBooleanInput
+  state: ModelStringInput
+  timezone: ModelStringInput
+}
+
+input ModelDestinationFilterInput {
+  altName: ModelStringInput
+  and: [ModelDestinationFilterInput]
+  authorId: ModelIDInput
+  continent: ModelStringInput
+  country: ModelStringInput
+  deletedAt: ModelStringInput
+  featured: ModelBooleanInput
+  googlePlaceId: ModelStringInput
+  icon: ModelStringInput
+  id: ModelIDInput
+  isTravaCreated: ModelIntInput
+  label: ModelStringInput
+  name: ModelStringInput
+  nearbyPlacesToEatCount: ModelIntInput
+  nearbyThingsToDoCount: ModelIntInput
+  nearbyTravaPlacesToEatCount: ModelIntInput
+  nearbyTravaThingsToDoCount: ModelIntInput
+  not: ModelDestinationFilterInput
+  or: [ModelDestinationFilterInput]
+  pendingMigration: ModelBooleanInput
+  state: ModelStringInput
+  timezone: ModelStringInput
+}
+
+input ModelDistanceConditionInput {
+  and: [ModelDistanceConditionInput]
+  not: ModelDistanceConditionInput
+  or: [ModelDistanceConditionInput]
+  value: ModelFloatInput
+}
+
+input ModelFeatureFlagConditionInput {
+  and: [ModelFeatureFlagConditionInput]
+  id: ModelFeatureFlagNameInput
+  isEnabled: ModelBooleanInput
+  not: ModelFeatureFlagConditionInput
+  or: [ModelFeatureFlagConditionInput]
+}
+
+input ModelFeatureFlagFilterInput {
+  and: [ModelFeatureFlagFilterInput]
+  id: ModelFeatureFlagNameInput
+  isEnabled: ModelBooleanInput
+  not: ModelFeatureFlagFilterInput
+  or: [ModelFeatureFlagFilterInput]
+}
+
+input ModelFeatureFlagNameInput {
+  eq: FeatureFlagName
+  ne: FeatureFlagName
+}
+
+input ModelFloatInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  between: [Float]
+  eq: Float
+  ge: Float
+  gt: Float
+  le: Float
+  lt: Float
+  ne: Float
+}
+
+input ModelGooglePlaceConditionInput {
+  and: [ModelGooglePlaceConditionInput]
+  consecutiveFailedRequests: ModelIntInput
+  createdAt: ModelStringInput
+  dataLastCheckedAt: ModelStringInput
+  dataLastUpdatedAt: ModelStringInput
+  generatedSummary: ModelStringInput
+  isValid: ModelIntInput
+  not: ModelGooglePlaceConditionInput
+  or: [ModelGooglePlaceConditionInput]
+  updatedAt: ModelStringInput
+}
+
+input ModelGooglePlaceFilterInput {
+  and: [ModelGooglePlaceFilterInput]
+  consecutiveFailedRequests: ModelIntInput
+  createdAt: ModelStringInput
+  dataLastCheckedAt: ModelStringInput
+  dataLastUpdatedAt: ModelStringInput
+  generatedSummary: ModelStringInput
+  id: ModelIDInput
+  isValid: ModelIntInput
+  not: ModelGooglePlaceFilterInput
+  or: [ModelGooglePlaceFilterInput]
+  updatedAt: ModelStringInput
+}
+
+input ModelIDInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  beginsWith: ID
+  between: [ID]
+  contains: ID
+  eq: ID
+  ge: ID
+  gt: ID
+  le: ID
+  lt: ID
+  ne: ID
+  notContains: ID
+  size: ModelSizeInput
+}
+
+input ModelIDKeyConditionInput {
+  beginsWith: ID
+  between: [ID]
+  eq: ID
+  ge: ID
+  gt: ID
+  le: ID
+  lt: ID
+}
+
+input ModelIntInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  between: [Int]
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+}
+
+input ModelIntKeyConditionInput {
+  between: [Int]
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+}
+
+input ModelMEDIA_TYPESInput {
+  eq: MEDIA_TYPES
+  ne: MEDIA_TYPES
+}
+
+input ModelMessageConditionInput {
+  and: [ModelMessageConditionInput]
+  createdAt: ModelStringInput
+  not: ModelMessageConditionInput
+  or: [ModelMessageConditionInput]
+  sent: ModelBooleanInput
+  system: ModelBooleanInput
+  text: ModelStringInput
+  tripId: ModelIDInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelMessageFilterInput {
+  and: [ModelMessageFilterInput]
+  createdAt: ModelStringInput
+  id: ModelIDInput
+  not: ModelMessageFilterInput
+  or: [ModelMessageFilterInput]
+  sent: ModelBooleanInput
+  system: ModelBooleanInput
+  text: ModelStringInput
+  tripId: ModelIDInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelMinimumVersionConditionInput {
+  and: [ModelMinimumVersionConditionInput]
+  id: ModelMinimumVersionNameInput
+  minimumVersion: ModelStringInput
+  not: ModelMinimumVersionConditionInput
+  or: [ModelMinimumVersionConditionInput]
+}
+
+input ModelMinimumVersionNameInput {
+  eq: MinimumVersionName
+  ne: MinimumVersionName
+}
+
+input ModelNOTIFICATION_TYPEInput {
+  eq: NOTIFICATION_TYPE
+  ne: NOTIFICATION_TYPE
+}
+
+input ModelNotificationConditionInput {
+  and: [ModelNotificationConditionInput]
+  attractionId: ModelIDInput
+  commentId: ModelIDInput
+  not: ModelNotificationConditionInput
+  or: [ModelNotificationConditionInput]
+  postId: ModelIDInput
+  receiverUserId: ModelIDInput
+  senderUserId: ModelIDInput
+  showInApp: ModelIntInput
+  text: ModelStringInput
+  tripId: ModelIDInput
+  type: ModelNOTIFICATION_TYPEInput
+}
+
+input ModelNotificationFilterInput {
+  and: [ModelNotificationFilterInput]
+  attractionId: ModelIDInput
+  commentId: ModelIDInput
+  id: ModelIDInput
+  not: ModelNotificationFilterInput
+  or: [ModelNotificationFilterInput]
+  postId: ModelIDInput
+  receiverUserId: ModelIDInput
+  senderUserId: ModelIDInput
+  showInApp: ModelIntInput
+  text: ModelStringInput
+  tripId: ModelIDInput
+  type: ModelNOTIFICATION_TYPEInput
+}
+
+input ModelPLATFORMInput {
+  eq: PLATFORM
+  ne: PLATFORM
+}
+
+input ModelPRIVACYInput {
+  eq: PRIVACY
+  ne: PRIVACY
+}
+
+input ModelParityInput {
+  eq: Parity
+  ne: Parity
+}
+
+input ModelPhotographerConditionInput {
+  and: [ModelPhotographerConditionInput]
+  name: ModelStringInput
+  not: ModelPhotographerConditionInput
+  or: [ModelPhotographerConditionInput]
+  pendingMigration: ModelBooleanInput
+  url: ModelStringInput
+}
+
+input ModelPhotographerFilterInput {
+  and: [ModelPhotographerFilterInput]
+  id: ModelIDInput
+  name: ModelStringInput
+  not: ModelPhotographerFilterInput
+  or: [ModelPhotographerFilterInput]
+  pendingMigration: ModelBooleanInput
+  url: ModelStringInput
+}
+
+input ModelPostConditionInput {
+  and: [ModelPostConditionInput]
+  attractionId: ModelIDInput
+  cloudinaryUrl: ModelStringInput
+  commentsCount: ModelIntInput
+  createdAt: ModelStringInput
+  deletedAt: ModelStringInput
+  description: ModelStringInput
+  destinationId: ModelIDInput
+  format: ModelStringInput
+  height: ModelIntInput
+  likesCount: ModelIntInput
+  mediaType: ModelMEDIA_TYPESInput
+  not: ModelPostConditionInput
+  or: [ModelPostConditionInput]
+  tripId: ModelIDInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+  videoDuration: ModelFloatInput
+  width: ModelIntInput
+}
+
+input ModelPostFilterInput {
+  and: [ModelPostFilterInput]
+  attractionId: ModelIDInput
+  cloudinaryUrl: ModelStringInput
+  commentsCount: ModelIntInput
+  createdAt: ModelStringInput
+  deletedAt: ModelStringInput
+  description: ModelStringInput
+  destinationId: ModelIDInput
+  format: ModelStringInput
+  height: ModelIntInput
+  id: ModelIDInput
+  likesCount: ModelIntInput
+  mediaType: ModelMEDIA_TYPESInput
+  not: ModelPostFilterInput
+  or: [ModelPostFilterInput]
+  tripId: ModelIDInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+  videoDuration: ModelFloatInput
+  width: ModelIntInput
+}
+
+input ModelREFERRAL_TYPESInput {
+  eq: REFERRAL_TYPES
+  ne: REFERRAL_TYPES
+}
+
+input ModelSizeInput {
+  between: [Int]
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+}
+
+input ModelStringInput {
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  beginsWith: String
+  between: [String]
+  contains: String
+  eq: String
+  ge: String
+  gt: String
+  le: String
+  lt: String
+  ne: String
+  notContains: String
+  size: ModelSizeInput
+}
+
+input ModelStringKeyConditionInput {
+  beginsWith: String
+  between: [String]
+  eq: String
+  ge: String
+  gt: String
+  le: String
+  lt: String
+}
+
+input ModelTimelineEntryConditionInput {
+  and: [ModelTimelineEntryConditionInput]
+  date: ModelIntInput
+  lodgingArrivalNameAndAddress: ModelStringInput
+  lodgingDepartureNameAndAddress: ModelStringInput
+  not: ModelTimelineEntryConditionInput
+  notes: ModelStringInput
+  or: [ModelTimelineEntryConditionInput]
+  rentalDropoffLocation: ModelStringInput
+  rentalPickupLocation: ModelStringInput
+  time: ModelIntInput
+  timelineEntryType: ModelTimelineEntryTypeInput
+  tripId: ModelIDInput
+}
+
+input ModelTimelineEntryFilterInput {
+  and: [ModelTimelineEntryFilterInput]
+  date: ModelIntInput
+  id: ModelIDInput
+  lodgingArrivalNameAndAddress: ModelStringInput
+  lodgingDepartureNameAndAddress: ModelStringInput
+  not: ModelTimelineEntryFilterInput
+  notes: ModelStringInput
+  or: [ModelTimelineEntryFilterInput]
+  rentalDropoffLocation: ModelStringInput
+  rentalPickupLocation: ModelStringInput
+  time: ModelIntInput
+  timelineEntryType: ModelTimelineEntryTypeInput
+  tripId: ModelIDInput
+}
+
+input ModelTimelineEntryMemberConditionInput {
+  and: [ModelTimelineEntryMemberConditionInput]
+  not: ModelTimelineEntryMemberConditionInput
+  or: [ModelTimelineEntryMemberConditionInput]
+}
+
+input ModelTimelineEntryMemberFilterInput {
+  and: [ModelTimelineEntryMemberFilterInput]
+  not: ModelTimelineEntryMemberFilterInput
+  or: [ModelTimelineEntryMemberFilterInput]
+  timelineEntryId: ModelIDInput
+  userId: ModelIDInput
+}
+
+input ModelTimelineEntryTypeInput {
+  eq: TimelineEntryType
+  ne: TimelineEntryType
+}
+
+input ModelTripConditionInput {
+  and: [ModelTripConditionInput]
+  completed: ModelBooleanInput
+  link: ModelStringInput
+  name: ModelStringInput
+  not: ModelTripConditionInput
+  or: [ModelTripConditionInput]
+}
+
+input ModelTripDestinationConditionInput {
+  and: [ModelTripDestinationConditionInput]
+  endDate: ModelIntInput
+  endTime: ModelTripDestinationTimeInput
+  not: ModelTripDestinationConditionInput
+  or: [ModelTripDestinationConditionInput]
+  startDate: ModelIntInput
+  startTime: ModelTripDestinationTimeInput
+}
+
+input ModelTripDestinationFilterInput {
+  and: [ModelTripDestinationFilterInput]
+  destinationId: ModelIDInput
+  endDate: ModelIntInput
+  endTime: ModelTripDestinationTimeInput
+  not: ModelTripDestinationFilterInput
+  or: [ModelTripDestinationFilterInput]
+  startDate: ModelIntInput
+  startTime: ModelTripDestinationTimeInput
+  tripId: ModelIDInput
+}
+
+input ModelTripDestinationTimeInput {
+  eq: TripDestinationTime
+  ne: TripDestinationTime
+}
+
+input ModelTripDestinationUserConditionInput {
+  and: [ModelTripDestinationUserConditionInput]
+  isReady: ModelBooleanInput
+  not: ModelTripDestinationUserConditionInput
+  or: [ModelTripDestinationUserConditionInput]
+  tripPlanViewedAt: ModelStringInput
+}
+
+input ModelTripDestinationUserFilterInput {
+  and: [ModelTripDestinationUserFilterInput]
+  destinationId: ModelIDInput
+  isReady: ModelBooleanInput
+  not: ModelTripDestinationUserFilterInput
+  or: [ModelTripDestinationUserFilterInput]
+  tripId: ModelIDInput
+  tripPlanViewedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelTripDestinationUserPrimaryCompositeKeyConditionInput {
+  beginsWith: ModelTripDestinationUserPrimaryCompositeKeyInput
+  between: [ModelTripDestinationUserPrimaryCompositeKeyInput]
+  eq: ModelTripDestinationUserPrimaryCompositeKeyInput
+  ge: ModelTripDestinationUserPrimaryCompositeKeyInput
+  gt: ModelTripDestinationUserPrimaryCompositeKeyInput
+  le: ModelTripDestinationUserPrimaryCompositeKeyInput
+  lt: ModelTripDestinationUserPrimaryCompositeKeyInput
+}
+
+input ModelTripDestinationUserPrimaryCompositeKeyInput {
+  destinationId: ID
+  userId: ID
+}
+
+input ModelTripPlanLogConditionInput {
+  and: [ModelTripPlanLogConditionInput]
+  createdAt: ModelStringInput
+  not: ModelTripPlanLogConditionInput
+  or: [ModelTripPlanLogConditionInput]
+}
+
+input ModelUpdateConditionInput {
+  and: [ModelUpdateConditionInput]
+  createdAt: ModelStringInput
+  not: ModelUpdateConditionInput
+  or: [ModelUpdateConditionInput]
+  parityLastProcessed: ModelParityInput
+  type: ModelUpdateTypeInput
+  updatedAt: ModelStringInput
+}
+
+input ModelUpdateFilterInput {
+  and: [ModelUpdateFilterInput]
+  createdAt: ModelStringInput
+  not: ModelUpdateFilterInput
+  or: [ModelUpdateFilterInput]
+  parityLastProcessed: ModelParityInput
+  type: ModelUpdateTypeInput
+  updatedAt: ModelStringInput
+}
+
+input ModelUpdateTypeInput {
+  eq: UpdateType
+  ne: UpdateType
+}
+
+input ModelUserAttractionFilterInput {
+  and: [ModelUserAttractionFilterInput]
+  attractionId: ModelIDInput
+  authorId: ModelIDInput
+  createdAt: ModelStringInput
+  not: ModelUserAttractionFilterInput
+  or: [ModelUserAttractionFilterInput]
+  userId: ModelIDInput
+}
+
+input ModelUserBlockConditionInput {
+  and: [ModelUserBlockConditionInput]
+  createdAt: ModelStringInput
+  not: ModelUserBlockConditionInput
+  or: [ModelUserBlockConditionInput]
+  updatedAt: ModelStringInput
+}
+
+input ModelUserBlockFilterInput {
+  and: [ModelUserBlockFilterInput]
+  blockedUserId: ModelIDInput
+  createdAt: ModelStringInput
+  not: ModelUserBlockFilterInput
+  or: [ModelUserBlockFilterInput]
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelUserConditionInput {
+  and: [ModelUserConditionInput]
+  appleId: ModelStringInput
+  contactEmail: ModelStringInput
+  createdAt: ModelStringInput
+  dateOfBirth: ModelStringInput
+  description: ModelStringInput
+  email: ModelStringInput
+  facebookId: ModelStringInput
+  fcmToken: ModelStringInput
+  googleId: ModelStringInput
+  location: ModelStringInput
+  name: ModelStringInput
+  not: ModelUserConditionInput
+  or: [ModelUserConditionInput]
+  phone: ModelStringInput
+  privacy: ModelPRIVACYInput
+  pushNotifications: ModelBooleanInput
+  referralLink: ModelStringInput
+  username: ModelStringInput
+}
+
+input ModelUserContactConditionInput {
+  and: [ModelUserContactConditionInput]
+  createdAt: ModelStringInput
+  email: ModelStringInput
+  name: ModelStringInput
+  not: ModelUserContactConditionInput
+  or: [ModelUserContactConditionInput]
+  phone: ModelStringInput
+  travaUserIds: ModelStringInput
+  updatedAt: ModelStringInput
+}
+
+input ModelUserContactFilterInput {
+  and: [ModelUserContactFilterInput]
+  createdAt: ModelStringInput
+  email: ModelStringInput
+  name: ModelStringInput
+  not: ModelUserContactFilterInput
+  or: [ModelUserContactFilterInput]
+  phone: ModelStringInput
+  recordId: ModelStringInput
+  travaUserIds: ModelStringInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelUserFilterInput {
+  and: [ModelUserFilterInput]
+  appleId: ModelStringInput
+  contactEmail: ModelStringInput
+  createdAt: ModelStringInput
+  dateOfBirth: ModelStringInput
+  description: ModelStringInput
+  email: ModelStringInput
+  facebookId: ModelStringInput
+  fcmToken: ModelStringInput
+  googleId: ModelStringInput
+  id: ModelIDInput
+  location: ModelStringInput
+  name: ModelStringInput
+  not: ModelUserFilterInput
+  or: [ModelUserFilterInput]
+  phone: ModelStringInput
+  privacy: ModelPRIVACYInput
+  pushNotifications: ModelBooleanInput
+  referralLink: ModelStringInput
+  username: ModelStringInput
+}
+
+input ModelUserFollowConditionInput {
+  and: [ModelUserFollowConditionInput]
+  approved: ModelBooleanInput
+  createdAt: ModelStringInput
+  not: ModelUserFollowConditionInput
+  or: [ModelUserFollowConditionInput]
+  updatedAt: ModelStringInput
+}
+
+input ModelUserFollowFilterInput {
+  and: [ModelUserFollowFilterInput]
+  approved: ModelBooleanInput
+  createdAt: ModelStringInput
+  followedUserId: ModelIDInput
+  not: ModelUserFollowFilterInput
+  or: [ModelUserFollowFilterInput]
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelUserPostConditionInput {
+  and: [ModelUserPostConditionInput]
+  createdAt: ModelStringInput
+  not: ModelUserPostConditionInput
+  or: [ModelUserPostConditionInput]
+  updatedAt: ModelStringInput
+}
+
+input ModelUserPostFilterInput {
+  and: [ModelUserPostFilterInput]
+  createdAt: ModelStringInput
+  not: ModelUserPostFilterInput
+  or: [ModelUserPostFilterInput]
+  postId: ModelIDInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelUserPostLikeFilterInput {
+  and: [ModelUserPostLikeFilterInput]
+  createdAt: ModelStringInput
+  not: ModelUserPostLikeFilterInput
+  or: [ModelUserPostLikeFilterInput]
+  postId: ModelIDInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelUserReferralConditionInput {
+  and: [ModelUserReferralConditionInput]
+  createdAt: ModelStringInput
+  matchGuaranteed: ModelBooleanInput
+  not: ModelUserReferralConditionInput
+  or: [ModelUserReferralConditionInput]
+  referralType: ModelREFERRAL_TYPESInput
+  sourceOS: ModelStringInput
+  updatedAt: ModelStringInput
+}
+
+input ModelUserReferralFilterInput {
+  and: [ModelUserReferralFilterInput]
+  createdAt: ModelStringInput
+  matchGuaranteed: ModelBooleanInput
+  not: ModelUserReferralFilterInput
+  or: [ModelUserReferralFilterInput]
+  referralType: ModelREFERRAL_TYPESInput
+  referredUserId: ModelIDInput
+  sourceOS: ModelStringInput
+  updatedAt: ModelStringInput
+  userId: ModelIDInput
+}
+
+input ModelUserSessionConditionInput {
+  and: [ModelUserSessionConditionInput]
+  appVersion: ModelStringInput
+  createdAt: ModelStringInput
+  deviceType: ModelPLATFORMInput
+  label: ModelUserSessionLabelInput
+  not: ModelUserSessionConditionInput
+  or: [ModelUserSessionConditionInput]
+  userId: ModelIDInput
+}
+
+input ModelUserSessionFilterInput {
+  and: [ModelUserSessionFilterInput]
+  appVersion: ModelStringInput
+  createdAt: ModelStringInput
+  deviceType: ModelPLATFORMInput
+  id: ModelIDInput
+  label: ModelUserSessionLabelInput
+  not: ModelUserSessionFilterInput
+  or: [ModelUserSessionFilterInput]
+  userId: ModelIDInput
+}
+
+input ModelUserSessionLabelInput {
+  eq: UserSessionLabel
+  ne: UserSessionLabel
+}
+
+input ModelUserTripConditionInput {
+  and: [ModelUserTripConditionInput]
+  inviteLink: ModelStringInput
+  invitedByUserId: ModelIDInput
+  lastMessageReadDate: ModelStringInput
+  not: ModelUserTripConditionInput
+  or: [ModelUserTripConditionInput]
+  status: ModelUserTripStatusInput
+}
+
+input ModelUserTripFilterInput {
+  and: [ModelUserTripFilterInput]
+  inviteLink: ModelStringInput
+  invitedByUserId: ModelIDInput
+  lastMessageReadDate: ModelStringInput
+  not: ModelUserTripFilterInput
+  or: [ModelUserTripFilterInput]
+  status: ModelUserTripStatusInput
+  tripId: ModelIDInput
+  userId: ModelIDInput
+}
+
+input ModelUserTripStatusInput {
+  eq: UserTripStatus
+  ne: UserTripStatus
+}
+
+input NotificationPostInput {
+  id: ID!
+}
+
+input OpenCloseTimeInput {
+  day: Int!
+  time: String!
+}
+
+input OpenSearchDestinationsInput {
+  centerCoords: CoordsInput
+  searchString: String
+}
+
+input OpenSearchListNearbyAttractionsInput {
+  centerCoords: CoordsInput!
+  radius: Int!
+}
+
+input PeriodInput {
+  close: OpenCloseTimeInput
+  open: OpenCloseTimeInput!
+}
+
+input PhoneBookContact {
+  email: [String]!
+  name: String
+  phone: [String]!
+  recordId: String!
+}
+
+input PlaceDataInput {
+  businessStatus: BusinessStatus
+  city: String
+  continent: String
+  coords: CoordsInput!
+  country: String
+  editorialSummary: String
+  formattedAddress: String
+  googlePlacePageLink: String
+  hours: HoursInput
+  mealServices: MealServicesInput
+  name: String
+  phone: String
+  photos: [PlacePhotoInput]
+  price: Int
+  rating: RatingInput
+  reservable: Boolean
+  reviews: [ReviewInput]
+  state: String
+  types: [String]
+  websiteLink: String
+}
+
+input PlacePhotoInput {
+  height: Float
+  html_attributions: [String]
+  photo_reference: String
+  width: Float
+}
+
+input PlaceWebDataInput {
+  aboutBusiness: AboutBusinessInput
+  bestVisitedByPopularTimes: [ATTRACTION_BEST_VISIT_TIME]
+  menuLink: String
+  popularTimes: DayDataInput
+  reservationLink: String
+  reviews: [ReviewInput]
+}
+
+input PutAttractionSwipeInput {
+  attractionId: String!
+  destinationId: String!
+  swipe: AttractionSwipeResult!
+  tripId: String!
+  userId: String!
+}
+
+input RatingInput {
+  count: Int
+  score: Float
+}
+
+input ReviewInput {
+  authorName: String
+  authorUrl: String
+  language: String
+  originalLanguage: String
+  profilePhotoUrl: String
+  rating: Int
+  relativeTimeDescription: String
+  text: String
+  time: String
+  translated: Boolean
+}
+
+input S3ObjectInput {
+  bucket: String!
+  key: String!
+  region: String!
+}
+
+input SearchableAttractionAggregationInput {
+  field: SearchableAttractionAggregateField!
+  name: String!
+  type: SearchableAggregateType!
+}
+
+input SearchableAttractionFilterInput {
+  and: [SearchableAttractionFilterInput]
+  attractionCategories: SearchableStringFilterInput
+  attractionCuisine: SearchableStringFilterInput
+  attractionTargetGroups: SearchableStringFilterInput
+  authorId: SearchableIDFilterInput
+  authorType: SearchableStringFilterInput
+  bestVisited: SearchableStringFilterInput
+  bucketListCount: SearchableIntFilterInput
+  cost: SearchableStringFilterInput
+  costCurrency: SearchableStringFilterInput
+  costNote: SearchableStringFilterInput
+  costType: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
+  deletedAt: SearchableStringFilterInput
+  descriptionLong: SearchableStringFilterInput
+  descriptionShort: SearchableStringFilterInput
+  destinationId: SearchableIDFilterInput
+  duration: SearchableStringFilterInput
+  id: SearchableIDFilterInput
+  isTravaCreated: SearchableIntFilterInput
+  label: SearchableStringFilterInput
+  name: SearchableStringFilterInput
+  not: SearchableAttractionFilterInput
+  or: [SearchableAttractionFilterInput]
+  pendingMigration: SearchableBooleanFilterInput
+  privacy: SearchableStringFilterInput
+  rank: SearchableIntFilterInput
+  recommendationBadges: SearchableStringFilterInput
+  reservation: SearchableStringFilterInput
+  reservationNote: SearchableStringFilterInput
+  type: SearchableStringFilterInput
+  updatedAt: SearchableStringFilterInput
+}
+
+input SearchableAttractionSortInput {
+  direction: SearchableSortDirection
+  field: SearchableAttractionSortableFields
+}
+
+input SearchableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input SearchableDestinationAggregationInput {
+  field: SearchableDestinationAggregateField!
+  name: String!
+  type: SearchableAggregateType!
+}
+
+input SearchableDestinationFilterInput {
+  altName: SearchableStringFilterInput
+  and: [SearchableDestinationFilterInput]
+  authorId: SearchableIDFilterInput
+  continent: SearchableStringFilterInput
+  country: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
+  deletedAt: SearchableStringFilterInput
+  featured: SearchableBooleanFilterInput
+  googlePlaceId: SearchableStringFilterInput
+  icon: SearchableStringFilterInput
+  id: SearchableIDFilterInput
+  isTravaCreated: SearchableIntFilterInput
+  label: SearchableStringFilterInput
+  name: SearchableStringFilterInput
+  nearbyPlacesToEatCount: SearchableIntFilterInput
+  nearbyThingsToDoCount: SearchableIntFilterInput
+  nearbyTravaPlacesToEatCount: SearchableIntFilterInput
+  nearbyTravaThingsToDoCount: SearchableIntFilterInput
+  not: SearchableDestinationFilterInput
+  or: [SearchableDestinationFilterInput]
+  pendingMigration: SearchableBooleanFilterInput
+  state: SearchableStringFilterInput
+  timezone: SearchableStringFilterInput
+  updatedAt: SearchableStringFilterInput
+}
+
+input SearchableDestinationSortInput {
+  direction: SearchableSortDirection
+  field: SearchableDestinationSortableFields
+}
+
+input SearchableFloatFilterInput {
+  eq: Float
+  gt: Float
+  gte: Float
+  lt: Float
+  lte: Float
+  ne: Float
+  range: [Float]
+}
+
+input SearchableIDFilterInput {
+  eq: ID
+  exists: Boolean
+  gt: ID
+  gte: ID
+  lt: ID
+  lte: ID
+  match: ID
+  matchPhrase: ID
+  matchPhrasePrefix: ID
+  multiMatch: ID
+  ne: ID
+  range: [ID]
+  regexp: ID
+  wildcard: ID
+}
+
+input SearchableIntFilterInput {
+  eq: Int
+  gt: Int
+  gte: Int
+  lt: Int
+  lte: Int
+  ne: Int
+  range: [Int]
+}
+
+input SearchableStringFilterInput {
+  eq: String
+  exists: Boolean
+  gt: String
+  gte: String
+  lt: String
+  lte: String
+  match: String
+  matchPhrase: String
+  matchPhrasePrefix: String
+  multiMatch: String
+  ne: String
+  range: [String]
+  regexp: String
+  wildcard: String
+}
+
+input SearchableUserAggregationInput {
+  field: SearchableUserAggregateField!
+  name: String!
+  type: SearchableAggregateType!
+}
+
+input SearchableUserFilterInput {
+  and: [SearchableUserFilterInput]
+  appleId: SearchableStringFilterInput
+  contactEmail: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
+  dateOfBirth: SearchableStringFilterInput
+  description: SearchableStringFilterInput
+  email: SearchableStringFilterInput
+  facebookId: SearchableStringFilterInput
+  fcmToken: SearchableStringFilterInput
+  googleId: SearchableStringFilterInput
+  id: SearchableIDFilterInput
+  location: SearchableStringFilterInput
+  name: SearchableStringFilterInput
+  not: SearchableUserFilterInput
+  or: [SearchableUserFilterInput]
+  phone: SearchableStringFilterInput
+  privacy: SearchableStringFilterInput
+  pushNotifications: SearchableBooleanFilterInput
+  referralLink: SearchableStringFilterInput
+  updatedAt: SearchableStringFilterInput
+  username: SearchableStringFilterInput
+}
+
+input SearchableUserSortInput {
+  direction: SearchableSortDirection
+  field: SearchableUserSortableFields
+}
+
+input Season {
+  endDay: Int
+  endMonth: Int
+  startDay: Int
+  startMonth: Int
+}
+
+input SettingsSendReportInput {
+  message: String!
+  userContactEmail: String
+  userEmail: String
+}
+
+input SignOutInput {
+  fcmToken: String
+  id: String
+}
+
+input SignUpInput {
+  dateOfBirth: AWSDate!
+  email: String
+  name: String!
+  password: String!
+  phone: String
+  privacy: String!
+  username: String!
+}
+
+input StartEndLocationInput {
+  deleted: Boolean
+  displayOrder: Int!
+  endLoc: LocationInput!
+  id: ID
+  startLoc: LocationInput!
+}
+
+input SyncContactsInput {
+  contacts: [PhoneBookContact!]!
+}
+
+input TableMigrationInput {
+  operationType: OPERATION_TYPE!
+  sourceEnv: BACKEND_ENV_NAME!
+  tableName: String!
+  targetEnv: BACKEND_ENV_NAME!
+}
+
+input TeaRexCreateEntityInput {
+  teaRexEntity: TeaRexEntityInput!
+}
+
+input TeaRexCreateEventInput {
+  inEventEntity: TeaRexEntityInput!
+  outEventEntity: TeaRexEntityInput!
+  teaRexEvent: TeaRexEventInput!
+}
+
+input TeaRexDeleteEntityInput {
+  teaRexEntity: TeaRexEntityInput!
+}
+
+input TeaRexDeleteEventInput {
+  inEventEntity: TeaRexEntityInput!
+  outEventEntity: TeaRexEntityInput!
+  teaRexEvent: TeaRexEventInput!
+}
+
+input TeaRexEntityInput {
+  id: ID!
+  label: TeaRexLabel!
+}
+
+input TeaRexEventInput {
+  label: TeaRexEventLabel!
+  weight: Float!
+}
+
+input TripPlanAttraction {
+  attractionId: String!
+  category: String
+  duration: Int
+  locations: [TripPlanStartEndLocation]!
+  name: String!
+  preferredTime: [String]
+  seasons: [Season]
+  travaCard: Boolean
+  type: String
+}
+
+input TripPlanDayInput {
+  dayOfYear: Int!
+  tripPlanDayItems: [TripPlanDayItemInput]
+}
+
+input TripPlanDayItemInput {
+  attractionId: ID!
+  locId: ID!
+}
+
+input TripPlanGroup {
+  endTime: String!
+  nDays: Int!
+  ratings: [[Int]]!
+  startDate: Int!
+  startTime: String!
+}
+
+input TripPlanLocation {
+  coords: CoordsInput!
+  googlePlaceId: String!
+  hours: TripPlanLocationHoursInput
+  id: String!
+}
+
+input TripPlanLocationHoursInput {
+  periods: [PeriodInput!]!
+}
+
+input TripPlanLogDayInput {
+  dayOfYear: Int!
+  tripPlanDayItems: [TripPlanLogItemInput]!
+}
+
+input TripPlanLogItemInput {
+  attractionId: ID!
+  locId: ID!
+}
+
+input TripPlanStartEndLocation {
+  endLoc: TripPlanLocation!
+  id: String!
+  startLoc: TripPlanLocation!
+}
+
+input TripPlanThresholds {
+  rating: Float
+}
+
+input TripPlanWeights {
+  category: Float
+  dayTime: Float
+  distance: Float
+  rating: Float
+}
+
+input UpdateAttractionInput {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  authorId: ID
+  authorType: AUTHOR_TYPE
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  bucketListCount: Int
+  cost: ATTRACTION_COST
+  costCurrency: CURRENCY_TYPE
+  costNote: String
+  costType: ATTRACTION_COST_TYPE
+  createdAt: AWSDateTime
+  deletedAt: AWSDateTime
+  descriptionLong: String
+  descriptionShort: String
+  destinationId: ID
+  duration: ATTRACTION_DURATION
+  generation: GenerationInput
+  id: ID!
+  images: [S3ObjectInput]
+  isTravaCreated: Int
+  locations: [StartEndLocationInput]
+  name: String
+  privacy: ATTRACTION_PRIVACY
+  rank: Int
+  recommendationBadges: [BADGES]
+  reservation: ATTRACTION_RESERVATION
+  reservationNote: String
+  seasons: [AttractionSeasonInput]
+  type: ATTRACTION_TYPE
+  updatedAt: AWSDateTime
+}
+
+input UpdateAttractionSwipeInput {
+  attractionId: ID!
+  createdAt: AWSDateTime
+  destinationId: ID
+  label: AttractionSwipeLabel
+  swipe: AttractionSwipeResult
+  tripId: ID!
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input UpdateDestinationInput {
+  altName: String
+  authorId: ID
+  continent: String
+  coords: CoordsInput
+  country: String
+  coverImage: S3ObjectInput
+  deletedAt: AWSDateTime
+  featured: Boolean
+  googlePlaceId: String
+  icon: String
+  id: ID!
+  isTravaCreated: Int
+  label: String
+  name: String
+  nearbyPlacesToEatCount: Int
+  nearbyThingsToDoCount: Int
+  nearbyTravaPlacesToEatCount: Int
+  nearbyTravaThingsToDoCount: Int
+  pendingMigration: Boolean
+  state: String
+  timezone: String
+}
+
+input UpdateFeatureFlagInput {
+  id: FeatureFlagName!
+  isEnabled: Boolean
+}
+
+input UpdateGoogleAPIKeyInput {
+  googleAPIKey: String!
+  isDev: Boolean!
+  platform: PLATFORM!
+}
+
+input UpdateGooglePlaceInput {
+  consecutiveFailedRequests: Int
+  createdAt: AWSDateTime
+  data: PlaceDataInput
+  dataLastCheckedAt: AWSDateTime
+  dataLastUpdatedAt: AWSDateTime
+  generatedSummary: String
+  id: ID!
+  isValid: Int
+  updatedAt: AWSDateTime
+  webData: PlaceWebDataInput
+  yelpData: YelpDataInput
+}
+
+input UpdateMessageInput {
+  createdAt: AWSDateTime
+  id: ID!
+  image: S3ObjectInput
+  sent: Boolean
+  system: Boolean
+  text: String
+  tripId: ID
+  updatedAt: AWSDateTime
+  userId: ID
+}
+
+input UpdateMinimumVersionInput {
+  id: MinimumVersionName!
+  minimumVersion: String
+}
+
+input UpdateNotificationInput {
+  attractionId: ID
+  commentId: ID
+  id: ID!
+  postId: ID
+  receiverUserId: ID
+  senderUserId: ID
+  showInApp: Int
+  text: String
+  tripId: ID
+  type: NOTIFICATION_TYPE
+}
+
+input UpdatePhotographerInput {
+  id: ID!
+  name: String
+  pendingMigration: Boolean
+  url: String
+}
+
+input UpdatePostInput {
+  attractionId: ID
+  cloudinaryUrl: String
+  commentsCount: Int
+  createdAt: AWSDateTime
+  deletedAt: AWSDateTime
+  description: String
+  destinationId: ID
+  format: String
+  height: Int
+  id: ID!
+  likesCount: Int
+  mediaType: MEDIA_TYPES
+  tripId: ID
+  updatedAt: AWSDateTime
+  userId: ID
+  videoDuration: Float
+  width: Int
+}
+
+input UpdateTimelineEntryFlightInput {
+  date: Int
+  flightDetails: FlightStatsScheduleDetailsInput
+  id: ID!
+  memberIds: [String!]!
+  notes: String
+  time: Int
+}
+
+input UpdateTimelineEntryInput {
+  date: Int
+  flightDetails: FlightStatsScheduleDetailsInput
+  id: ID!
+  lodgingArrivalNameAndAddress: String
+  lodgingDepartureNameAndAddress: String
+  notes: String
+  rentalDropoffLocation: String
+  rentalPickupLocation: String
+  time: Int
+  timelineEntryType: TimelineEntryType
+  tripId: ID
+}
+
+input UpdateTimelineEntryLodgingArrivalInput {
+  date: Int
+  id: ID!
+  lodgingArrivalNameAndAddress: String
+  memberIds: [String!]!
+  notes: String
+  time: Int
+}
+
+input UpdateTimelineEntryLodgingDepartureInput {
+  date: Int
+  id: ID!
+  lodgingDepartureNameAndAddress: String
+  memberIds: [String!]!
+  notes: String
+  time: Int
+}
+
+input UpdateTimelineEntryRentalDropoffInput {
+  date: Int
+  id: ID!
+  memberIds: [String!]!
+  notes: String
+  rentalDropoffLocation: String
+  time: Int
+}
+
+input UpdateTimelineEntryRentalPickupInput {
+  date: Int
+  id: ID!
+  memberIds: [String!]!
+  notes: String
+  rentalPickupLocation: String
+  time: Int
+}
+
+input UpdateTripDestinationInput {
+  destinationId: ID!
+  endDate: Int
+  endTime: TripDestinationTime
+  startDate: Int
+  startTime: TripDestinationTime
+  tripId: ID!
+  tripPlan: [TripPlanDayInput]
+}
+
+input UpdateTripDestinationUserInput {
+  destinationId: ID!
+  isReady: Boolean
+  tripId: ID!
+  tripPlanViewedAt: AWSDateTime
+  userId: ID!
+}
+
+input UpdateTripInput {
+  completed: Boolean
+  id: ID!
+  name: String
+}
+
+input UpdateUserBlockInput {
+  blockedUserId: ID!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input UpdateUserContactInput {
+  createdAt: AWSDateTime
+  email: [String]
+  name: String
+  phone: [String]
+  recordId: String!
+  travaUserIds: [String]
+  updatedAt: AWSDateTime
+  userId: ID!
+}
+
+input UpdateUserFollowInput {
+  approved: Boolean
+  createdAt: AWSDateTime
+  followedUserId: ID!
+  updatedAt: AWSDateTime
+  userFollowUserId: ID
+  userId: ID!
+}
+
+input UpdateUserInput {
+  appleId: String
+  avatar: S3ObjectInput
+  contactEmail: String
+  dateOfBirth: AWSDate
+  description: String
+  email: String
+  facebookId: String
+  fcmToken: String
+  googleId: String
+  id: ID!
+  location: String
+  name: String
+  phone: String
+  privacy: PRIVACY
+  pushNotifications: Boolean
+  referralLink: String
+  username: String
+}
+
+input UpdateUserTripInput {
+  inviteLink: String
+  invitedByUserId: ID
+  lastMessageReadDate: AWSDateTime
+  status: UserTripStatus
+  tripId: ID!
+  userId: ID!
+}
+
+input UploadToCloudinaryInput {
+  bufferItem: S3ObjectInput!
+  mediaType: MEDIA_TYPES!
+  resource_type: String!
+}
+
+input VotingResultsInput {
+  noVotes: Int!
+  yesVotes: Int!
+}
+
+input YelpDataInput {
+  amenities: [InfoItemInput]
+  categories: [String]
+  id: String
+  price: Int
+  reviews: [ReviewInput]
+  url: String
+}
+
+input addRemoveFromBucketListInput {
+  action: BUCKET_LIST_ACTION_INPUT!
+  attractionId: ID!
+  userId: ID!
+}
+
+input destinationIdWithDates {
+  endDate: Int
+  id: ID!
+  startDate: Int
+}
+
+input likeDislikePostInput {
+  action: LIKE_DISLIKE_ACTION_INPUT!
+  postId: ID!
+  userId: ID!
+}

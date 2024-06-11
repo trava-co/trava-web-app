@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './user.css'; // Import the CSS file
+import '../css/user.css'; // Import the CSS file
 import axios from 'axios'
 
 function User() {

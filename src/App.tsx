@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Assistant from './assistant.tsx';
-import User from './user.tsx';
+import Assistant from './screens/assistant.tsx';
+import User from './screens/user.tsx';
+import './css/App.css';
+import Itinerary from './screens/itinerary.tsx';
+import UserApi from './UserApi.ts'
 
-
-import './App.css';
-import Itinerary from './itinerary.tsx';
 import Amplify from 'aws-amplify'
-import awsConfig from './aws-exports copy.js' 
+import awsConfig from './aws-exports.js' 
 Amplify.configure(awsConfig)
 
-const Auth = Amplify.Auth
+await Amplify.Auth.signIn("gpt4api", "Pass_Word1")
 
-await Auth.signIn("dragon7201", "Dragon201!")
+//right here
 
 function App() {
-  const [inputValue, setInputValue] = useState('');
-  const [response, setResponse] = useState('');
-  const [numDays, setNumDays] = useState(0);
-  const [destination, setDestination] = useState('');
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await UserApi.getUserById("4e296663-60d1-461c-bccf-ca76e956f628")
+        console.log('User data:', userData);
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+  
   return (
     <Router>
       <Routes>

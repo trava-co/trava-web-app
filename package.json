@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:3001",
-  "type": "module",
   "dependencies": {
-    "api": "^5.0.8",
-    "aws-amplify": "^4.3.3",
-    "aws-sdk": "^2.1450.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "api": "^5.0.8",
+    "aws-amplify": "^4.3.3",
+    "aws-sdk": "^2.1450.0",
     "axios": "^1.6.8",
     "cors": "^2.8.5",
     "openai": "^4.38.3",
@@ -50,5 +49,12 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.4.5"
+  }
 }

@@ -10,11 +10,6 @@
       "StackName": "amplify-trava-anay-00341",
       "StackId": "arn:aws:cloudformation:us-east-1:736143825081:stack/amplify-trava-anay-00341/48fa20d0-b751-11ee-97a3-0ec11d87e8a5",
       "AmplifyAppId": "d3nzalola22yka"
-    },
-    "categories": {
-      "api": {
-        "trava": {}
-      }
     }
   }
 }

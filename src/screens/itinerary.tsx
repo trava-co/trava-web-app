@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import './itinerary.css';
+import '../css/itinerary.css';
 import axios from 'axios';
 
 // establishes all the states, renders the actual table
