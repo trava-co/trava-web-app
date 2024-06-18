@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "target": "es022",
+      "module": "commonjs",
+      "jsx": "react"
+    },
+    "include": [
+      "src/**/*",
+      "src/screens/assistant.tsx",
+      "src/screens/itinerary.tsx",
+      "src/screens/user.tsx"
+    ]
+  }

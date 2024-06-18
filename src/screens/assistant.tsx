@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Assistant.css'; // Import the CSS file for styling
 import axios from 'axios';
@@ -6,10 +6,10 @@ import axios from 'axios';
 // Creates the thread on the assistant
 
 function Assistant() {
-  const [destination, setDestination] = useState('');
-  const [numDays, setNumDays] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState('');
+  const [destination, setDestination] = React.useState('');
+  const [numDays, setNumDays] = React.useState(1);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [loadingText, setLoadingText] = React.useState('');
   const navigate = useNavigate();
 
   const handleNext = async () => {

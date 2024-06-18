@@ -1,63 +1,64 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../css/user.css'; // Import the CSS file
 import axios from 'axios'
-import UserApi from '../UserApi.ts'
-import getInputForTripPlan from '../get-input-for-trip-plan.ts';
-import { TripDestinationTime } from '../API.ts';
+import UserApi from '../UserApi'
+import getInputForTripPlan from '../get-input-for-trip-plan';
+import { TripDestinationTime } from '../API';
 
 function User() {
-  const [tripConcept, setTripConcept] = useState('');
-  const [apiData, setApiData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState('');
+  const [tripConcept, setTripConcept] = React.useState('');
+  const [apiData, setApiData] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+  const [loadingText, setLoadingText] = React.useState('');
   const navigate = useNavigate();
 
   function transformApiResponse(apiResponse, userId, destinationName, coords) {
     return {
-      data: {
-        getUser: {
-          userTrips: {
-            items: [
-              {
-                trip: {
-                  attractionSwipes: {
-                    items: apiResponse.attractionSwipes.items.map(item => ({
-                      attractionId: item.attractionId,
-                      swipe: item.swipe,
-                      userId: userId,
-                      attraction: {
-                        name: item.attraction.name,
-                        type: item.attraction.type
-                      }
-                    }))
-                  },
-                  members: {
-                    items: [
-                      {
-                        status: "APPROVED",
-                        userId: userId
-                      }
-                    ]
-                  },
-                  tripDestinations: {
-                    items: [
-                      {
-                        destination: {
-                          name: destinationName,
-                          coords: coords
-                        }
-                      }
-                    ]
-                  }
+        attractionSwipes: {
+          __typename: "ModelAttractionSwipeConnection",
+          items: apiResponse.attractionSwipes.items.map(item => ({
+            __typename: "AttractionSwipe",
+            attractionId: item.attractionId,
+            swipe: item.swipe,
+            userId: userId,
+            attraction: {
+              __typename: "Attraction",
+              name: item.attraction.name,
+              type: item.attraction.type
+            }
+          }))
+        },
+        members: {
+          __typename: "ModelTripMemberConnection",
+          items: [
+            {
+              __typename: "TripMember",
+              status: "APPROVED",
+              userId: userId
+            }
+          ]
+        },
+        tripDestinations: {
+          __typename: "ModelTripDestinationConnection",
+          items: [
+            {
+              __typename: "TripDestination",
+              destination: {
+                __typename: "Destination",
+                name: destinationName,
+                coords: {
+                  __typename: "Coords",
+                  lat: coords.lat,
+                  long: coords.long
                 }
               }
-            ]
-          }
+            }
+          ]
         }
-      }
-    };
+    }
   }
+
 
   const handleDone = async () => {
     try {
@@ -73,6 +74,7 @@ function User() {
 
       var mockResponse = transformApiResponse(response.data, "4e296663-60d1-461c-bccf-ca76e956f628", "Chicago", {lat: 41.8781, long: -87.6298})
 
+      console.log("mock response")
       console.log(mockResponse);
 
       // at this point, we have our mock response ready. we need to call the getAttractionsForScheduler. We then need to run the local function 
@@ -93,11 +95,14 @@ function User() {
   
     const attractions = await UserApi.getAttractionsForScheduler(input);
 
-    console.log(attractions)
+    console.log("attractions scheduler call")
+    console.log(attractions);
+
+    console.log("user trips test: " + mockResponse)
 
     const inputForTripPlan = getInputForTripPlan(
       mockResponse,
-      attractions,
+      attractions.attractions,
       20240719,
       20240721,
       TripDestinationTime.MORNING,
@@ -106,7 +111,9 @@ function User() {
 
     console.log(inputForTripPlan)
   
+    const tripPlan = await UserApi.generateTripPlan(inputForTripPlan)
 
+    console.log(tripPlan);
 
     //   let jsonData = JSON.parse(cleanJson);
     //   console.log(jsonData);
@@ -120,7 +127,7 @@ function User() {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (apiData) {
         navigate("/itin", { state: { apiData }})
     }

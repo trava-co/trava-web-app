@@ -1,4 +1,4 @@
-import { fragmentAttractionLocationCustomGetAttraction } from './fragments.ts'
+import { fragmentAttractionLocationCustomGetAttraction } from './fragments'
 
 export const customGetExploreVotingList = /* GraphQL */ `
   query CustomGetExploreVotingList($input: GetExploreVotingListInput!) {

@@ -3,15 +3,16 @@ import {
   ATTRACTION_DURATION,
   ATTRACTION_TYPE,
   AttractionSwipeResult,
+  GetDataForGenerateTripPlanQuery,
   CustomGenerateTripPlanQueryVariables,
   TripDestination,
   TripPlanAttraction,
   UserTripStatus,
   AUTHOR_TYPE,
   CustomGetAttractionsForSchedulerQuery,
-} from './API.ts'
-import dayjs from 'dayjs'
-import { DateFormat } from './dateFormat.ts'
+} from './API'
+import * as dayjs from 'dayjs'
+import { DateFormat } from './dateFormat'
 
 enum planGeneratorPreferredTime {
   MORNING = 'morning',
@@ -55,58 +56,6 @@ const getAttractionPreferredTime = (
     )
     .map((el) => el.toLowerCase())
 }
-
-export type GetDataForGenerateTripPlanQuery = {
-  getUser?:  {
-    __typename: "User",
-    userTrips?:  {
-      __typename: "ModelUserTripConnection",
-      items:  Array< {
-        __typename: "UserTrip",
-        trip?:  {
-          __typename: "Trip",
-          attractionSwipes?:  {
-            __typename: "ModelAttractionSwipeConnection",
-            items:  Array< {
-              __typename: "AttractionSwipe",
-              attractionId: string,
-              swipe: AttractionSwipeResult,
-              userId: string,
-              attraction?:  {
-                __typename: "Attraction",
-                name: string,
-                type: ATTRACTION_TYPE,
-              } | null,
-            } | null >,
-          } | null,
-          members?:  {
-            __typename: "ModelUserTripConnection",
-            items:  Array< {
-              __typename: "UserTrip",
-              status: UserTripStatus,
-              userId: string,
-            } | null >,
-          } | null,
-          tripDestinations?:  {
-            __typename: "ModelTripDestinationConnection",
-            items:  Array< {
-              __typename: "TripDestination",
-              destination?:  {
-                __typename: "Destination",
-                name: string,
-                coords:  {
-                  __typename: "Coords",
-                  lat: number,
-                  long: number,
-                },
-              } | null,
-            } | null >,
-          } | null,
-        } | null,
-      } | null >,
-    } | null,
-  } | null,
-};
 
 const getInputForTripPlan = (
   trip: GetDataForGenerateTripPlanQuery['getUser']['userTrips']['items'][0]['trip'],
