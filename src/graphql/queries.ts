@@ -583,6 +583,9 @@ export const getAttraction = /* GraphQL */ `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;

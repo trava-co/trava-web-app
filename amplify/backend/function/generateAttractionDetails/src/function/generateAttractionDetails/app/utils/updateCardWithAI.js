@@ -36,7 +36,7 @@ const generateTravaDescriptions_1 = require("./trava/generateTravaDescriptions")
 const logError_1 = require("./logError");
 const TravaCardCreationErrors = __importStar(require("./TravaCardCreationErrors"));
 const infoItemToString_1 = require("./infoItemToString");
-const getLogisticsForTypeDoFromBing_1 = require("./trava/getLogisticsForTypeDoFromBing");
+const getLogisticsForTypeDoFromOnlineLLM_1 = require("./trava/getLogisticsForTypeDoFromOnlineLLM");
 let commonCardFields = {
     costType: API_1.ATTRACTION_COST_TYPE.PERSON,
     costCurrency: API_1.CURRENCY_TYPE.USD,
@@ -46,7 +46,7 @@ let commonCardFields = {
 };
 const now = new Date().toISOString();
 async function updateCardWithAI(cardInput) {
-    const { name, attractionId, travaDestinationId, attractionType, destinationName, hours, editorialSummary, reservable, reviews, mealServices, price, categories, duration, descriptions, existingTravaDescriptions, bingDescription, recommendationBadges, generateLogistics, bestVisitedByPopularTimes, aboutBusiness, yelpAmenities, authorType, } = cardInput;
+    const { name, attractionId, travaDestinationId, attractionType, destinationName, hours, editorialSummary, reservable, reviews, mealServices, price, categories, duration, descriptions, existingTravaDescriptions, onlineLLMDescription, recommendationBadges, generateLogistics, bestVisitedByPopularTimes, aboutBusiness, yelpAmenities, authorType, } = cardInput;
     const isTypeDo = attractionType === API_1.ATTRACTION_TYPE.DO;
     const isTypeEat = attractionType === API_1.ATTRACTION_TYPE.EAT;
     const { existingDescriptionShort, existingDescriptionLong } = existingTravaDescriptions || {};
@@ -75,14 +75,14 @@ async function updateCardWithAI(cardInput) {
     };
     let generatedSummary = ''; // to be populated with input to gpt-4's description generation
     const travaDescriptionsExist = travaAttraction.descriptionShort && travaAttraction.descriptionLong;
-    // if type DO, and generateLogistics is true, we only need to generate logistics, which require bingDescription
+    // if type DO, and generateLogistics is true, we only need to generate logistics, which require onlineLLMDescription
     if (isTypeDo) {
-        if (generateLogistics && !bingDescription) {
+        if (generateLogistics && !onlineLLMDescription) {
             throw new TravaCardCreationErrors.TravaDoAttractionMissingBingInfoError({
                 attractionId,
                 attractionName: name,
                 destinationName,
-                message: `Trava DO attraction is missing bingDescription`,
+                message: `Trava DO attraction is missing onlineLLMDescription`,
             });
         }
         else if (!generateLogistics && travaDescriptionsExist) {
@@ -117,7 +117,7 @@ async function updateCardWithAI(cardInput) {
         aboutDetailsString,
         ...(reviews ?? []),
         ...(descriptions ?? []),
-        bingDescription,
+        onlineLLMDescription,
     ].filter((item) => Boolean(item));
     const relevanceMap = await (0, getMostRelevantSentences_1.getSentenceRelevanceMap)({
         segments: allSegments,
@@ -156,15 +156,15 @@ async function updateCardWithAI(cardInput) {
         }
     }
     if (isTypeDo) {
-        // must rely on bingDescription for logistics
+        // must rely on onlineLLMDescription for logistics
         if (generateLogistics) {
             try {
-                console.log('updateCardWithAI second pass for type do: using bing response to get logistics from openai');
-                const { attractionCategories, reservation, attractionTargetGroups } = await (0, getLogisticsForTypeDoFromBing_1.getLogisticsForTypeDoFromBing)({
+                console.log('updateCardWithAI second pass for type do: using onlineLLM response to get logistics from openai');
+                const { attractionCategories, reservation, attractionTargetGroups } = await (0, getLogisticsForTypeDoFromOnlineLLM_1.getLogisticsForTypeDoFromOnlineLLM)({
                     attractionId,
                     attractionName: name,
                     destinationName,
-                    bingDescription: bingDescription, // must be defined because generateLogistics is true
+                    onlineLLMDescription: onlineLLMDescription, // must be defined because generateLogistics is true
                 });
                 travaAttraction = {
                     ...travaAttraction,
@@ -176,20 +176,20 @@ async function updateCardWithAI(cardInput) {
             catch (error) {
                 await (0, logError_1.logError)({
                     error: error,
-                    context: `getLogisticsForTypeDoFromBing for ${name} in ${destinationName}`,
+                    context: `getLogisticsForTypeDoFromOnlineLLM for ${name} in ${destinationName}`,
                     shouldThrow: true,
                 });
             }
         }
         else {
-            // if bingDescription doesn't exist, return travaAttraction with trava descriptions & w/o logistics. Generate bingDescription with trava descriptions, then re-invoke this fn with bingDescription
+            // if onlineLLMDescription doesn't exist, return travaAttraction with trava descriptions & w/o logistics. Generate onlineLLMDescription with trava descriptions, then re-invoke this fn with onlineLLMDescription
             return {
                 attraction: travaAttraction,
                 generatedSummary,
             };
         }
     }
-    // categories, reservations, targetGroups may already exist from bingDescription
+    // categories, reservations, targetGroups may already exist from onlineLLMDescription
     if ((isTypeDo && !travaAttraction.attractionCategories?.length) ||
         (isTypeEat && !travaAttraction.attractionCuisine?.length)) {
         try {
@@ -287,7 +287,7 @@ async function updateCardWithAI(cardInput) {
                 recSourcePrice: price,
                 attractionType,
                 relevanceMap,
-                bingDescription,
+                onlineLLMDescription,
             });
             travaAttraction = {
                 ...travaAttraction,

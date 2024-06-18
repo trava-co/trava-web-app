@@ -1,5 +1,7 @@
 import { ApiCallHandler } from './api-call-handler.ts';
-import { getUser, customGetAttractionsForScheduler } from './graphql/queries.ts';
+import { getUser } from './graphql/queries.ts';
+import { customGetAttractionsForScheduler } from './graphql/attraction.ts'
+import { CustomGetAttractionsForSchedulerQueryVariables, CustomGetAttractionsForSchedulerQuery } from './API.ts';
 
 class UserApi {
   static async getUserById(id: string) {

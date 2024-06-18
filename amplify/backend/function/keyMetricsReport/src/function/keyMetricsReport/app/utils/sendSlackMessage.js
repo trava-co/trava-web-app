@@ -23,12 +23,12 @@ function sendSlackMessage({ text, newUsersCsv, userSessionsCsv, newAttractionSwi
         const CHANNEL_ID = 'C06EZAKMK4M'; // key-metrics channel
         // Headers for CSV files
         const newUsersHeader = 'User ID, Username, Name, Email, Phone \n';
-        const userSessionsHeader = 'Session ID, User ID, Device, Version, Initial open time\n';
-        const newAttractionSwipesHeader = 'User ID, Swipe Count\n';
+        const userSessionsHeader = 'Session ID, User ID, Username, Name, Email, Device, Version, Initial open time\n';
+        const newAttractionSwipesHeader = 'User ID, Username, Name, Email, Swipe Count\n';
         const newAttractionSwipesByDestinationHeader = 'Destination ID, Destination Name, Swipe Count\n';
         const attractionsCreatedByDestinationCsvHeader = 'Destination ID, Destination Name, User Attractions Created, Admin Attractions Created\n';
-        const userAttractionsHeader = 'Author ID, Created Attractions\n';
-        const itineraryFirstTimeViewsHeader = 'User ID, Trip ID, Destination ID, TripPlanViewedAt\n';
+        const userAttractionsHeader = 'User ID, Username, Name, Email, Created Attractions\n';
+        const itineraryFirstTimeViewsHeader = 'User ID, Username, Name, Email, Trip ID, Destination ID, Destination Name, TripPlanViewedAt\n';
         // Combine headers with CSV content
         const newUsersCsvWithHeader = newUsersHeader + newUsersCsv;
         const userSessionsCsvWithHeader = userSessionsHeader + userSessionsCsv;

@@ -9,8 +9,6 @@
   },
   "lambdaLayers": [],
   "secretNames": [
-    "GOOGLE_MAPS_API_KEY",
-    "SLACK_BOT_TOKEN",
-    "OPENSEARCH_ENDPOINT"
+    "GOOGLE_MAPS_ALTERNATE_API_KEY"
   ]
 }

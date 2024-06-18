@@ -29,6 +29,7 @@ const yesterday = () => {
     return date.toISOString();
 };
 const getAllUsersPastDay = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(`getting all users created in past day`);
     const users = [];
     yield getAllPaginatedData_1.default((nextToken) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
@@ -57,40 +58,100 @@ const getAllUsersPastDay = () => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.getAllUsersPastDay = getAllUsersPastDay;
 const getAllAttractionSwipesPastDay = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _b, _c, _d;
-    const result = yield ApiClient_1.default.get().apiFetch({
-        query: lambda_1.lambdaPrivateListAttractionSwipesByUpdatedAt,
-        variables: {
-            label: API_1.AttractionSwipeLabel.SWIPE,
-            updatedAt: { ge: yesterday() },
-        },
+    console.log(`getting all attraction swipes in past day`);
+    const attractionSwipes = [];
+    yield getAllPaginatedData_1.default((nextToken) => __awaiter(void 0, void 0, void 0, function* () {
+        var _b;
+        const res = yield ApiClient_1.default.get().apiFetch({
+            query: lambda_1.lambdaPrivateListAttractionSwipesByUpdatedAt,
+            variables: {
+                nextToken,
+                label: API_1.AttractionSwipeLabel.SWIPE,
+                updatedAt: { ge: yesterday() },
+                limit: 500,
+            },
+        });
+        return {
+            nextToken: (_b = res.data.privateListAttractionSwipesByUpdatedAt) === null || _b === void 0 ? void 0 : _b.nextToken,
+            data: res.data,
+        };
+    }), (data) => {
+        var _a;
+        (_a = data === null || data === void 0 ? void 0 : data.privateListAttractionSwipesByUpdatedAt) === null || _a === void 0 ? void 0 : _a.items.forEach((item) => {
+            var _a, _b, _c, _d, _e, _f, _g, _h;
+            if (item) {
+                attractionSwipes.push({
+                    userId: item.userId,
+                    user: {
+                        username: (_b = (_a = item.user) === null || _a === void 0 ? void 0 : _a.username) !== null && _b !== void 0 ? _b : '',
+                        name: (_d = (_c = item.user) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : '',
+                        email: (_f = (_e = item.user) === null || _e === void 0 ? void 0 : _e.email) !== null && _f !== void 0 ? _f : '',
+                    },
+                    destinationId: item.destinationId,
+                    destination: {
+                        name: (_h = (_g = item.destination) === null || _g === void 0 ? void 0 : _g.name) !== null && _h !== void 0 ? _h : item.destinationId,
+                    },
+                });
+            }
+        });
     });
-    console.log(`result: ${JSON.stringify(result, null, 2)}\n`);
-    return (_d = (_c = (_b = result.data) === null || _b === void 0 ? void 0 : _b.privateListAttractionSwipesByUpdatedAt) === null || _c === void 0 ? void 0 : _c.items) !== null && _d !== void 0 ? _d : [];
+    console.log(`attractionSwipes length: ${attractionSwipes.length}\n`);
+    return attractionSwipes;
 });
 exports.getAllAttractionSwipesPastDay = getAllAttractionSwipesPastDay;
 // attractions created
 const getAllAttractionsCreatedPastDay = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _e, _f, _g;
     console.log(`getting all attractions created in past day`);
-    const result = yield ApiClient_1.default.get().apiFetch({
-        query: lambda_1.lambdaPrivateListAttractionsByCreatedAt,
-        variables: {
-            label: API_1.AttractionLabel.ATTRACTION,
-            createdAt: { ge: yesterday() },
-        },
+    const attractionsCreated = [];
+    yield getAllPaginatedData_1.default((nextToken) => __awaiter(void 0, void 0, void 0, function* () {
+        var _c;
+        const result = yield ApiClient_1.default.get().apiFetch({
+            query: lambda_1.lambdaPrivateListAttractionsByCreatedAt,
+            variables: {
+                nextToken,
+                label: API_1.AttractionLabel.ATTRACTION,
+                createdAt: { ge: yesterday() },
+                limit: 500,
+            },
+        });
+        return {
+            nextToken: (_c = result.data.privateListAttractionsByCreatedAt) === null || _c === void 0 ? void 0 : _c.nextToken,
+            data: result.data,
+        };
+    }), (data) => {
+        var _a;
+        (_a = data === null || data === void 0 ? void 0 : data.privateListAttractionsByCreatedAt) === null || _a === void 0 ? void 0 : _a.items.forEach((item) => {
+            var _a, _b, _c, _d, _e, _f, _g, _h;
+            if (item) {
+                attractionsCreated.push({
+                    id: item.id,
+                    name: item.name,
+                    authorId: item.authorId,
+                    author: {
+                        username: (_b = (_a = item.author) === null || _a === void 0 ? void 0 : _a.username) !== null && _b !== void 0 ? _b : '',
+                        name: (_d = (_c = item.author) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : '',
+                        email: (_f = (_e = item.author) === null || _e === void 0 ? void 0 : _e.email) !== null && _f !== void 0 ? _f : '',
+                    },
+                    authorType: item.authorType,
+                    destinationId: item.destinationId,
+                    destination: {
+                        name: (_h = (_g = item.destination) === null || _g === void 0 ? void 0 : _g.name) !== null && _h !== void 0 ? _h : item.destinationId,
+                    },
+                });
+            }
+        });
     });
-    console.log(`result: ${JSON.stringify(result, null, 2)}\n`);
-    return (_g = (_f = (_e = result.data) === null || _e === void 0 ? void 0 : _e.privateListAttractionsByCreatedAt) === null || _f === void 0 ? void 0 : _f.items) !== null && _g !== void 0 ? _g : [];
+    console.log(`attractions created length ${attractionsCreated.length} \n`);
+    return attractionsCreated;
 });
 exports.getAllAttractionsCreatedPastDay = getAllAttractionsCreatedPastDay;
 // itineraries viewed in past 24 hours
 // get all trip destination users with tripPlanViewwedAt > 24 hours ago
 const getAllItineraryViewsPastDay = () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(`yesterday: ${yesterday()}`);
+    console.log(`getting all itinerary views in past day`);
     const itineraries = [];
     yield getAllPaginatedData_1.default((nextToken) => __awaiter(void 0, void 0, void 0, function* () {
-        var _h;
+        var _d;
         const res = yield ApiClient_1.default.get().apiFetch({
             query: lambda_1.lambdaPrivateListTripDestinationUsers,
             variables: {
@@ -102,7 +163,7 @@ const getAllItineraryViewsPastDay = () => __awaiter(void 0, void 0, void 0, func
             },
         });
         return {
-            nextToken: (_h = res.data.privateListTripDestinationUsers) === null || _h === void 0 ? void 0 : _h.nextToken,
+            nextToken: (_d = res.data.privateListTripDestinationUsers) === null || _d === void 0 ? void 0 : _d.nextToken,
             data: res.data,
         };
     }), (data) => {
@@ -112,20 +173,35 @@ const getAllItineraryViewsPastDay = () => __awaiter(void 0, void 0, void 0, func
                 itineraries.push(item);
         });
     });
-    console.log(`result: ${JSON.stringify(itineraries, null, 2)}\n`);
+    console.log(`itinerary views: ${itineraries.length} \n`);
     return itineraries;
 });
 exports.getAllItineraryViewsPastDay = getAllItineraryViewsPastDay;
 const getAllAppSessionsPastDay = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _j, _k, _l;
-    const result = yield ApiClient_1.default.get().apiFetch({
-        query: lambda_1.lambdaPrivateListUserSessionsByCreatedAt,
-        variables: {
-            label: API_1.UserSessionLabel.SESSION,
-            createdAt: { ge: yesterday() },
-        },
+    const sessions = [];
+    yield getAllPaginatedData_1.default((nextToken) => __awaiter(void 0, void 0, void 0, function* () {
+        var _e;
+        const res = yield ApiClient_1.default.get().apiFetch({
+            query: lambda_1.lambdaPrivateListUserSessionsByCreatedAt,
+            variables: {
+                nextToken,
+                label: API_1.UserSessionLabel.SESSION,
+                createdAt: { ge: yesterday() },
+                limit: 500,
+            },
+        });
+        return {
+            nextToken: (_e = res.data.privateListUserSessionsByCreatedAt) === null || _e === void 0 ? void 0 : _e.nextToken,
+            data: res.data,
+        };
+    }), (data) => {
+        var _a;
+        (_a = data === null || data === void 0 ? void 0 : data.privateListUserSessionsByCreatedAt) === null || _a === void 0 ? void 0 : _a.items.forEach((item) => {
+            if (item)
+                sessions.push(item);
+        });
     });
-    console.log(`result: ${JSON.stringify(result, null, 2)}\n`);
-    return (_l = (_k = (_j = result.data) === null || _j === void 0 ? void 0 : _j.privateListUserSessionsByCreatedAt) === null || _k === void 0 ? void 0 : _k.items) !== null && _l !== void 0 ? _l : [];
+    console.log(`sessions: ${sessions.length} \n`);
+    return sessions;
 });
 exports.getAllAppSessionsPastDay = getAllAppSessionsPastDay;

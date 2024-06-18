@@ -8,6 +8,7 @@ type UserSession
   ) {
   id: ID!
   userId: ID!
+  user: User @hasOne(fields: ["userId"])
   deviceType: PLATFORM!
   appVersion: String!
   label: UserSessionLabel!

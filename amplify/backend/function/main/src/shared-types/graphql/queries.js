@@ -586,6 +586,9 @@ exports.getAttraction = `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;

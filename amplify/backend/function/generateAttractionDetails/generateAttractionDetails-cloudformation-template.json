@@ -232,7 +232,7 @@
                 ]
               ]
             },
-            "BING_AI_URL": {
+            "PERPLEXITY_API_KEY": {
               "Fn::Join": [
                 "",
                 [
@@ -250,7 +250,7 @@
                       }
                     ]
                   },
-                  "BING_AI_URL"
+                  "PERPLEXITY_API_KEY"
                 ]
               ]
             }

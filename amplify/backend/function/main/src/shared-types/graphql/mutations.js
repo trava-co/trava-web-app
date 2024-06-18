@@ -3,9 +3,9 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addMigrationFlag = exports.migrateSingleAttraction = exports.tableMigration = exports.uploadToCloudinary = exports.createUserBlock = exports.teaRexDeleteEvent = exports.teaRexCreateEvent = exports.teaRexDeleteEntity = exports.teaRexCreateEntity = exports.createTripMessageNotifications = exports.syncContacts = exports.updateUser = exports.createComment = exports.likeDislikePost = exports.deletePost = exports.createPost = exports.addRemoveFromBucketList = exports.createDestination = exports.deleteTimelineEntry = exports.updateTimelineEntryLodgingDeparture = exports.updateTimelineEntryLodgingArrival = exports.updateTimelineEntryRentalDropoff = exports.updateTimelineEntryRentalPickup = exports.updateTimelineEntryFlight = exports.createTimelineEntryLodgingDeparture = exports.createTimelineEntryLodgingArrival = exports.createTimelineEntryRentalDropoff = exports.createTimelineEntryRentalPickup = exports.createTimelineEntryFlight = exports.deleteUserBySelf = exports.deleteUserByAdmin = exports.deleteAttraction = exports.createAttractionFromPlaceId = exports.adminUpdateAttraction = exports.adminCreateAttraction = exports.putAttractionSwipe = exports.createUserReferral = exports.updateUserFollow = exports.createUserFollow = exports.deleteTripDestination = exports.updateTripDestination = exports.createTripDestination = exports.deleteUserTrip = exports.updateUserTrip = exports.createUserTrip = exports.updateTrip = exports.createTrip = exports.settingsSendReport = exports.signOut = exports.federatedSignUp = void 0;
-exports.privateUpdateUserFollow = exports.privateCreateUserFollow = exports.privateDeleteUserContact = exports.privateUpdateUserContact = exports.privateCreateUserContact = exports.deleteUserBlock = exports.updateUserBlock = exports.privateCreateUserBlock = exports.privateDeleteUser = exports.privateUpdateUser = exports.createUser = exports.privateCreateUpdate = exports.createTripPlanLog = exports.privateDeleteTripDestinationUser = exports.updateTripDestinationUser = exports.privateCreateTripDestinationUser = exports.privateDeleteTripDestination = exports.privateUpdateTripDestination = exports.privateCreateTripDestination = exports.privateUpdateTrip = exports.privateCreateTrip = exports.privateDeleteTimelineEntryMember = exports.privateCreateTimelineEntryMember = exports.privateDeleteTimelineEntry = exports.privateUpdateTimelineEntry = exports.privateCreateTimelineEntry = exports.privateUpdatePost = exports.privateCreatePost = exports.deletePhotographer = exports.updatePhotographer = exports.createPhotographer = exports.deleteNotification = exports.updateNotification = exports.createNotification = exports.privateUpdateMinimumVersion = exports.deleteMessage = exports.updateMessage = exports.createMessage = exports.privateUpdateGooglePlace = exports.privateCreateGooglePlace = exports.privateUpdateFeatureFlag = exports.privateCreateDistance = exports.updateDestination = exports.privateCreateDestination = exports.privateDeleteAttractionSwipe = exports.privateUpdateAttractionSwipe = exports.privateCreateAttractionSwipe = exports.privateUpdateAttraction = exports.privateCreateAttraction = exports.updateGoogleAPIKey = void 0;
-exports.signUp = exports.privateDeleteUserTrip = exports.privateUpdateUserTrip = exports.privateCreateUserTrip = exports.createUserSession = exports.privateCreateUserReferral = exports.createUserPost = exports.deleteUserFollow = void 0;
+exports.migrateSingleAttraction = exports.tableMigration = exports.uploadToCloudinary = exports.createUserBlock = exports.teaRexDeleteEvent = exports.teaRexCreateEvent = exports.teaRexDeleteEntity = exports.teaRexCreateEntity = exports.createTripMessageNotifications = exports.syncContacts = exports.updateUser = exports.createComment = exports.likeDislikePost = exports.deletePost = exports.createPost = exports.addRemoveFromBucketList = exports.createDestination = exports.deleteTimelineEntry = exports.updateTimelineEntryLodgingDeparture = exports.updateTimelineEntryLodgingArrival = exports.updateTimelineEntryRentalDropoff = exports.updateTimelineEntryRentalPickup = exports.updateTimelineEntryFlight = exports.createTimelineEntryLodgingDeparture = exports.createTimelineEntryLodgingArrival = exports.createTimelineEntryRentalDropoff = exports.createTimelineEntryRentalPickup = exports.createTimelineEntryFlight = exports.adminCreateViatorProduct = exports.deleteUserBySelf = exports.deleteUserByAdmin = exports.deleteAttraction = exports.createAttractionFromPlaceId = exports.adminUpdateAttraction = exports.adminCreateAttraction = exports.putAttractionSwipe = exports.createUserReferral = exports.updateUserFollow = exports.createUserFollow = exports.deleteTripDestination = exports.updateTripDestination = exports.createTripDestination = exports.deleteUserTrip = exports.updateUserTrip = exports.createUserTrip = exports.updateTrip = exports.createTrip = exports.settingsSendReport = exports.signOut = exports.federatedSignUp = void 0;
+exports.privateCreateUserFollow = exports.privateDeleteUserContact = exports.privateUpdateUserContact = exports.privateCreateUserContact = exports.deleteUserBlock = exports.updateUserBlock = exports.privateCreateUserBlock = exports.privateDeleteUser = exports.privateUpdateUser = exports.createUser = exports.privateCreateUpdate = exports.createTripPlanLog = exports.privateDeleteTripDestinationUser = exports.updateTripDestinationUser = exports.privateCreateTripDestinationUser = exports.privateDeleteTripDestination = exports.privateUpdateTripDestination = exports.privateCreateTripDestination = exports.privateUpdateTrip = exports.privateCreateTrip = exports.privateDeleteTimelineEntryMember = exports.privateCreateTimelineEntryMember = exports.privateDeleteTimelineEntry = exports.privateUpdateTimelineEntry = exports.privateCreateTimelineEntry = exports.privateUpdatePost = exports.privateCreatePost = exports.deletePhotographer = exports.updatePhotographer = exports.createPhotographer = exports.deleteNotification = exports.updateNotification = exports.createNotification = exports.privateUpdateMinimumVersion = exports.deleteMessage = exports.updateMessage = exports.createMessage = exports.privateUpdateGooglePlace = exports.privateCreateGooglePlace = exports.privateUpdateFeatureFlag = exports.privateCreateDistance = exports.updateDestination = exports.privateCreateDestination = exports.privateDeleteAttractionSwipe = exports.privateUpdateAttractionSwipe = exports.privateCreateAttractionSwipe = exports.privateUpdateAttraction = exports.privateCreateAttraction = exports.updateGoogleAPIKey = exports.addMigrationFlag = void 0;
+exports.signUp = exports.privateCreateViatorProduct = exports.privateDeleteUserTrip = exports.privateUpdateUserTrip = exports.privateCreateUserTrip = exports.createUserSession = exports.privateCreateUserReferral = exports.createUserPost = exports.deleteUserFollow = exports.privateUpdateUserFollow = void 0;
 exports.federatedSignUp = `
   mutation FederatedSignUp($input: FederatedSignUpInput) {
     federatedSignUp(input: $input) {
@@ -753,6 +753,9 @@ exports.adminCreateAttraction = `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -855,6 +858,9 @@ exports.adminUpdateAttraction = `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -993,6 +999,9 @@ exports.deleteAttraction = `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -1069,6 +1078,28 @@ exports.deleteUserByAdmin = `
 exports.deleteUserBySelf = `
   mutation DeleteUserBySelf {
     deleteUserBySelf
+  }
+`;
+exports.adminCreateViatorProduct = `
+  mutation AdminCreateViatorProduct($input: AdminCreateViatorProductInput!) {
+    adminCreateViatorProduct(input: $input) {
+      id
+      attractionId
+      viatorLink
+      name
+      priceText
+      rating {
+        score
+        count
+      }
+      coverImageUrl
+      displayOrder
+      duration
+      pricing
+      currency
+      createdAt
+      updatedAt
+    }
   }
 `;
 exports.createTimelineEntryFlight = `
@@ -1823,6 +1854,9 @@ exports.privateCreateAttraction = `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -1928,6 +1962,9 @@ exports.privateUpdateAttraction = `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -3527,6 +3564,29 @@ exports.privateCreateTripDestinationUser = `
     privateCreateTripDestinationUser(input: $input, condition: $condition) {
       tripId
       destinationId
+      destination {
+        id
+        authorId
+        name
+        icon
+        timezone
+        nearbyThingsToDoCount
+        nearbyPlacesToEatCount
+        nearbyTravaThingsToDoCount
+        nearbyTravaPlacesToEatCount
+        state
+        country
+        continent
+        deletedAt
+        isTravaCreated
+        googlePlaceId
+        featured
+        altName
+        label
+        pendingMigration
+        createdAt
+        updatedAt
+      }
       userId
       user {
         id
@@ -3563,6 +3623,29 @@ exports.updateTripDestinationUser = `
     updateTripDestinationUser(input: $input, condition: $condition) {
       tripId
       destinationId
+      destination {
+        id
+        authorId
+        name
+        icon
+        timezone
+        nearbyThingsToDoCount
+        nearbyPlacesToEatCount
+        nearbyTravaThingsToDoCount
+        nearbyTravaPlacesToEatCount
+        state
+        country
+        continent
+        deletedAt
+        isTravaCreated
+        googlePlaceId
+        featured
+        altName
+        label
+        pendingMigration
+        createdAt
+        updatedAt
+      }
       userId
       user {
         id
@@ -3599,6 +3682,29 @@ exports.privateDeleteTripDestinationUser = `
     privateDeleteTripDestinationUser(input: $input, condition: $condition) {
       tripId
       destinationId
+      destination {
+        id
+        authorId
+        name
+        icon
+        timezone
+        nearbyThingsToDoCount
+        nearbyPlacesToEatCount
+        nearbyTravaThingsToDoCount
+        nearbyTravaPlacesToEatCount
+        state
+        country
+        continent
+        deletedAt
+        isTravaCreated
+        googlePlaceId
+        featured
+        altName
+        label
+        pendingMigration
+        createdAt
+        updatedAt
+      }
       userId
       user {
         id
@@ -4343,6 +4449,26 @@ exports.createUserSession = `
     createUserSession(input: $input, condition: $condition) {
       id
       userId
+      user {
+        id
+        appleId
+        dateOfBirth
+        description
+        email
+        contactEmail
+        facebookId
+        fcmToken
+        googleId
+        location
+        name
+        phone
+        privacy
+        pushNotifications
+        referralLink
+        username
+        createdAt
+        updatedAt
+      }
       deviceType
       appVersion
       label
@@ -4541,6 +4667,31 @@ exports.privateDeleteUserTrip = `
       }
       inviteLink
       lastMessageReadDate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+exports.privateCreateViatorProduct = `
+  mutation PrivateCreateViatorProduct(
+    $input: CreateViatorProductInput!
+    $condition: ModelViatorProductConditionInput
+  ) {
+    privateCreateViatorProduct(input: $input, condition: $condition) {
+      id
+      attractionId
+      viatorLink
+      name
+      priceText
+      rating {
+        score
+        count
+      }
+      coverImageUrl
+      displayOrder
+      duration
+      pricing
+      currency
       createdAt
       updatedAt
     }

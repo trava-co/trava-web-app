@@ -2,118 +2,186 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type FederatedSignUpInput = {
-  appleId?: string | null,
-  dateOfBirth: string,
-  email?: string | null,
-  facebookId?: string | null,
-  googleId?: string | null,
-  name: string,
-  phone?: string | null,
-  privacy: string,
-  sub: string,
-  username: string,
-};
-
-export type FederatedSignUpResponse = {
-  __typename: "FederatedSignUpResponse",
-  id?: string | null,
-};
-
-export type SignOutInput = {
-  id?: string | null,
-  fcmToken?: string | null,
-};
-
-export type SignOutResponse = {
-  __typename: "SignOutResponse",
-  id?: string | null,
-};
-
-export type SettingsSendReportInput = {
-  message: string,
-  userEmail?: string | null,
-  userContactEmail?: string | null,
-};
-
-export type SettingsSendReportResponse = {
-  __typename: "SettingsSendReportResponse",
-  messageId: string,
-};
-
-export type CustomCreateTripInput = {
-  id?: string | null,
-  link?: string | null,
-  name: string,
-  completed?: boolean | null,
-  userIds: Array< string >,
-  destinationIdsWithDates: Array< destinationIdWithDates >,
-};
-
-export type destinationIdWithDates = {
-  id: string,
-  startDate?: number | null,
-  endDate?: number | null,
-};
-
-export type Trip = {
-  __typename: "Trip",
-  id: string,
-  name: string,
-  tripDestinations?: ModelTripDestinationConnection | null,
-  members?: ModelUserTripConnection | null,
-  attractionSwipes?: ModelAttractionSwipeConnection | null,
-  attractionSwipesByUser?: ModelAttractionSwipeConnection | null,
-  timelineEntries?: ModelTimelineEntryConnection | null,
-  completed?: boolean | null,
-  messages?: ModelMessageConnection | null,
-  link?: string | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type ModelTripDestinationConnection = {
-  __typename: "ModelTripDestinationConnection",
-  items:  Array<TripDestination | null >,
-  nextToken?: string | null,
-};
-
-export type TripDestination = {
-  __typename: "TripDestination",
+export type GetExploreVotingListInput = {
   tripId: string,
   destinationId: string,
-  attractionSwipes?: ModelAttractionSwipeConnection | null,
-  destination?: Destination | null,
-  startDate?: number | null,
-  endDate?: number | null,
-  startTime?: TripDestinationTime | null,
-  endTime?: TripDestinationTime | null,
-  tripPlan?:  Array<TripPlanDay | null > | null,
-  tripDestinationUsers?: ModelTripDestinationUserConnection | null,
-  createdAt: string,
-  updatedAt: string,
+  destinationCoords: CoordsInput,
+  searchString?: string | null,
+  attractionType?: ATTRACTION_TYPE | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  distanceType: DistanceType,
+  isViewingMyRecentVotes: boolean,
+  destinationDates?: Array< string > | null,
+  excludeAttractionIds?: Array< string | null > | null,
+  selectedAttractionId?: string | null,
+  pageSize?: number | null,
 };
 
-export type ModelAttractionSwipeConnection = {
-  __typename: "ModelAttractionSwipeConnection",
-  items:  Array<AttractionSwipe | null >,
-  nextToken?: string | null,
+export type CoordsInput = {
+  long: number,
+  lat: number,
 };
 
-export type AttractionSwipe = {
-  __typename: "AttractionSwipe",
-  userId: string,
-  user?: User | null,
-  tripId: string,
-  destinationId: string,
-  destination?: Destination | null,
-  attractionId: string,
-  attraction?: Attraction | null,
-  swipe: AttractionSwipeResult,
-  label: AttractionSwipeLabel,
-  createdAt: string,
-  updatedAt: string,
+export enum ATTRACTION_TYPE {
+  DO = "DO",
+  EAT = "EAT",
+}
+
+
+export enum ATTRACTION_CATEGORY_TYPE {
+  ACTION_AND_ADVENTURE = "ACTION_AND_ADVENTURE",
+  ARTS_AND_CULTURE = "ARTS_AND_CULTURE",
+  ENTERTAINMENT = "ENTERTAINMENT",
+  LEISURE = "LEISURE",
+  NATURE = "NATURE",
+  NIGHTLIFE_AND_DRINKING = "NIGHTLIFE_AND_DRINKING",
+  NON_APPLICABLE = "NON_APPLICABLE",
+  SHOPPING = "SHOPPING",
+  SIGHTS_AND_LANDMARKS = "SIGHTS_AND_LANDMARKS",
+}
+
+
+export enum ATTRACTION_CUISINE_TYPE {
+  AFRICAN = "AFRICAN",
+  AMERICAN_NEW = "AMERICAN_NEW",
+  AMERICAN_TRADITIONAL = "AMERICAN_TRADITIONAL",
+  BAKERY = "BAKERY",
+  BARBEQUE = "BARBEQUE",
+  BREAKFAST = "BREAKFAST",
+  BRUNCH = "BRUNCH",
+  BURGERS = "BURGERS",
+  CAJUN_CREOLE = "CAJUN_CREOLE",
+  CARIBBEAN = "CARIBBEAN",
+  CHINESE = "CHINESE",
+  COFFEE_AND_TEA = "COFFEE_AND_TEA",
+  CUBAN = "CUBAN",
+  EUROPEAN = "EUROPEAN",
+  FARMERS_MARKET = "FARMERS_MARKET",
+  FAST_FOOD = "FAST_FOOD",
+  FINE_DINING = "FINE_DINING",
+  FOOD_HALL = "FOOD_HALL",
+  FRENCH = "FRENCH",
+  FUSION = "FUSION",
+  GERMAN = "GERMAN",
+  GREEK = "GREEK",
+  HAWAIIAN = "HAWAIIAN",
+  ICE_CREAM_AND_DESSERTS = "ICE_CREAM_AND_DESSERTS",
+  INDIAN = "INDIAN",
+  ITALIAN = "ITALIAN",
+  JAPANESE = "JAPANESE",
+  KOREAN = "KOREAN",
+  LATIN_AMERICAN = "LATIN_AMERICAN",
+  MEDITERRANEAN = "MEDITERRANEAN",
+  MEXICAN = "MEXICAN",
+  MIDDLE_EASTERN = "MIDDLE_EASTERN",
+  MODERN = "MODERN",
+  OTHER = "OTHER",
+  PERUVIAN = "PERUVIAN",
+  PIZZA = "PIZZA",
+  PUB = "PUB",
+  SANDWICHES = "SANDWICHES",
+  SEAFOOD = "SEAFOOD",
+  SOUL = "SOUL",
+  SOUTHERN = "SOUTHERN",
+  SOUTHWESTERN = "SOUTHWESTERN",
+  STEAKHOUSE = "STEAKHOUSE",
+  SUSHI = "SUSHI",
+  SPANISH = "SPANISH",
+  TAPAS_AND_SMALL_PLATES = "TAPAS_AND_SMALL_PLATES",
+  TEX = "TEX",
+  THAI = "THAI",
+  VEGAN = "VEGAN",
+  VEGETARIAN = "VEGETARIAN",
+  VIETNAMESE = "VIETNAMESE",
+}
+
+
+export enum DistanceType {
+  NEARBY = "NEARBY",
+  FARTHER_AWAY = "FARTHER_AWAY",
+}
+
+
+export type GetExploreVotingListResponse = {
+  __typename: "GetExploreVotingListResponse",
+  attractions:  Array<ExploreVotingListItem >,
+  nextPageExists: boolean,
+  votedOnAttractionIds: Array< string >,
 };
+
+export type ExploreVotingListItem = {
+  __typename: "ExploreVotingListItem",
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  cost?: ATTRACTION_COST | null,
+  descriptionShort: string,
+  id: string,
+  image?: S3Object | null,
+  inMyBucketList: boolean,
+  inSeason: boolean,
+  name: string,
+  rating?: Rating | null,
+  recommendationBadges?: Array< BADGES | null > | null,
+  swipes?:  Array<ExploreVotingListSwipe | null > | null,
+  type: ATTRACTION_TYPE,
+};
+
+export enum ATTRACTION_COST {
+  FREE = "FREE",
+  UNDER_TEN = "UNDER_TEN",
+  UNDER_TWENTY_FIVE = "UNDER_TWENTY_FIVE",
+  TEN_TO_THIRTY = "TEN_TO_THIRTY",
+  TWENTY_FIVE_TO_FIFTY = "TWENTY_FIVE_TO_FIFTY",
+  THIRTY_TO_SIXTY = "THIRTY_TO_SIXTY",
+  FIFTY_TO_SEVENTY_FIVE = "FIFTY_TO_SEVENTY_FIVE",
+  OVER_SIXTY = "OVER_SIXTY",
+  OVER_SEVENTY_FIVE = "OVER_SEVENTY_FIVE",
+}
+
+
+export type S3Object = {
+  __typename: "S3Object",
+  bucket: string,
+  region: string,
+  key: string,
+  googlePhotoReference?: string | null,
+};
+
+export type Rating = {
+  __typename: "Rating",
+  score?: number | null,
+  count?: number | null,
+};
+
+export enum BADGES {
+  MICHELIN_BIB_GOURMAND = "MICHELIN_BIB_GOURMAND",
+  MICHELIN_ONE_STAR = "MICHELIN_ONE_STAR",
+  MICHELIN_TWO_STAR = "MICHELIN_TWO_STAR",
+  MICHELIN_THREE_STAR = "MICHELIN_THREE_STAR",
+  TIMEOUT = "TIMEOUT",
+  EATER = "EATER",
+  INFATUATION = "INFATUATION",
+  THRILLIST = "THRILLIST",
+  CONDE_NAST = "CONDE_NAST",
+  TRIP_ADVISOR = "TRIP_ADVISOR",
+  TRAVAS_CHOICE = "TRAVAS_CHOICE",
+}
+
+
+export type ExploreVotingListSwipe = {
+  __typename: "ExploreVotingListSwipe",
+  result: AttractionSwipeResult,
+  createdAt: string,
+  authorAvatar?: S3Object | null,
+  authorId: string,
+};
+
+export enum AttractionSwipeResult {
+  LIKE = "LIKE",
+  DISLIKE = "DISLIKE",
+}
+
 
 export type User = {
   __typename: "User",
@@ -148,14 +216,6 @@ export type User = {
   likedPosts?: ModelUserPostLikeConnection | null,
   createdAt: string,
   updatedAt: string,
-};
-
-export type S3Object = {
-  __typename: "S3Object",
-  bucket: string,
-  region: string,
-  key: string,
-  googlePhotoReference?: string | null,
 };
 
 export type ModelUserFollowConnection = {
@@ -221,6 +281,65 @@ export type Post = {
   updatedAt: string,
   deletedAt?: string | null,
   likesCount: number,
+};
+
+export type Trip = {
+  __typename: "Trip",
+  id: string,
+  name: string,
+  tripDestinations?: ModelTripDestinationConnection | null,
+  members?: ModelUserTripConnection | null,
+  attractionSwipes?: ModelAttractionSwipeConnection | null,
+  attractionSwipesByUser?: ModelAttractionSwipeConnection | null,
+  timelineEntries?: ModelTimelineEntryConnection | null,
+  completed?: boolean | null,
+  messages?: ModelMessageConnection | null,
+  link?: string | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type ModelTripDestinationConnection = {
+  __typename: "ModelTripDestinationConnection",
+  items:  Array<TripDestination | null >,
+  nextToken?: string | null,
+};
+
+export type TripDestination = {
+  __typename: "TripDestination",
+  tripId: string,
+  destinationId: string,
+  attractionSwipes?: ModelAttractionSwipeConnection | null,
+  destination?: Destination | null,
+  startDate?: number | null,
+  endDate?: number | null,
+  startTime?: TripDestinationTime | null,
+  endTime?: TripDestinationTime | null,
+  tripPlan?:  Array<TripPlanDay | null > | null,
+  tripDestinationUsers?: ModelTripDestinationUserConnection | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type ModelAttractionSwipeConnection = {
+  __typename: "ModelAttractionSwipeConnection",
+  items:  Array<AttractionSwipe | null >,
+  nextToken?: string | null,
+};
+
+export type AttractionSwipe = {
+  __typename: "AttractionSwipe",
+  userId: string,
+  user?: User | null,
+  tripId: string,
+  destinationId: string,
+  destination?: Destination | null,
+  attractionId: string,
+  attraction?: Attraction | null,
+  swipe: AttractionSwipeResult,
+  label: AttractionSwipeLabel,
+  createdAt: string,
+  updatedAt: string,
 };
 
 export type Destination = {
@@ -295,75 +414,8 @@ export type Attraction = {
   recommendationBadges?: Array< BADGES | null > | null,
   generation?: Generation | null,
   pendingMigration?: boolean | null,
+  viatorProducts?: ModelViatorProductConnection | null,
 };
-
-export enum ATTRACTION_CATEGORY_TYPE {
-  ACTION_AND_ADVENTURE = "ACTION_AND_ADVENTURE",
-  ARTS_AND_CULTURE = "ARTS_AND_CULTURE",
-  ENTERTAINMENT = "ENTERTAINMENT",
-  LEISURE = "LEISURE",
-  NATURE = "NATURE",
-  NIGHTLIFE_AND_DRINKING = "NIGHTLIFE_AND_DRINKING",
-  NON_APPLICABLE = "NON_APPLICABLE",
-  SHOPPING = "SHOPPING",
-  SIGHTS_AND_LANDMARKS = "SIGHTS_AND_LANDMARKS",
-}
-
-
-export enum ATTRACTION_CUISINE_TYPE {
-  AFRICAN = "AFRICAN",
-  AMERICAN_NEW = "AMERICAN_NEW",
-  AMERICAN_TRADITIONAL = "AMERICAN_TRADITIONAL",
-  BAKERY = "BAKERY",
-  BARBEQUE = "BARBEQUE",
-  BREAKFAST = "BREAKFAST",
-  BRUNCH = "BRUNCH",
-  BURGERS = "BURGERS",
-  CAJUN_CREOLE = "CAJUN_CREOLE",
-  CARIBBEAN = "CARIBBEAN",
-  CHINESE = "CHINESE",
-  COFFEE_AND_TEA = "COFFEE_AND_TEA",
-  CUBAN = "CUBAN",
-  EUROPEAN = "EUROPEAN",
-  FARMERS_MARKET = "FARMERS_MARKET",
-  FAST_FOOD = "FAST_FOOD",
-  FINE_DINING = "FINE_DINING",
-  FOOD_HALL = "FOOD_HALL",
-  FRENCH = "FRENCH",
-  FUSION = "FUSION",
-  GERMAN = "GERMAN",
-  GREEK = "GREEK",
-  HAWAIIAN = "HAWAIIAN",
-  ICE_CREAM_AND_DESSERTS = "ICE_CREAM_AND_DESSERTS",
-  INDIAN = "INDIAN",
-  ITALIAN = "ITALIAN",
-  JAPANESE = "JAPANESE",
-  KOREAN = "KOREAN",
-  LATIN_AMERICAN = "LATIN_AMERICAN",
-  MEDITERRANEAN = "MEDITERRANEAN",
-  MEXICAN = "MEXICAN",
-  MIDDLE_EASTERN = "MIDDLE_EASTERN",
-  MODERN = "MODERN",
-  OTHER = "OTHER",
-  PERUVIAN = "PERUVIAN",
-  PIZZA = "PIZZA",
-  PUB = "PUB",
-  SANDWICHES = "SANDWICHES",
-  SEAFOOD = "SEAFOOD",
-  SOUL = "SOUL",
-  SOUTHERN = "SOUTHERN",
-  SOUTHWESTERN = "SOUTHWESTERN",
-  STEAKHOUSE = "STEAKHOUSE",
-  SUSHI = "SUSHI",
-  SPANISH = "SPANISH",
-  TAPAS_AND_SMALL_PLATES = "TAPAS_AND_SMALL_PLATES",
-  TEX = "TEX",
-  THAI = "THAI",
-  VEGAN = "VEGAN",
-  VEGETARIAN = "VEGETARIAN",
-  VIETNAMESE = "VIETNAMESE",
-}
-
 
 export enum ATTRACTION_TARGET_GROUP {
   RAINY = "RAINY",
@@ -397,19 +449,6 @@ export enum ATTRACTION_BEST_VISIT_TIME {
 
 export enum CURRENCY_TYPE {
   USD = "USD",
-}
-
-
-export enum ATTRACTION_COST {
-  FREE = "FREE",
-  UNDER_TEN = "UNDER_TEN",
-  UNDER_TWENTY_FIVE = "UNDER_TWENTY_FIVE",
-  TEN_TO_THIRTY = "TEN_TO_THIRTY",
-  TWENTY_FIVE_TO_FIFTY = "TWENTY_FIVE_TO_FIFTY",
-  THIRTY_TO_SIXTY = "THIRTY_TO_SIXTY",
-  FIFTY_TO_SEVENTY_FIVE = "FIFTY_TO_SEVENTY_FIVE",
-  OVER_SIXTY = "OVER_SIXTY",
-  OVER_SEVENTY_FIVE = "OVER_SEVENTY_FIVE",
 }
 
 
@@ -522,12 +561,6 @@ export enum BusinessStatus {
 }
 
 
-export type Rating = {
-  __typename: "Rating",
-  score?: number | null,
-  count?: number | null,
-};
-
 export type MealServices = {
   __typename: "MealServices",
   servesBreakfast?: boolean | null,
@@ -630,12 +663,6 @@ export type YelpData = {
   reviews?:  Array<Review | null > | null,
 };
 
-export enum ATTRACTION_TYPE {
-  DO = "DO",
-  EAT = "EAT",
-}
-
-
 export enum ATTRACTION_PRIVACY {
   PUBLIC = "PUBLIC",
   PRIVATE = "PRIVATE",
@@ -652,21 +679,6 @@ export type AttractionSeason = {
 
 export enum AttractionLabel {
   ATTRACTION = "ATTRACTION",
-}
-
-
-export enum BADGES {
-  MICHELIN_BIB_GOURMAND = "MICHELIN_BIB_GOURMAND",
-  MICHELIN_ONE_STAR = "MICHELIN_ONE_STAR",
-  MICHELIN_TWO_STAR = "MICHELIN_TWO_STAR",
-  MICHELIN_THREE_STAR = "MICHELIN_THREE_STAR",
-  TIMEOUT = "TIMEOUT",
-  EATER = "EATER",
-  INFATUATION = "INFATUATION",
-  THRILLIST = "THRILLIST",
-  CONDE_NAST = "CONDE_NAST",
-  TRIP_ADVISOR = "TRIP_ADVISOR",
-  TRAVAS_CHOICE = "TRAVAS_CHOICE",
 }
 
 
@@ -693,139 +705,28 @@ export enum Status {
 }
 
 
-export type ModelCommentConnection = {
-  __typename: "ModelCommentConnection",
-  items:  Array<Comment | null >,
+export type ModelViatorProductConnection = {
+  __typename: "ModelViatorProductConnection",
+  items:  Array<ViatorProduct | null >,
   nextToken?: string | null,
 };
 
-export type Comment = {
-  __typename: "Comment",
+export type ViatorProduct = {
+  __typename: "ViatorProduct",
   id: string,
-  postId: string,
-  userId: string,
-  user?: User | null,
-  text: string,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export enum MEDIA_TYPES {
-  IMAGE = "IMAGE",
-  VIDEO = "VIDEO",
-}
-
-
-export type ModelUserPostConnection = {
-  __typename: "ModelUserPostConnection",
-  items:  Array<UserPost | null >,
-  nextToken?: string | null,
-};
-
-export type UserPost = {
-  __typename: "UserPost",
-  userId: string,
-  postId: string,
-  post?: Post | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export enum PRIVACY {
-  PUBLIC = "PUBLIC",
-  PRIVATE = "PRIVATE",
-}
-
-
-export type ModelUserReferralConnection = {
-  __typename: "ModelUserReferralConnection",
-  items:  Array<UserReferral | null >,
-  nextToken?: string | null,
-};
-
-export type UserReferral = {
-  __typename: "UserReferral",
-  userId: string,
-  user?: User | null,
-  referredUserId: string,
-  referredUser?: User | null,
-  referralType: REFERRAL_TYPES,
-  sourceOS?: string | null,
-  matchGuaranteed?: boolean | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export enum REFERRAL_TYPES {
-  TRIP_INVITE = "TRIP_INVITE",
-  PLATFORM_INVITE = "PLATFORM_INVITE",
-  ATTRACTION_SHARE = "ATTRACTION_SHARE",
-  POST_SHARE = "POST_SHARE",
-}
-
-
-export type ModelUserTripConnection = {
-  __typename: "ModelUserTripConnection",
-  items:  Array<UserTrip | null >,
-  nextToken?: string | null,
-};
-
-export type UserTrip = {
-  __typename: "UserTrip",
-  userId: string,
-  user?: User | null,
-  tripId: string,
-  trip?: Trip | null,
-  status: UserTripStatus,
-  invitedByUserId: string,
-  invitedByUser?: User | null,
-  inviteLink?: string | null,
-  lastMessageReadDate?: string | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export enum UserTripStatus {
-  PENDING = "PENDING",
-  APPROVED = "APPROVED",
-}
-
-
-export type ModelUserAttractionConnection = {
-  __typename: "ModelUserAttractionConnection",
-  items:  Array<UserAttraction | null >,
-  nextToken?: string | null,
-};
-
-export type UserAttraction = {
-  __typename: "UserAttraction",
-  userId: string,
   attractionId: string,
-  attraction?: Attraction | null,
-  authorId?: string | null,
-  createdAt?: string | null,
-  updatedAt: string,
-};
-
-export type ModelUserPostLikeConnection = {
-  __typename: "ModelUserPostLikeConnection",
-  items:  Array<UserPostLike | null >,
-  nextToken?: string | null,
-};
-
-export type UserPostLike = {
-  __typename: "UserPostLike",
-  userId: string,
-  postId: string,
+  viatorLink: string,
+  name: string,
+  priceText: string,
+  rating: Rating,
+  coverImageUrl: string,
+  displayOrder: number,
+  duration?: string | null,
+  pricing?: string | null,
+  currency?: string | null,
   createdAt: string,
   updatedAt: string,
 };
-
-export enum AttractionSwipeResult {
-  LIKE = "LIKE",
-  DISLIKE = "DISLIKE",
-}
-
 
 export enum AttractionSwipeLabel {
   SWIPE = "SWIPE",
@@ -862,6 +763,7 @@ export type TripDestinationUser = {
   __typename: "TripDestinationUser",
   tripId: string,
   destinationId: string,
+  destination?: Destination | null,
   userId: string,
   user?: User | null,
   isReady: boolean,
@@ -869,6 +771,33 @@ export type TripDestinationUser = {
   createdAt: string,
   updatedAt: string,
 };
+
+export type ModelUserTripConnection = {
+  __typename: "ModelUserTripConnection",
+  items:  Array<UserTrip | null >,
+  nextToken?: string | null,
+};
+
+export type UserTrip = {
+  __typename: "UserTrip",
+  userId: string,
+  user?: User | null,
+  tripId: string,
+  trip?: Trip | null,
+  status: UserTripStatus,
+  invitedByUserId: string,
+  invitedByUser?: User | null,
+  inviteLink?: string | null,
+  lastMessageReadDate?: string | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export enum UserTripStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+}
+
 
 export type ModelTimelineEntryConnection = {
   __typename: "ModelTimelineEntryConnection",
@@ -1061,6 +990,416 @@ export type Message = {
   sent: boolean,
   createdAt: string,
   updatedAt: string,
+};
+
+export type ModelCommentConnection = {
+  __typename: "ModelCommentConnection",
+  items:  Array<Comment | null >,
+  nextToken?: string | null,
+};
+
+export type Comment = {
+  __typename: "Comment",
+  id: string,
+  postId: string,
+  userId: string,
+  user?: User | null,
+  text: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export enum MEDIA_TYPES {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+}
+
+
+export type ModelUserPostConnection = {
+  __typename: "ModelUserPostConnection",
+  items:  Array<UserPost | null >,
+  nextToken?: string | null,
+};
+
+export type UserPost = {
+  __typename: "UserPost",
+  userId: string,
+  postId: string,
+  post?: Post | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export enum PRIVACY {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+}
+
+
+export type ModelUserReferralConnection = {
+  __typename: "ModelUserReferralConnection",
+  items:  Array<UserReferral | null >,
+  nextToken?: string | null,
+};
+
+export type UserReferral = {
+  __typename: "UserReferral",
+  userId: string,
+  user?: User | null,
+  referredUserId: string,
+  referredUser?: User | null,
+  referralType: REFERRAL_TYPES,
+  sourceOS?: string | null,
+  matchGuaranteed?: boolean | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export enum REFERRAL_TYPES {
+  TRIP_INVITE = "TRIP_INVITE",
+  PLATFORM_INVITE = "PLATFORM_INVITE",
+  ATTRACTION_SHARE = "ATTRACTION_SHARE",
+  POST_SHARE = "POST_SHARE",
+}
+
+
+export type ModelUserAttractionConnection = {
+  __typename: "ModelUserAttractionConnection",
+  items:  Array<UserAttraction | null >,
+  nextToken?: string | null,
+};
+
+export type UserAttraction = {
+  __typename: "UserAttraction",
+  userId: string,
+  attractionId: string,
+  attraction?: Attraction | null,
+  authorId?: string | null,
+  createdAt?: string | null,
+  updatedAt: string,
+};
+
+export type ModelUserPostLikeConnection = {
+  __typename: "ModelUserPostLikeConnection",
+  items:  Array<UserPostLike | null >,
+  nextToken?: string | null,
+};
+
+export type UserPostLike = {
+  __typename: "UserPostLike",
+  userId: string,
+  postId: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type ExploreSearchAttractionsInput = {
+  searchString?: string | null,
+  attractionType?: ATTRACTION_TYPE | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  insideBoundingBox?: BoundingBoxInput | null,
+  outsideBoundingBox?: BoundingBoxInput | null,
+  centerCoords?: CoordsInput | null,
+  selectedAttractionId?: string | null,
+  sortByDistance: boolean,
+  excludeAttractionIds?: Array< string | null > | null,
+};
+
+export type BoundingBoxInput = {
+  topLeftCoords: CoordsInput,
+  bottomRightCoords: CoordsInput,
+};
+
+export type ExploreSearchAttractionsResponse = {
+  __typename: "ExploreSearchAttractionsResponse",
+  attractions?:  Array<ExploreSearchAttractionItem | null > | null,
+  nextPageExists: boolean,
+};
+
+export type ExploreSearchAttractionItem = {
+  __typename: "ExploreSearchAttractionItem",
+  id: string,
+  name: string,
+  locations?:  Array<SearchStartEndLocation | null > | null,
+  distance?: number | null,
+  isTravaCreated: number,
+  images?:  Array<S3Object | null > | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  author?: SearchAttractionAuthorItem | null,
+  bucketListCount: number,
+  duration?: ATTRACTION_DURATION | null,
+  type: ATTRACTION_TYPE,
+  recommendationBadges?: Array< BADGES | null > | null,
+};
+
+export type SearchStartEndLocation = {
+  __typename: "SearchStartEndLocation",
+  id: string,
+  displayOrder?: number | null,
+  deleted?: boolean | null,
+  startLoc: SearchLocation,
+  endLoc: SearchLocation,
+};
+
+export type SearchLocation = {
+  __typename: "SearchLocation",
+  id: string,
+  googlePlaceId: string,
+  timezone?: string | null,
+  googlePlace?: SearchGooglePlace | null,
+};
+
+export type SearchGooglePlace = {
+  __typename: "SearchGooglePlace",
+  data: SearchGooglePlaceData,
+};
+
+export type SearchGooglePlaceData = {
+  __typename: "SearchGooglePlaceData",
+  coords: Coords,
+  name?: string | null,
+  city?: string | null,
+  formattedAddress?: string | null,
+  businessStatus?: BusinessStatus | null,
+  rating?: Rating | null,
+  hours?: Hours | null,
+};
+
+export type SearchAttractionAuthorItem = {
+  __typename: "SearchAttractionAuthorItem",
+  id: string,
+  name?: string | null,
+  username: string,
+  avatar?: S3Object | null,
+};
+
+export type ExploreMapSearchAttractionsInput = {
+  searchString?: string | null,
+  attractionType?: ATTRACTION_TYPE | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  boundingBox: BoundingBoxInput,
+  centerCoords: CoordsInput,
+  selectedAttractionId?: string | null,
+  sortByDistance: boolean,
+};
+
+export type ExploreMapSearchAttractionsResponse = {
+  __typename: "ExploreMapSearchAttractionsResponse",
+  attractions?:  Array<ExploreSearchAttractionItem | null > | null,
+};
+
+export type AddToItinerarySearchInput = {
+  tripId: string,
+  destinationId: string,
+  insideBoundingBox: BoundingBoxInput,
+  outsideBoundingBox?: BoundingBoxInput | null,
+  centerCoords: CoordsInput,
+  destinationDates: Array< string >,
+  searchString?: string | null,
+  attractionType?: ATTRACTION_TYPE | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  selectedAttractionId?: string | null,
+  attractionVotingResults?: Array< AttractionVotingResultsInput > | null,
+  excludeAttractionIds?: Array< string | null > | null,
+};
+
+export type AttractionVotingResultsInput = {
+  attractionId: string,
+  votingResults: VotingResultsInput,
+};
+
+export type VotingResultsInput = {
+  yesVotes: number,
+  noVotes: number,
+};
+
+export type AddToItinerarySearchResponse = {
+  __typename: "AddToItinerarySearchResponse",
+  attractions:  Array<ItinerarySearchAttractionItem >,
+  nextPageExists: boolean,
+};
+
+export type ItinerarySearchAttractionItem = {
+  __typename: "ItinerarySearchAttractionItem",
+  id: string,
+  name: string,
+  locations?:  Array<SearchStartEndLocation | null > | null,
+  isTravaCreated: number,
+  images?:  Array<S3Object | null > | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  author?: SearchAttractionAuthorItem | null,
+  bucketListCount: number,
+  duration?: ATTRACTION_DURATION | null,
+  type: ATTRACTION_TYPE,
+  distance: number,
+  inSeason: boolean,
+  inMyBucketList: boolean,
+  onItinerary: boolean,
+  yesVotes: number,
+  noVotes: number,
+  recommendationBadges?: Array< BADGES | null > | null,
+};
+
+export type AddToItineraryMapSearchInput = {
+  tripId: string,
+  destinationId: string,
+  boundingBox: BoundingBoxInput,
+  centerCoords: CoordsInput,
+  destinationDates: Array< string >,
+  attractionType?: ATTRACTION_TYPE | null,
+  searchString?: string | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  selectedAttractionId?: string | null,
+  attractionVotingResults?: Array< AttractionVotingResultsInput > | null,
+};
+
+export type AddToItineraryMapSearchResponse = {
+  __typename: "AddToItineraryMapSearchResponse",
+  attractions?:  Array<ItinerarySearchAttractionItem | null > | null,
+};
+
+export type CustomDeleteAttractionInput = {
+  id: string,
+};
+
+export type OpenSearchListNearbyAttractionsInput = {
+  centerCoords: CoordsInput,
+  radius: number,
+};
+
+export type OpenSearchListNearbyAttractionsResponse = {
+  __typename: "OpenSearchListNearbyAttractionsResponse",
+  attractions:  Array<OpenSearchListAttractionItem | null >,
+};
+
+export type OpenSearchListAttractionItem = {
+  __typename: "OpenSearchListAttractionItem",
+  id: string,
+  name: string,
+  type: ATTRACTION_TYPE,
+  bestVisited?: Array< ATTRACTION_BEST_VISIT_TIME | null > | null,
+  duration?: ATTRACTION_DURATION | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  locations?:  Array<SearchStartEndLocation | null > | null,
+  seasons?:  Array<AttractionSeason | null > | null,
+  isTravaCreated: number,
+  authorType: AUTHOR_TYPE,
+  deletedAt?: string | null,
+};
+
+export type GetAttractionsForScheduler = {
+  centerCoords: CoordsInput,
+  radius: number,
+  tripId: string,
+  destinationId: string,
+};
+
+export type GetAttractionsForSchedulerResponse = {
+  __typename: "GetAttractionsForSchedulerResponse",
+  attractions?:  Array<OpenSearchListAttractionItem | null > | null,
+};
+
+export type CheckForExistingCardsInput = {
+  googlePlaceId: string,
+  destinationDates?: Array< string | null > | null,
+};
+
+export type CheckForExistingCardsResponse = {
+  __typename: "CheckForExistingCardsResponse",
+  attractions?:  Array<AttractionExistsItem | null > | null,
+};
+
+export type AttractionExistsItem = {
+  __typename: "AttractionExistsItem",
+  id: string,
+  name: string,
+  destinationName?: string | null,
+  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+  bucketListCount: number,
+  isTravaCreated: number,
+  locations?:  Array<SearchStartEndLocation | null > | null,
+  duration?: ATTRACTION_DURATION | null,
+  recommendationBadges?: Array< BADGES | null > | null,
+  images?:  Array<S3Object | null > | null,
+  author?: SearchAttractionAuthorItem | null,
+  type: ATTRACTION_TYPE,
+  deletedAt?: string | null,
+  outOfSeason?: boolean | null,
+};
+
+export type CreateAttractionFromPlaceIdInput = {
+  googlePlaceId: string,
+  destinationDates?: Array< string | null > | null,
+  authorType: AUTHOR_TYPE,
+  recommendationBadges?: Array< BADGES > | null,
+};
+
+export type CreateAttractionFromPlaceIdResponse = {
+  __typename: "CreateAttractionFromPlaceIdResponse",
+  existingAttractions?:  Array<AttractionExistsItem | null > | null,
+  createdAttraction?: AttractionExistsItem | null,
+};
+
+export type FederatedSignUpInput = {
+  appleId?: string | null,
+  dateOfBirth: string,
+  email?: string | null,
+  facebookId?: string | null,
+  googleId?: string | null,
+  name: string,
+  phone?: string | null,
+  privacy: string,
+  sub: string,
+  username: string,
+};
+
+export type FederatedSignUpResponse = {
+  __typename: "FederatedSignUpResponse",
+  id?: string | null,
+};
+
+export type SignOutInput = {
+  id?: string | null,
+  fcmToken?: string | null,
+};
+
+export type SignOutResponse = {
+  __typename: "SignOutResponse",
+  id?: string | null,
+};
+
+export type SettingsSendReportInput = {
+  message: string,
+  userEmail?: string | null,
+  userContactEmail?: string | null,
+};
+
+export type SettingsSendReportResponse = {
+  __typename: "SettingsSendReportResponse",
+  messageId: string,
+};
+
+export type CustomCreateTripInput = {
+  id?: string | null,
+  link?: string | null,
+  name: string,
+  completed?: boolean | null,
+  userIds: Array< string >,
+  destinationIdsWithDates: Array< destinationIdWithDates >,
+};
+
+export type destinationIdWithDates = {
+  id: string,
+  startDate?: number | null,
+  endDate?: number | null,
 };
 
 export type UpdateTripInput = {
@@ -1266,85 +1605,15 @@ export type UpdateAttractionInput = {
   generation?: GenerationInput | null,
 };
 
-export type CreateAttractionFromPlaceIdInput = {
-  googlePlaceId: string,
-  destinationDates?: Array< string | null > | null,
-  authorType: AUTHOR_TYPE,
-  recommendationBadges?: Array< BADGES > | null,
-};
-
-export type CreateAttractionFromPlaceIdResponse = {
-  __typename: "CreateAttractionFromPlaceIdResponse",
-  existingAttractions?:  Array<AttractionExistsItem | null > | null,
-  createdAttraction?: AttractionExistsItem | null,
-};
-
-export type AttractionExistsItem = {
-  __typename: "AttractionExistsItem",
-  id: string,
-  name: string,
-  destinationName?: string | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  bucketListCount: number,
-  isTravaCreated: number,
-  locations?:  Array<SearchStartEndLocation | null > | null,
-  duration?: ATTRACTION_DURATION | null,
-  recommendationBadges?: Array< BADGES | null > | null,
-  images?:  Array<S3Object | null > | null,
-  author?: SearchAttractionAuthorItem | null,
-  type: ATTRACTION_TYPE,
-  deletedAt?: string | null,
-  outOfSeason?: boolean | null,
-};
-
-export type SearchStartEndLocation = {
-  __typename: "SearchStartEndLocation",
-  id: string,
-  displayOrder?: number | null,
-  deleted?: boolean | null,
-  startLoc: SearchLocation,
-  endLoc: SearchLocation,
-};
-
-export type SearchLocation = {
-  __typename: "SearchLocation",
-  id: string,
-  googlePlaceId: string,
-  timezone?: string | null,
-  googlePlace?: SearchGooglePlace | null,
-};
-
-export type SearchGooglePlace = {
-  __typename: "SearchGooglePlace",
-  data: SearchGooglePlaceData,
-};
-
-export type SearchGooglePlaceData = {
-  __typename: "SearchGooglePlaceData",
-  coords: Coords,
-  name?: string | null,
-  city?: string | null,
-  formattedAddress?: string | null,
-  businessStatus?: BusinessStatus | null,
-  rating?: Rating | null,
-  hours?: Hours | null,
-};
-
-export type SearchAttractionAuthorItem = {
-  __typename: "SearchAttractionAuthorItem",
-  id: string,
-  name?: string | null,
-  username: string,
-  avatar?: S3Object | null,
-};
-
-export type CustomDeleteAttractionInput = {
-  id: string,
-};
-
 export type CustomDeleteUserInput = {
   id: string,
+};
+
+export type AdminCreateViatorProductInput = {
+  id: string,
+  url: string,
+  attractionId: string,
+  displayOrder: number,
 };
 
 export type CreateTimelineEntryFlightInput = {
@@ -1569,11 +1838,6 @@ export type CreateDestinationInput = {
   featured?: boolean | null,
   authorId?: string | null,
   label?: string | null,
-};
-
-export type CoordsInput = {
-  long: number,
-  lat: number,
 };
 
 export type addRemoveFromBucketListInput = {
@@ -3034,6 +3298,7 @@ export type UserSession = {
   __typename: "UserSession",
   id: string,
   userId: string,
+  user?: User | null,
   deviceType: PLATFORM,
   appVersion: string,
   label: UserSessionLabel,
@@ -3054,6 +3319,37 @@ export type ModelUserTripConditionInput = {
 export type ModelUserTripStatusInput = {
   eq?: UserTripStatus | null,
   ne?: UserTripStatus | null,
+};
+
+export type CreateViatorProductInput = {
+  id?: string | null,
+  attractionId: string,
+  viatorLink: string,
+  name: string,
+  priceText: string,
+  rating: RatingInput,
+  coverImageUrl: string,
+  displayOrder: number,
+  duration?: string | null,
+  pricing?: string | null,
+  currency?: string | null,
+  createdAt?: string | null,
+};
+
+export type ModelViatorProductConditionInput = {
+  attractionId?: ModelIDInput | null,
+  viatorLink?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  priceText?: ModelStringInput | null,
+  coverImageUrl?: ModelStringInput | null,
+  displayOrder?: ModelIntInput | null,
+  duration?: ModelStringInput | null,
+  pricing?: ModelStringInput | null,
+  currency?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  and?: Array< ModelViatorProductConditionInput | null > | null,
+  or?: Array< ModelViatorProductConditionInput | null > | null,
+  not?: ModelViatorProductConditionInput | null,
 };
 
 export type SignUpInput = {
@@ -3203,16 +3499,6 @@ export type MapBoxGetPlacesLocation = {
 export type MapboxGetTokenResult = {
   __typename: "MapboxGetTokenResult",
   token: string,
-};
-
-export type CheckForExistingCardsInput = {
-  googlePlaceId: string,
-  destinationDates?: Array< string | null > | null,
-};
-
-export type CheckForExistingCardsResponse = {
-  __typename: "CheckForExistingCardsResponse",
-  attractions?:  Array<AttractionExistsItem | null > | null,
 };
 
 export type GetAttractionsToTagToPostInput = {
@@ -3519,63 +3805,6 @@ export type Contact = {
   id: string,
 };
 
-export type ExploreSearchAttractionsInput = {
-  searchString?: string | null,
-  attractionType?: ATTRACTION_TYPE | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  insideBoundingBox?: BoundingBoxInput | null,
-  outsideBoundingBox?: BoundingBoxInput | null,
-  centerCoords?: CoordsInput | null,
-  selectedAttractionId?: string | null,
-  sortByDistance: boolean,
-  excludeAttractionIds?: Array< string | null > | null,
-};
-
-export type BoundingBoxInput = {
-  topLeftCoords: CoordsInput,
-  bottomRightCoords: CoordsInput,
-};
-
-export type ExploreSearchAttractionsResponse = {
-  __typename: "ExploreSearchAttractionsResponse",
-  attractions?:  Array<ExploreSearchAttractionItem | null > | null,
-  nextPageExists: boolean,
-};
-
-export type ExploreSearchAttractionItem = {
-  __typename: "ExploreSearchAttractionItem",
-  id: string,
-  name: string,
-  locations?:  Array<SearchStartEndLocation | null > | null,
-  distance?: number | null,
-  isTravaCreated: number,
-  images?:  Array<S3Object | null > | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  author?: SearchAttractionAuthorItem | null,
-  bucketListCount: number,
-  duration?: ATTRACTION_DURATION | null,
-  type: ATTRACTION_TYPE,
-  recommendationBadges?: Array< BADGES | null > | null,
-};
-
-export type ExploreMapSearchAttractionsInput = {
-  searchString?: string | null,
-  attractionType?: ATTRACTION_TYPE | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  boundingBox: BoundingBoxInput,
-  centerCoords: CoordsInput,
-  selectedAttractionId?: string | null,
-  sortByDistance: boolean,
-};
-
-export type ExploreMapSearchAttractionsResponse = {
-  __typename: "ExploreMapSearchAttractionsResponse",
-  attractions?:  Array<ExploreSearchAttractionItem | null > | null,
-};
-
 export type OpenSearchDestinationsInput = {
   searchString?: string | null,
   centerCoords?: CoordsInput | null,
@@ -3603,159 +3832,6 @@ export type ExploreTopUsersResponse = {
   users?:  Array<SearchUser | null > | null,
 };
 
-export type OpenSearchListNearbyAttractionsInput = {
-  centerCoords: CoordsInput,
-  radius: number,
-};
-
-export type OpenSearchListNearbyAttractionsResponse = {
-  __typename: "OpenSearchListNearbyAttractionsResponse",
-  attractions:  Array<OpenSearchListAttractionItem | null >,
-};
-
-export type OpenSearchListAttractionItem = {
-  __typename: "OpenSearchListAttractionItem",
-  id: string,
-  name: string,
-  type: ATTRACTION_TYPE,
-  bestVisited?: Array< ATTRACTION_BEST_VISIT_TIME | null > | null,
-  duration?: ATTRACTION_DURATION | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  locations?:  Array<SearchStartEndLocation | null > | null,
-  seasons?:  Array<AttractionSeason | null > | null,
-  isTravaCreated: number,
-  authorType: AUTHOR_TYPE,
-  deletedAt?: string | null,
-};
-
-export type AddToItinerarySearchInput = {
-  tripId: string,
-  destinationId: string,
-  insideBoundingBox: BoundingBoxInput,
-  outsideBoundingBox?: BoundingBoxInput | null,
-  centerCoords: CoordsInput,
-  destinationDates: Array< string >,
-  searchString?: string | null,
-  attractionType?: ATTRACTION_TYPE | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  selectedAttractionId?: string | null,
-  attractionVotingResults?: Array< AttractionVotingResultsInput > | null,
-  excludeAttractionIds?: Array< string | null > | null,
-};
-
-export type AttractionVotingResultsInput = {
-  attractionId: string,
-  votingResults: VotingResultsInput,
-};
-
-export type VotingResultsInput = {
-  yesVotes: number,
-  noVotes: number,
-};
-
-export type AddToItinerarySearchResponse = {
-  __typename: "AddToItinerarySearchResponse",
-  attractions:  Array<ItinerarySearchAttractionItem >,
-  nextPageExists: boolean,
-};
-
-export type ItinerarySearchAttractionItem = {
-  __typename: "ItinerarySearchAttractionItem",
-  id: string,
-  name: string,
-  locations?:  Array<SearchStartEndLocation | null > | null,
-  isTravaCreated: number,
-  images?:  Array<S3Object | null > | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  author?: SearchAttractionAuthorItem | null,
-  bucketListCount: number,
-  duration?: ATTRACTION_DURATION | null,
-  type: ATTRACTION_TYPE,
-  distance: number,
-  inSeason: boolean,
-  inMyBucketList: boolean,
-  onItinerary: boolean,
-  yesVotes: number,
-  noVotes: number,
-  recommendationBadges?: Array< BADGES | null > | null,
-};
-
-export type AddToItineraryMapSearchInput = {
-  tripId: string,
-  destinationId: string,
-  boundingBox: BoundingBoxInput,
-  centerCoords: CoordsInput,
-  destinationDates: Array< string >,
-  attractionType?: ATTRACTION_TYPE | null,
-  searchString?: string | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  selectedAttractionId?: string | null,
-  attractionVotingResults?: Array< AttractionVotingResultsInput > | null,
-};
-
-export type AddToItineraryMapSearchResponse = {
-  __typename: "AddToItineraryMapSearchResponse",
-  attractions?:  Array<ItinerarySearchAttractionItem | null > | null,
-};
-
-export type GetExploreVotingListInput = {
-  tripId: string,
-  destinationId: string,
-  destinationCoords: CoordsInput,
-  searchString?: string | null,
-  attractionType?: ATTRACTION_TYPE | null,
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  distanceType: DistanceType,
-  isViewingMyRecentVotes: boolean,
-  destinationDates?: Array< string > | null,
-  excludeAttractionIds?: Array< string | null > | null,
-  selectedAttractionId?: string | null,
-  pageSize?: number | null,
-};
-
-export enum DistanceType {
-  NEARBY = "NEARBY",
-  FARTHER_AWAY = "FARTHER_AWAY",
-}
-
-
-export type GetExploreVotingListResponse = {
-  __typename: "GetExploreVotingListResponse",
-  attractions:  Array<ExploreVotingListItem >,
-  nextPageExists: boolean,
-  votedOnAttractionIds: Array< string >,
-};
-
-export type ExploreVotingListItem = {
-  __typename: "ExploreVotingListItem",
-  attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
-  attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
-  cost?: ATTRACTION_COST | null,
-  descriptionShort: string,
-  id: string,
-  image?: S3Object | null,
-  inMyBucketList: boolean,
-  inSeason: boolean,
-  name: string,
-  rating?: Rating | null,
-  recommendationBadges?: Array< BADGES | null > | null,
-  swipes?:  Array<ExploreVotingListSwipe | null > | null,
-  type: ATTRACTION_TYPE,
-};
-
-export type ExploreVotingListSwipe = {
-  __typename: "ExploreVotingListSwipe",
-  result: AttractionSwipeResult,
-  createdAt: string,
-  authorAvatar?: S3Object | null,
-  authorId: string,
-};
-
 export type GetGoogleAPIKeyInput = {
   platform: PLATFORM,
   isDev: boolean,
@@ -3764,18 +3840,6 @@ export type GetGoogleAPIKeyInput = {
 export type GoogleGetAPIKeyResult = {
   __typename: "GoogleGetAPIKeyResult",
   key: string,
-};
-
-export type GetAttractionsForScheduler = {
-  centerCoords: CoordsInput,
-  radius: number,
-  tripId: string,
-  destinationId: string,
-};
-
-export type GetAttractionsForSchedulerResponse = {
-  __typename: "GetAttractionsForSchedulerResponse",
-  attractions?:  Array<OpenSearchListAttractionItem | null > | null,
 };
 
 export type ModelAttractionFilterInput = {
@@ -4542,6 +4606,1206 @@ export enum PROVIDER {
   APPLE = "APPLE",
 }
 
+
+export type CustomGetExploreVotingListQueryVariables = {
+  input: GetExploreVotingListInput,
+};
+
+export type CustomGetExploreVotingListQuery = {
+  getExploreVotingList?:  {
+    __typename: "GetExploreVotingListResponse",
+    attractions:  Array< {
+      __typename: "ExploreVotingListItem",
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      cost?: ATTRACTION_COST | null,
+      descriptionShort: string,
+      id: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      inMyBucketList: boolean,
+      inSeason: boolean,
+      name: string,
+      rating?:  {
+        __typename: "Rating",
+        score?: number | null,
+        count?: number | null,
+      } | null,
+      recommendationBadges?: Array< BADGES | null > | null,
+      swipes?:  Array< {
+        __typename: "ExploreVotingListSwipe",
+        result: AttractionSwipeResult,
+        createdAt: string,
+        authorAvatar?:  {
+          __typename: "S3Object",
+          key: string,
+          bucket: string,
+          region: string,
+        } | null,
+        authorId: string,
+      } | null > | null,
+      type: ATTRACTION_TYPE,
+    } >,
+    nextPageExists: boolean,
+    votedOnAttractionIds: Array< string >,
+  } | null,
+};
+
+export type CustomGetAttractionQueryVariables = {
+  id: string,
+  userId: string,
+  referrerId: string,
+};
+
+export type CustomGetAttractionQuery = {
+  getUser?:  {
+    __typename: "User",
+    id: string,
+    name?: string | null,
+    follows?:  {
+      __typename: "ModelUserFollowConnection",
+      items:  Array< {
+        __typename: "UserFollow",
+        followedUserId: string,
+        approved: boolean,
+      } | null >,
+    } | null,
+    bucketList?:  {
+      __typename: "ModelUserAttractionConnection",
+      items:  Array< {
+        __typename: "UserAttraction",
+        attractionId: string,
+      } | null >,
+    } | null,
+  } | null,
+  getReferrer?:  {
+    __typename: "User",
+    id: string,
+    username?: string | null,
+    avatar?:  {
+      __typename: "S3Object",
+      key: string,
+      bucket: string,
+      region: string,
+    } | null,
+  } | null,
+  getAttraction?:  {
+    __typename: "Attraction",
+    id: string,
+    attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+    attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+    attractionTargetGroups?: Array< ATTRACTION_TARGET_GROUP | null > | null,
+    authorId?: string | null,
+    bestVisited?: Array< ATTRACTION_BEST_VISIT_TIME | null > | null,
+    costCurrency: CURRENCY_TYPE,
+    cost?: ATTRACTION_COST | null,
+    costNote?: string | null,
+    costType: ATTRACTION_COST_TYPE,
+    descriptionLong: string,
+    descriptionShort: string,
+    destinationId: string,
+    duration?: ATTRACTION_DURATION | null,
+    images?:  Array< {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null > | null,
+    isTravaCreated: number,
+    reservation?: ATTRACTION_RESERVATION | null,
+    locations?:  Array< {
+      __typename: "StartEndLocation",
+      id: string,
+      displayOrder: number,
+      deleted?: boolean | null,
+      startLoc:  {
+        __typename: "Location",
+        googlePlace:  {
+          __typename: "GooglePlace",
+          id: string,
+          isValid: number,
+          dataLastCheckedAt?: string | null,
+          dataLastUpdatedAt?: string | null,
+          data:  {
+            __typename: "PlaceData",
+            coords:  {
+              __typename: "Coords",
+              lat: number,
+              long: number,
+            },
+            city?: string | null,
+            state?: string | null,
+            country?: string | null,
+            continent?: string | null,
+            name?: string | null,
+            formattedAddress?: string | null,
+            googlePlacePageLink?: string | null,
+            websiteLink?: string | null,
+            phone?: string | null,
+            photos?:  Array< {
+              __typename: "PlacePhoto",
+              photo_reference?: string | null,
+            } | null > | null,
+            hours?:  {
+              __typename: "Hours",
+              weekdayText: Array< string >,
+              periods:  Array< {
+                __typename: "Period",
+                open:  {
+                  __typename: "OpenCloseTime",
+                  day: number,
+                  time: string,
+                },
+                close?:  {
+                  __typename: "OpenCloseTime",
+                  day: number,
+                  time: string,
+                } | null,
+              } >,
+            } | null,
+            businessStatus?: BusinessStatus | null,
+            rating?:  {
+              __typename: "Rating",
+              score?: number | null,
+              count?: number | null,
+            } | null,
+          },
+          webData?:  {
+            __typename: "PlaceWebData",
+            menuLink?: string | null,
+            reservationLink?: string | null,
+          } | null,
+        },
+        googlePlaceId: string,
+        timezone?: string | null,
+        id: string,
+      },
+      endLoc:  {
+        __typename: "Location",
+        googlePlace:  {
+          __typename: "GooglePlace",
+          id: string,
+          isValid: number,
+          dataLastCheckedAt?: string | null,
+          dataLastUpdatedAt?: string | null,
+          data:  {
+            __typename: "PlaceData",
+            coords:  {
+              __typename: "Coords",
+              lat: number,
+              long: number,
+            },
+            city?: string | null,
+            state?: string | null,
+            country?: string | null,
+            continent?: string | null,
+            name?: string | null,
+            formattedAddress?: string | null,
+            googlePlacePageLink?: string | null,
+            websiteLink?: string | null,
+            phone?: string | null,
+            photos?:  Array< {
+              __typename: "PlacePhoto",
+              photo_reference?: string | null,
+            } | null > | null,
+            hours?:  {
+              __typename: "Hours",
+              weekdayText: Array< string >,
+              periods:  Array< {
+                __typename: "Period",
+                open:  {
+                  __typename: "OpenCloseTime",
+                  day: number,
+                  time: string,
+                },
+                close?:  {
+                  __typename: "OpenCloseTime",
+                  day: number,
+                  time: string,
+                } | null,
+              } >,
+            } | null,
+            businessStatus?: BusinessStatus | null,
+            rating?:  {
+              __typename: "Rating",
+              score?: number | null,
+              count?: number | null,
+            } | null,
+          },
+          webData?:  {
+            __typename: "PlaceWebData",
+            menuLink?: string | null,
+            reservationLink?: string | null,
+          } | null,
+        },
+        googlePlaceId: string,
+        timezone?: string | null,
+        id: string,
+      },
+    } | null > | null,
+    name: string,
+    reservationNote?: string | null,
+    type: ATTRACTION_TYPE,
+    createdAt: string,
+    updatedAt?: string | null,
+    destination?:  {
+      __typename: "Destination",
+      id: string,
+      name: string,
+      icon?: string | null,
+      timezone?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      featured?: boolean | null,
+    } | null,
+    author?:  {
+      __typename: "User",
+      id: string,
+      username?: string | null,
+      name?: string | null,
+      avatar?:  {
+        __typename: "S3Object",
+        key: string,
+        bucket: string,
+        region: string,
+      } | null,
+      privacy?: PRIVACY | null,
+      facebookId?: string | null,
+      googleId?: string | null,
+      appleId?: string | null,
+      description?: string | null,
+      location?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      items:  Array< {
+        __typename: "ViatorProduct",
+        id: string,
+        viatorLink: string,
+        attractionId: string,
+        displayOrder: number,
+        name: string,
+        duration?: string | null,
+        pricing?: string | null,
+        currency?: string | null,
+        priceText: string,
+        coverImageUrl: string,
+        rating:  {
+          __typename: "Rating",
+          score?: number | null,
+          count?: number | null,
+        },
+        createdAt: string,
+        updatedAt: string,
+      } | null >,
+    } | null,
+    deletedAt?: string | null,
+    bucketListCount: number,
+    privacy: ATTRACTION_PRIVACY,
+    recommendationBadges?: Array< BADGES | null > | null,
+    generation?:  {
+      __typename: "Generation",
+      step: GenerationStep,
+      status: Status,
+    } | null,
+  } | null,
+};
+
+export type CustomGetMapAttractionQueryVariables = {
+  id: string,
+};
+
+export type CustomGetMapAttractionQuery = {
+  getAttraction?:  {
+    __typename: "Attraction",
+    id: string,
+    duration?: ATTRACTION_DURATION | null,
+    type: ATTRACTION_TYPE,
+    images?:  Array< {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null > | null,
+    locations?:  Array< {
+      __typename: "StartEndLocation",
+      id: string,
+      startLoc:  {
+        __typename: "Location",
+        id: string,
+        googlePlace:  {
+          __typename: "GooglePlace",
+          data:  {
+            __typename: "PlaceData",
+            coords:  {
+              __typename: "Coords",
+              lat: number,
+              long: number,
+            },
+          },
+        },
+      },
+      endLoc:  {
+        __typename: "Location",
+        id: string,
+        googlePlace:  {
+          __typename: "GooglePlace",
+          data:  {
+            __typename: "PlaceData",
+            coords:  {
+              __typename: "Coords",
+              lat: number,
+              long: number,
+            },
+          },
+        },
+      },
+    } | null > | null,
+    name: string,
+    bucketListCount: number,
+  } | null,
+};
+
+export type CustomExploreSearchAttractionsQueryVariables = {
+  input?: ExploreSearchAttractionsInput | null,
+};
+
+export type CustomExploreSearchAttractionsQuery = {
+  exploreSearchAttractions?:  {
+    __typename: "ExploreSearchAttractionsResponse",
+    attractions?:  Array< {
+      __typename: "ExploreSearchAttractionItem",
+      id: string,
+      name: string,
+      distance?: number | null,
+      isTravaCreated: number,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      author?:  {
+        __typename: "SearchAttractionAuthorItem",
+        username: string,
+      } | null,
+      bucketListCount: number,
+      recommendationBadges?: Array< BADGES | null > | null,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              rating?:  {
+                __typename: "Rating",
+                score?: number | null,
+              } | null,
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+      } | null > | null,
+      images?:  Array< {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null > | null,
+    } | null > | null,
+    nextPageExists: boolean,
+  } | null,
+};
+
+export type CustomExploreMapSearchAttractionsQueryVariables = {
+  input?: ExploreMapSearchAttractionsInput | null,
+};
+
+export type CustomExploreMapSearchAttractionsQuery = {
+  exploreMapSearchAttractions?:  {
+    __typename: "ExploreMapSearchAttractionsResponse",
+    attractions?:  Array< {
+      __typename: "ExploreSearchAttractionItem",
+      id: string,
+      name: string,
+      distance?: number | null,
+      isTravaCreated: number,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      author?:  {
+        __typename: "SearchAttractionAuthorItem",
+        username: string,
+      } | null,
+      bucketListCount: number,
+      duration?: ATTRACTION_DURATION | null,
+      type: ATTRACTION_TYPE,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+      } | null > | null,
+      images?:  Array< {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null > | null,
+    } | null > | null,
+  } | null,
+};
+
+export type CustomAddToItinerarySearchQueryVariables = {
+  input?: AddToItinerarySearchInput | null,
+};
+
+export type CustomAddToItinerarySearchQuery = {
+  addToItinerarySearch?:  {
+    __typename: "AddToItinerarySearchResponse",
+    attractions:  Array< {
+      __typename: "ItinerarySearchAttractionItem",
+      id: string,
+      name: string,
+      isTravaCreated: number,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      bucketListCount: number,
+      recommendationBadges?: Array< BADGES | null > | null,
+      duration?: ATTRACTION_DURATION | null,
+      type: ATTRACTION_TYPE,
+      distance: number,
+      inSeason: boolean,
+      inMyBucketList: boolean,
+      onItinerary: boolean,
+      yesVotes: number,
+      noVotes: number,
+      author?:  {
+        __typename: "SearchAttractionAuthorItem",
+        id: string,
+        username: string,
+      } | null,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              rating?:  {
+                __typename: "Rating",
+                score?: number | null,
+              } | null,
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+      } | null > | null,
+      images?:  Array< {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null > | null,
+    } >,
+    nextPageExists: boolean,
+  } | null,
+};
+
+export type CustomAddToItineraryMapSearchQueryVariables = {
+  input?: AddToItineraryMapSearchInput | null,
+};
+
+export type CustomAddToItineraryMapSearchQuery = {
+  addToItineraryMapSearch?:  {
+    __typename: "AddToItineraryMapSearchResponse",
+    attractions?:  Array< {
+      __typename: "ItinerarySearchAttractionItem",
+      id: string,
+      name: string,
+      distance: number,
+      isTravaCreated: number,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      yesVotes: number,
+      noVotes: number,
+      author?:  {
+        __typename: "SearchAttractionAuthorItem",
+        username: string,
+      } | null,
+      bucketListCount: number,
+      duration?: ATTRACTION_DURATION | null,
+      type: ATTRACTION_TYPE,
+      inSeason: boolean,
+      inMyBucketList: boolean,
+      onItinerary: boolean,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+      } | null > | null,
+      images?:  Array< {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null > | null,
+    } | null > | null,
+  } | null,
+};
+
+export type CustomDeleteAttractionMutationVariables = {
+  input: CustomDeleteAttractionInput,
+};
+
+export type CustomDeleteAttractionMutation = {
+  deleteAttraction?:  {
+    __typename: "Attraction",
+    id: string,
+    attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+    attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+    attractionTargetGroups?: Array< ATTRACTION_TARGET_GROUP | null > | null,
+    author?:  {
+      __typename: "User",
+      id: string,
+      appleId?: string | null,
+      description?: string | null,
+      facebookId?: string | null,
+      fcmToken?: string | null,
+      googleId?: string | null,
+      location?: string | null,
+      name?: string | null,
+      privacy?: PRIVACY | null,
+      pushNotifications?: boolean | null,
+      username?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    authorId?: string | null,
+    bestVisited?: Array< ATTRACTION_BEST_VISIT_TIME | null > | null,
+    costCurrency: CURRENCY_TYPE,
+    cost?: ATTRACTION_COST | null,
+    costNote?: string | null,
+    costType: ATTRACTION_COST_TYPE,
+    descriptionLong: string,
+    descriptionShort: string,
+    destination?:  {
+      __typename: "Destination",
+      id: string,
+      name: string,
+      icon?: string | null,
+      timezone?: string | null,
+      deletedAt?: string | null,
+      isTravaCreated: number,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
+    destinationId: string,
+    duration?: ATTRACTION_DURATION | null,
+    images?:  Array< {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null > | null,
+    reservation?: ATTRACTION_RESERVATION | null,
+    name: string,
+    reservationNote?: string | null,
+    type: ATTRACTION_TYPE,
+    isTravaCreated: number,
+    deletedAt?: string | null,
+    privacy: ATTRACTION_PRIVACY,
+    bucketListCount: number,
+    createdAt: string,
+    updatedAt?: string | null,
+  } | null,
+};
+
+export type CustomGetAttractionTripLogsQueryVariables = {
+  id: string,
+};
+
+export type CustomGetAttractionTripLogsQuery = {
+  getAttraction?:  {
+    __typename: "Attraction",
+    name: string,
+    type: ATTRACTION_TYPE,
+  } | null,
+};
+
+export type CustomOpenSearchListNearbyAttractionsQueryVariables = {
+  input?: OpenSearchListNearbyAttractionsInput | null,
+};
+
+export type CustomOpenSearchListNearbyAttractionsQuery = {
+  openSearchListNearbyAttractions?:  {
+    __typename: "OpenSearchListNearbyAttractionsResponse",
+    attractions:  Array< {
+      __typename: "OpenSearchListAttractionItem",
+      id: string,
+      name: string,
+      type: ATTRACTION_TYPE,
+      bestVisited?: Array< ATTRACTION_BEST_VISIT_TIME | null > | null,
+      duration?: ATTRACTION_DURATION | null,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                long: number,
+                lat: number,
+              },
+              hours?:  {
+                __typename: "Hours",
+                periods:  Array< {
+                  __typename: "Period",
+                  open:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  },
+                  close?:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  } | null,
+                } >,
+              } | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+          googlePlaceId: string,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                long: number,
+                lat: number,
+              },
+              hours?:  {
+                __typename: "Hours",
+                periods:  Array< {
+                  __typename: "Period",
+                  open:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  },
+                  close?:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  } | null,
+                } >,
+              } | null,
+            },
+          } | null,
+          googlePlaceId: string,
+        },
+      } | null > | null,
+      seasons?:  Array< {
+        __typename: "AttractionSeason",
+        startDay?: number | null,
+        startMonth?: number | null,
+        endDay?: number | null,
+        endMonth?: number | null,
+      } | null > | null,
+      isTravaCreated: number,
+      authorType: AUTHOR_TYPE,
+      deletedAt?: string | null,
+    } | null >,
+  } | null,
+};
+
+export type CustomGetAttractionsForSchedulerQueryVariables = {
+  input?: GetAttractionsForScheduler | null,
+};
+
+export type CustomGetAttractionsForSchedulerQuery = {
+  getAttractionsForScheduler?:  {
+    __typename: "GetAttractionsForSchedulerResponse",
+    attractions?:  Array< {
+      __typename: "OpenSearchListAttractionItem",
+      id: string,
+      name: string,
+      type: ATTRACTION_TYPE,
+      bestVisited?: Array< ATTRACTION_BEST_VISIT_TIME | null > | null,
+      duration?: ATTRACTION_DURATION | null,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                long: number,
+                lat: number,
+              },
+              hours?:  {
+                __typename: "Hours",
+                periods:  Array< {
+                  __typename: "Period",
+                  open:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  },
+                  close?:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  } | null,
+                } >,
+              } | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+          googlePlaceId: string,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                long: number,
+                lat: number,
+              },
+              hours?:  {
+                __typename: "Hours",
+                periods:  Array< {
+                  __typename: "Period",
+                  open:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  },
+                  close?:  {
+                    __typename: "OpenCloseTime",
+                    day: number,
+                    time: string,
+                  } | null,
+                } >,
+              } | null,
+            },
+          } | null,
+          googlePlaceId: string,
+        },
+      } | null > | null,
+      seasons?:  Array< {
+        __typename: "AttractionSeason",
+        startDay?: number | null,
+        startMonth?: number | null,
+        endDay?: number | null,
+        endMonth?: number | null,
+      } | null > | null,
+      isTravaCreated: number,
+      authorType: AUTHOR_TYPE,
+      deletedAt?: string | null,
+    } | null > | null,
+  } | null,
+};
+
+export type CustomGetUserAttractionIdsForAddToVotingDeckQueryVariables = {
+  userId: string,
+  tripId: string,
+  destinationId: string,
+  type?: ATTRACTION_TYPE | null,
+};
+
+export type CustomGetUserAttractionIdsForAddToVotingDeckQuery = {
+  getUser?:  {
+    __typename: "User",
+    myCards?:  {
+      __typename: "ModelAttractionConnection",
+      items:  Array< {
+        __typename: "Attraction",
+        id: string,
+      } | null >,
+    } | null,
+    bucketList?:  {
+      __typename: "ModelUserAttractionConnection",
+      items:  Array< {
+        __typename: "UserAttraction",
+        attractionId: string,
+        attraction?:  {
+          __typename: "Attraction",
+          deletedAt?: string | null,
+        } | null,
+      } | null >,
+    } | null,
+    userTrips?:  {
+      __typename: "ModelUserTripConnection",
+      items:  Array< {
+        __typename: "UserTrip",
+        trip?:  {
+          __typename: "Trip",
+          tripDestinations?:  {
+            __typename: "ModelTripDestinationConnection",
+            items:  Array< {
+              __typename: "TripDestination",
+              destination?:  {
+                __typename: "Destination",
+                name: string,
+                coords:  {
+                  __typename: "Coords",
+                  lat: number,
+                  long: number,
+                },
+              } | null,
+              endDate?: number | null,
+              startDate?: number | null,
+            } | null >,
+          } | null,
+        } | null,
+      } | null >,
+    } | null,
+  } | null,
+};
+
+export type CustomCheckForExistingCardsQueryVariables = {
+  input: CheckForExistingCardsInput,
+};
+
+export type CustomCheckForExistingCardsQuery = {
+  checkForExistingCards?:  {
+    __typename: "CheckForExistingCardsResponse",
+    attractions?:  Array< {
+      __typename: "AttractionExistsItem",
+      id: string,
+      name: string,
+      destinationName?: string | null,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      bucketListCount: number,
+      isTravaCreated: number,
+      type: ATTRACTION_TYPE,
+      deletedAt?: string | null,
+      outOfSeason?: boolean | null,
+      author?:  {
+        __typename: "SearchAttractionAuthorItem",
+        id: string,
+        name?: string | null,
+        username: string,
+        avatar?:  {
+          __typename: "S3Object",
+          key: string,
+          bucket: string,
+          region: string,
+        } | null,
+      } | null,
+      images?:  Array< {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null > | null,
+    } | null > | null,
+  } | null,
+};
+
+export type CustomOnUpdateAttractionSubscriptionVariables = {
+  id: string,
+};
+
+export type CustomOnUpdateAttractionSubscription = {
+  onUpdateAttraction?:  {
+    __typename: "Attraction",
+    id: string,
+  } | null,
+};
+
+export type CustomCreateAttractionFromPlaceIdMutationVariables = {
+  input: CreateAttractionFromPlaceIdInput,
+};
+
+export type CustomCreateAttractionFromPlaceIdMutation = {
+  createAttractionFromPlaceId?:  {
+    __typename: "CreateAttractionFromPlaceIdResponse",
+    existingAttractions?:  Array< {
+      __typename: "AttractionExistsItem",
+      id: string,
+      name: string,
+      destinationName?: string | null,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      bucketListCount: number,
+      isTravaCreated: number,
+      type: ATTRACTION_TYPE,
+      deletedAt?: string | null,
+      outOfSeason?: boolean | null,
+      duration?: ATTRACTION_DURATION | null,
+      recommendationBadges?: Array< BADGES | null > | null,
+      images?:  Array< {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null > | null,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+      } | null > | null,
+    } | null > | null,
+    createdAttraction?:  {
+      __typename: "AttractionExistsItem",
+      id: string,
+      name: string,
+      destinationName?: string | null,
+      attractionCategories?: Array< ATTRACTION_CATEGORY_TYPE | null > | null,
+      attractionCuisine?: Array< ATTRACTION_CUISINE_TYPE | null > | null,
+      bucketListCount: number,
+      isTravaCreated: number,
+      type: ATTRACTION_TYPE,
+      deletedAt?: string | null,
+      outOfSeason?: boolean | null,
+      duration?: ATTRACTION_DURATION | null,
+      recommendationBadges?: Array< BADGES | null > | null,
+      images?:  Array< {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null > | null,
+      locations?:  Array< {
+        __typename: "SearchStartEndLocation",
+        id: string,
+        deleted?: boolean | null,
+        startLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+        endLoc:  {
+          __typename: "SearchLocation",
+          id: string,
+          googlePlaceId: string,
+          googlePlace?:  {
+            __typename: "SearchGooglePlace",
+            data:  {
+              __typename: "SearchGooglePlaceData",
+              coords:  {
+                __typename: "Coords",
+                lat: number,
+                long: number,
+              },
+              city?: string | null,
+              businessStatus?: BusinessStatus | null,
+            },
+          } | null,
+        },
+      } | null > | null,
+    } | null,
+  } | null,
+};
 
 export type FederatedSignUpMutationVariables = {
   input?: FederatedSignUpInput | null,
@@ -5402,6 +6666,10 @@ export type AdminCreateAttractionMutation = {
       lastFailureReason?: string | null,
     } | null,
     pendingMigration?: boolean | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -5514,6 +6782,10 @@ export type AdminUpdateAttractionMutation = {
       lastFailureReason?: string | null,
     } | null,
     pendingMigration?: boolean | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -5666,6 +6938,10 @@ export type DeleteAttractionMutation = {
       lastFailureReason?: string | null,
     } | null,
     pendingMigration?: boolean | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -5756,11 +7032,35 @@ export type DeleteUserByAdminMutation = {
   } | null,
 };
 
-export type DeleteUserBySelfMutationVariables = {
-};
-
 export type DeleteUserBySelfMutation = {
   deleteUserBySelf?: boolean | null,
+};
+
+export type AdminCreateViatorProductMutationVariables = {
+  input: AdminCreateViatorProductInput,
+};
+
+export type AdminCreateViatorProductMutation = {
+  adminCreateViatorProduct?:  {
+    __typename: "ViatorProduct",
+    id: string,
+    attractionId: string,
+    viatorLink: string,
+    name: string,
+    priceText: string,
+    rating:  {
+      __typename: "Rating",
+      score?: number | null,
+      count?: number | null,
+    },
+    coverImageUrl: string,
+    displayOrder: number,
+    duration?: string | null,
+    pricing?: string | null,
+    currency?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
 };
 
 export type CreateTimelineEntryFlightMutationVariables = {
@@ -5780,9 +7080,6 @@ export type CreateTimelineEntryFlightMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -5809,9 +7106,6 @@ export type CreateTimelineEntryRentalPickupMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -5838,9 +7132,6 @@ export type CreateTimelineEntryRentalDropoffMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -5867,9 +7158,6 @@ export type CreateTimelineEntryLodgingArrivalMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -5896,9 +7184,6 @@ export type CreateTimelineEntryLodgingDepartureMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -5925,9 +7210,6 @@ export type UpdateTimelineEntryFlightMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -5954,9 +7236,6 @@ export type UpdateTimelineEntryRentalPickupMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -5983,9 +7262,6 @@ export type UpdateTimelineEntryRentalDropoffMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -6012,9 +7288,6 @@ export type UpdateTimelineEntryLodgingArrivalMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -6041,9 +7314,6 @@ export type UpdateTimelineEntryLodgingDepartureMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -6070,9 +7340,6 @@ export type DeleteTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -6687,6 +7954,10 @@ export type PrivateCreateAttractionMutation = {
       lastFailureReason?: string | null,
     } | null,
     pendingMigration?: boolean | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -6800,6 +8071,10 @@ export type PrivateUpdateAttractionMutation = {
       lastFailureReason?: string | null,
     } | null,
     pendingMigration?: boolean | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -8154,9 +9429,6 @@ export type PrivateCreateTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -8184,9 +9456,6 @@ export type PrivateUpdateTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -8214,9 +9483,6 @@ export type PrivateDeleteTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -8555,6 +9821,30 @@ export type PrivateCreateTripDestinationUserMutation = {
     __typename: "TripDestinationUser",
     tripId: string,
     destinationId: string,
+    destination?:  {
+      __typename: "Destination",
+      id: string,
+      authorId?: string | null,
+      name: string,
+      icon?: string | null,
+      timezone?: string | null,
+      nearbyThingsToDoCount?: number | null,
+      nearbyPlacesToEatCount?: number | null,
+      nearbyTravaThingsToDoCount?: number | null,
+      nearbyTravaPlacesToEatCount?: number | null,
+      state?: string | null,
+      country?: string | null,
+      continent?: string | null,
+      deletedAt?: string | null,
+      isTravaCreated: number,
+      googlePlaceId?: string | null,
+      featured?: boolean | null,
+      altName?: string | null,
+      label: string,
+      pendingMigration?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     userId: string,
     user?:  {
       __typename: "User",
@@ -8594,6 +9884,30 @@ export type UpdateTripDestinationUserMutation = {
     __typename: "TripDestinationUser",
     tripId: string,
     destinationId: string,
+    destination?:  {
+      __typename: "Destination",
+      id: string,
+      authorId?: string | null,
+      name: string,
+      icon?: string | null,
+      timezone?: string | null,
+      nearbyThingsToDoCount?: number | null,
+      nearbyPlacesToEatCount?: number | null,
+      nearbyTravaThingsToDoCount?: number | null,
+      nearbyTravaPlacesToEatCount?: number | null,
+      state?: string | null,
+      country?: string | null,
+      continent?: string | null,
+      deletedAt?: string | null,
+      isTravaCreated: number,
+      googlePlaceId?: string | null,
+      featured?: boolean | null,
+      altName?: string | null,
+      label: string,
+      pendingMigration?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     userId: string,
     user?:  {
       __typename: "User",
@@ -8633,6 +9947,30 @@ export type PrivateDeleteTripDestinationUserMutation = {
     __typename: "TripDestinationUser",
     tripId: string,
     destinationId: string,
+    destination?:  {
+      __typename: "Destination",
+      id: string,
+      authorId?: string | null,
+      name: string,
+      icon?: string | null,
+      timezone?: string | null,
+      nearbyThingsToDoCount?: number | null,
+      nearbyPlacesToEatCount?: number | null,
+      nearbyTravaThingsToDoCount?: number | null,
+      nearbyTravaPlacesToEatCount?: number | null,
+      state?: string | null,
+      country?: string | null,
+      continent?: string | null,
+      deletedAt?: string | null,
+      isTravaCreated: number,
+      googlePlaceId?: string | null,
+      featured?: boolean | null,
+      altName?: string | null,
+      label: string,
+      pendingMigration?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     userId: string,
     user?:  {
       __typename: "User",
@@ -9467,6 +10805,27 @@ export type CreateUserSessionMutation = {
     __typename: "UserSession",
     id: string,
     userId: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      appleId?: string | null,
+      dateOfBirth?: string | null,
+      description?: string | null,
+      email?: string | null,
+      contactEmail?: string | null,
+      facebookId?: string | null,
+      fcmToken?: string | null,
+      googleId?: string | null,
+      location?: string | null,
+      name?: string | null,
+      phone?: string | null,
+      privacy?: PRIVACY | null,
+      pushNotifications?: boolean | null,
+      referralLink?: string | null,
+      username?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     deviceType: PLATFORM,
     appVersion: string,
     label: UserSessionLabel,
@@ -9685,6 +11044,34 @@ export type PrivateDeleteUserTripMutation = {
   } | null,
 };
 
+export type PrivateCreateViatorProductMutationVariables = {
+  input: CreateViatorProductInput,
+  condition?: ModelViatorProductConditionInput | null,
+};
+
+export type PrivateCreateViatorProductMutation = {
+  privateCreateViatorProduct?:  {
+    __typename: "ViatorProduct",
+    id: string,
+    attractionId: string,
+    viatorLink: string,
+    name: string,
+    priceText: string,
+    rating:  {
+      __typename: "Rating",
+      score?: number | null,
+      count?: number | null,
+    },
+    coverImageUrl: string,
+    displayOrder: number,
+    duration?: string | null,
+    pricing?: string | null,
+    currency?: string | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
+
 export type SignUpMutationVariables = {
   input?: SignUpInput | null,
 };
@@ -9766,9 +11153,6 @@ export type MapBoxGetPlacesQuery = {
     } | null,
     placeName: string,
   } | null > | null,
-};
-
-export type MapBoxGetTokenQueryVariables = {
 };
 
 export type MapBoxGetTokenQuery = {
@@ -9869,9 +11253,6 @@ export type FlightStatsGetScheduleDetailsQueryVariables = {
 export type FlightStatsGetScheduleDetailsQuery = {
   flightStatsGetScheduleDetails?:  {
     __typename: "FlightStatsScheduleDetails",
-    appendix?:  {
-      __typename: "FlightStatsAppendix",
-    } | null,
     scheduledFlights?:  Array< {
       __typename: "FlightStatsScheduledFlights",
       carrierFsCode?: string | null,
@@ -9897,9 +11278,6 @@ export type FlightStatsGetScheduleDetailsQuery = {
       url?: string | null,
     } | null,
   } | null,
-};
-
-export type HomeTabsFeedQueryVariables = {
 };
 
 export type HomeTabsFeedQuery = {
@@ -10044,9 +11422,6 @@ export type NotificationPostQuery = {
   } | null,
 };
 
-export type GetUserContactsQueryVariables = {
-};
-
 export type GetUserContactsQuery = {
   getUserContacts?:  {
     __typename: "GetUserContactsResponse",
@@ -10145,9 +11520,6 @@ export type OpenSearchDestinationsQuery = {
       numberOfExperiences?: number | null,
     } | null > | null,
   } | null,
-};
-
-export type ExploreTopUsersQueryVariables = {
 };
 
 export type ExploreTopUsersQuery = {
@@ -10415,6 +11787,10 @@ export type GetAttractionQuery = {
       lastFailureReason?: string | null,
     } | null,
     pendingMigration?: boolean | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -11746,9 +13122,6 @@ export type PrivateGetTimelineEntryQuery = {
     notes?: string | null,
     date: number,
     time: number,
-    flightDetails?:  {
-      __typename: "FlightStatsScheduleDetails",
-    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -12768,6 +14141,30 @@ export type OnUpdateTripDestinationUserByTripIdSubscription = {
     __typename: "TripDestinationUser",
     tripId: string,
     destinationId: string,
+    destination?:  {
+      __typename: "Destination",
+      id: string,
+      authorId?: string | null,
+      name: string,
+      icon?: string | null,
+      timezone?: string | null,
+      nearbyThingsToDoCount?: number | null,
+      nearbyPlacesToEatCount?: number | null,
+      nearbyTravaThingsToDoCount?: number | null,
+      nearbyTravaPlacesToEatCount?: number | null,
+      state?: string | null,
+      country?: string | null,
+      continent?: string | null,
+      deletedAt?: string | null,
+      isTravaCreated: number,
+      googlePlaceId?: string | null,
+      featured?: boolean | null,
+      altName?: string | null,
+      label: string,
+      pendingMigration?: boolean | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null,
     userId: string,
     user?:  {
       __typename: "User",
@@ -13082,6 +14479,10 @@ export type OnUpdateAttractionSubscription = {
       lastFailureReason?: string | null,
     } | null,
     pendingMigration?: boolean | null,
+    viatorProducts?:  {
+      __typename: "ModelViatorProductConnection",
+      nextToken?: string | null,
+    } | null,
   } | null,
 };
 
@@ -13179,4 +14580,67 @@ export type OnPutAttractionSwipeByTripIdByDestinationIdSubscription = {
     createdAt: string,
     updatedAt: string,
   } | null,
+};
+
+export type AttractionLocationCustomGetAttractionFragment = {
+  __typename: "Location",
+  googlePlace:  {
+    __typename: "GooglePlace",
+    id: string,
+    isValid: number,
+    dataLastCheckedAt?: string | null,
+    dataLastUpdatedAt?: string | null,
+    data:  {
+      __typename: "PlaceData",
+      coords:  {
+        __typename: "Coords",
+        lat: number,
+        long: number,
+      },
+      city?: string | null,
+      state?: string | null,
+      country?: string | null,
+      continent?: string | null,
+      name?: string | null,
+      formattedAddress?: string | null,
+      googlePlacePageLink?: string | null,
+      websiteLink?: string | null,
+      phone?: string | null,
+      photos?:  Array< {
+        __typename: "PlacePhoto",
+        photo_reference?: string | null,
+      } | null > | null,
+      hours?:  {
+        __typename: "Hours",
+        weekdayText: Array< string >,
+        periods:  Array< {
+          __typename: "Period",
+          open:  {
+            __typename: "OpenCloseTime",
+            day: number,
+            time: string,
+          },
+          close?:  {
+            __typename: "OpenCloseTime",
+            day: number,
+            time: string,
+          } | null,
+        } >,
+      } | null,
+      businessStatus?: BusinessStatus | null,
+      rating?:  {
+        __typename: "Rating",
+        score?: number | null,
+        count?: number | null,
+      } | null,
+    },
+    webData?:  {
+      __typename: "PlaceWebData",
+      menuLink?: string | null,
+      reservationLink?: string | null,
+    } | null,
+  },
+  googlePlaceId: string,
+  timezone?: string | null,
+  id: string,
 };

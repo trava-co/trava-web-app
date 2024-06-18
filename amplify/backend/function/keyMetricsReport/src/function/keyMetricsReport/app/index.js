@@ -47,7 +47,7 @@ const handler = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`User sessions today: ${userSessionsTodayLength}`);
     const userSessionsCsv = userSessionsToday
         .filter((userSession) => !!userSession)
-        .map((userSession) => `${userSession.id},${userSession.userId},${userSession.deviceType},${userSession.appVersion},${userSession.createdAt}`)
+        .map((userSession) => { var _a, _b, _c; return `${userSession.id},${userSession.userId},${(_a = userSession.user) === null || _a === void 0 ? void 0 : _a.username},${(_b = userSession.user) === null || _b === void 0 ? void 0 : _b.name},${(_c = userSession.user) === null || _c === void 0 ? void 0 : _c.email},${userSession.deviceType},${userSession.appVersion},${userSession.createdAt}`; })
         .join('\n');
     const usersOpeningApp = userSessionsToday
         .filter((userSession) => !!userSession)
@@ -65,9 +65,14 @@ const handler = () => __awaiter(void 0, void 0, void 0, function* () {
     const newAttractionSwipesTodayLength = (_c = newAttractionSwipesToday === null || newAttractionSwipesToday === void 0 ? void 0 : newAttractionSwipesToday.length) !== null && _c !== void 0 ? _c : 0;
     console.log(`New swipes today: ${newAttractionSwipesTodayLength}`);
     const newAttractionSwipesByAuthorId = newAttractionSwipesToday.reduce((acc, swipe) => {
-        var _a;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         if (swipe === null || swipe === void 0 ? void 0 : swipe.userId) {
-            return Object.assign(Object.assign({}, acc), { [swipe.userId]: ((_a = acc[swipe.userId]) !== null && _a !== void 0 ? _a : 0) + 1 });
+            return Object.assign(Object.assign({}, acc), { [swipe.userId]: {
+                    swipeCount: ((_b = (_a = acc[swipe.userId]) === null || _a === void 0 ? void 0 : _a.swipeCount) !== null && _b !== void 0 ? _b : 0) + 1,
+                    username: (_d = (_c = swipe.user) === null || _c === void 0 ? void 0 : _c.username) !== null && _d !== void 0 ? _d : '',
+                    name: (_f = (_e = swipe.user) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : '',
+                    email: (_h = (_g = swipe.user) === null || _g === void 0 ? void 0 : _g.email) !== null && _h !== void 0 ? _h : '',
+                } });
         }
         else {
             return acc;
@@ -86,7 +91,7 @@ const handler = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     }, {});
     const newAttractionSwipesCsv = Object.entries(newAttractionSwipesByAuthorId)
-        .map(([id, count]) => `${id},${count}`)
+        .map(([id, { swipeCount, username, name, email }]) => `${id},${username},${name},${email},${swipeCount}`)
         .join('\n');
     const newAttractionSwipesByDestinationCsv = Object.entries(newAttractionSwipesByDestinationId)
         .map(([id, { destinationName, swipeCount }]) => `${id},${destinationName},${swipeCount}`)
@@ -99,9 +104,14 @@ const handler = () => __awaiter(void 0, void 0, void 0, function* () {
     const userAttractions = newAttractionsCreatedToday.filter((attraction) => (attraction === null || attraction === void 0 ? void 0 : attraction.authorType) === API_1.AUTHOR_TYPE.USER);
     // assemble dictionary of authorIds to number of attractions created from userAttractions
     const userAttractionsByAuthorId = userAttractions.reduce((acc, attraction) => {
-        var _a;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         if (attraction === null || attraction === void 0 ? void 0 : attraction.authorId) {
-            return Object.assign(Object.assign({}, acc), { [attraction.authorId]: ((_a = acc[attraction.authorId]) !== null && _a !== void 0 ? _a : 0) + 1 });
+            return Object.assign(Object.assign({}, acc), { [attraction.authorId]: {
+                    count: ((_b = (_a = acc[attraction.authorId]) === null || _a === void 0 ? void 0 : _a.count) !== null && _b !== void 0 ? _b : 0) + 1,
+                    username: (_d = (_c = attraction.author) === null || _c === void 0 ? void 0 : _c.username) !== null && _d !== void 0 ? _d : '',
+                    name: (_f = (_e = attraction.author) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : '',
+                    email: (_h = (_g = attraction.author) === null || _g === void 0 ? void 0 : _g.email) !== null && _h !== void 0 ? _h : '',
+                } });
         }
         else {
             return acc;
@@ -136,7 +146,7 @@ const handler = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     }, {});
     const attractionsCreatedByUserCsv = Object.entries(userAttractionsByAuthorId)
-        .map(([id, count]) => `${id},${count}`)
+        .map(([id, { count, username, name, email }]) => `${id},${username},${name},${email},${count}`)
         .join('\n');
     const attractionsCreatedByDestinationCsv = Object.entries(destinationIdsToAttractionsCreated)
         .map(([id, { destinationName, userAttractions, adminAttractions }]) => `${id},${destinationName},${userAttractions},${adminAttractions}`)
@@ -145,7 +155,7 @@ const handler = () => __awaiter(void 0, void 0, void 0, function* () {
     const tripDestinationUserViewingItineraryInPastDay = yield getAllPastDay_1.getAllItineraryViewsPastDay();
     const tripDestinationUserViewingItineraryInPastDayLength = (_e = tripDestinationUserViewingItineraryInPastDay === null || tripDestinationUserViewingItineraryInPastDay === void 0 ? void 0 : tripDestinationUserViewingItineraryInPastDay.length) !== null && _e !== void 0 ? _e : 0;
     const itineraryFirstTimeViewsCsv = tripDestinationUserViewingItineraryInPastDay
-        .map((user) => `${user === null || user === void 0 ? void 0 : user.userId},${user === null || user === void 0 ? void 0 : user.tripId},${user === null || user === void 0 ? void 0 : user.destinationId},${user === null || user === void 0 ? void 0 : user.tripPlanViewedAt}`)
+        .map((user) => { var _a, _b, _c, _d; return `${user === null || user === void 0 ? void 0 : user.userId},${(_a = user === null || user === void 0 ? void 0 : user.user) === null || _a === void 0 ? void 0 : _a.username},${(_b = user === null || user === void 0 ? void 0 : user.user) === null || _b === void 0 ? void 0 : _b.name}, ${(_c = user === null || user === void 0 ? void 0 : user.user) === null || _c === void 0 ? void 0 : _c.email},${user === null || user === void 0 ? void 0 : user.tripId},${user === null || user === void 0 ? void 0 : user.destinationId},${(_d = user === null || user === void 0 ? void 0 : user.destination) === null || _d === void 0 ? void 0 : _d.name},${user === null || user === void 0 ? void 0 : user.tripPlanViewedAt}`; })
         .join('\n');
     // assemble message
     const message = `Metrics Report for ${formattedDate}:\n- New Users: ${newUsersTodayLength}\n- App sessions: ${userSessionsTodayLength} sessions from ${numberOfUsersOpeningApp} different users\n- New Swipes: ${newAttractionSwipesTodayLength} swipes from ${(_g = (_f = Object.keys(newAttractionSwipesByAuthorId)) === null || _f === void 0 ? void 0 : _f.length) !== null && _g !== void 0 ? _g : 0} different users\n- New Attractions (Admin): ${adminAttractions.length}\n- New Attractions (User): ${userAttractions.length} attractions from ${(_j = (_h = Object.keys(userAttractionsByAuthorId)) === null || _h === void 0 ? void 0 : _h.length) !== null && _j !== void 0 ? _j : 0} different users\n- Users who viewed a new itinerary: ${tripDestinationUserViewingItineraryInPastDayLength}\n--------------------------------------------------------------------------------------------------------------------------------------------------\n`;

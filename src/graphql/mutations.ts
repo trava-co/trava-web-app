@@ -749,6 +749,9 @@ export const adminCreateAttraction = /* GraphQL */ `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -851,6 +854,9 @@ export const adminUpdateAttraction = /* GraphQL */ `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -989,6 +995,9 @@ export const deleteAttraction = /* GraphQL */ `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -1065,6 +1074,28 @@ export const deleteUserByAdmin = /* GraphQL */ `
 export const deleteUserBySelf = /* GraphQL */ `
   mutation DeleteUserBySelf {
     deleteUserBySelf
+  }
+`;
+export const adminCreateViatorProduct = /* GraphQL */ `
+  mutation AdminCreateViatorProduct($input: AdminCreateViatorProductInput!) {
+    adminCreateViatorProduct(input: $input) {
+      id
+      attractionId
+      viatorLink
+      name
+      priceText
+      rating {
+        score
+        count
+      }
+      coverImageUrl
+      displayOrder
+      duration
+      pricing
+      currency
+      createdAt
+      updatedAt
+    }
   }
 `;
 export const createTimelineEntryFlight = /* GraphQL */ `
@@ -1819,6 +1850,9 @@ export const privateCreateAttraction = /* GraphQL */ `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -1924,6 +1958,9 @@ export const privateUpdateAttraction = /* GraphQL */ `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;
@@ -3523,6 +3560,29 @@ export const privateCreateTripDestinationUser = /* GraphQL */ `
     privateCreateTripDestinationUser(input: $input, condition: $condition) {
       tripId
       destinationId
+      destination {
+        id
+        authorId
+        name
+        icon
+        timezone
+        nearbyThingsToDoCount
+        nearbyPlacesToEatCount
+        nearbyTravaThingsToDoCount
+        nearbyTravaPlacesToEatCount
+        state
+        country
+        continent
+        deletedAt
+        isTravaCreated
+        googlePlaceId
+        featured
+        altName
+        label
+        pendingMigration
+        createdAt
+        updatedAt
+      }
       userId
       user {
         id
@@ -3559,6 +3619,29 @@ export const updateTripDestinationUser = /* GraphQL */ `
     updateTripDestinationUser(input: $input, condition: $condition) {
       tripId
       destinationId
+      destination {
+        id
+        authorId
+        name
+        icon
+        timezone
+        nearbyThingsToDoCount
+        nearbyPlacesToEatCount
+        nearbyTravaThingsToDoCount
+        nearbyTravaPlacesToEatCount
+        state
+        country
+        continent
+        deletedAt
+        isTravaCreated
+        googlePlaceId
+        featured
+        altName
+        label
+        pendingMigration
+        createdAt
+        updatedAt
+      }
       userId
       user {
         id
@@ -3595,6 +3678,29 @@ export const privateDeleteTripDestinationUser = /* GraphQL */ `
     privateDeleteTripDestinationUser(input: $input, condition: $condition) {
       tripId
       destinationId
+      destination {
+        id
+        authorId
+        name
+        icon
+        timezone
+        nearbyThingsToDoCount
+        nearbyPlacesToEatCount
+        nearbyTravaThingsToDoCount
+        nearbyTravaPlacesToEatCount
+        state
+        country
+        continent
+        deletedAt
+        isTravaCreated
+        googlePlaceId
+        featured
+        altName
+        label
+        pendingMigration
+        createdAt
+        updatedAt
+      }
       userId
       user {
         id
@@ -4339,6 +4445,26 @@ export const createUserSession = /* GraphQL */ `
     createUserSession(input: $input, condition: $condition) {
       id
       userId
+      user {
+        id
+        appleId
+        dateOfBirth
+        description
+        email
+        contactEmail
+        facebookId
+        fcmToken
+        googleId
+        location
+        name
+        phone
+        privacy
+        pushNotifications
+        referralLink
+        username
+        createdAt
+        updatedAt
+      }
       deviceType
       appVersion
       label
@@ -4537,6 +4663,31 @@ export const privateDeleteUserTrip = /* GraphQL */ `
       }
       inviteLink
       lastMessageReadDate
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const privateCreateViatorProduct = /* GraphQL */ `
+  mutation PrivateCreateViatorProduct(
+    $input: CreateViatorProductInput!
+    $condition: ModelViatorProductConditionInput
+  ) {
+    privateCreateViatorProduct(input: $input, condition: $condition) {
+      id
+      attractionId
+      viatorLink
+      name
+      priceText
+      rating {
+        score
+        count
+      }
+      coverImageUrl
+      displayOrder
+      duration
+      pricing
+      currency
       createdAt
       updatedAt
     }

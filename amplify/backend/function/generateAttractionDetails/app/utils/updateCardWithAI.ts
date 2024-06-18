@@ -26,7 +26,7 @@ import { generateTravaDescriptions } from './trava/generateTravaDescriptions'
 import { logError } from './logError'
 import * as TravaCardCreationErrors from './TravaCardCreationErrors'
 import { infoItemsToString } from './infoItemToString'
-import { getLogisticsForTypeDoFromBing } from './trava/getLogisticsForTypeDoFromBing'
+import { getLogisticsForTypeDoFromOnlineLLM } from './trava/getLogisticsForTypeDoFromOnlineLLM'
 
 export type TravaDescriptions = {
   existingDescriptionShort?: string
@@ -49,7 +49,7 @@ export interface IUpdateCardWithAIInput {
   duration?: string
   descriptions?: string[]
   existingTravaDescriptions?: TravaDescriptions // for attractions, we'll generate descriptions in a separate initial request. Subsequent requests will use the existing descriptions.
-  bingDescription?: string
+  onlineLLMDescription?: string
   recommendationBadges?: BADGES[]
   generateLogistics?: boolean // for type do, this should be true on second pass
   bestVisitedByPopularTimes?: ATTRACTION_BEST_VISIT_TIME[]
@@ -90,7 +90,7 @@ export async function updateCardWithAI(cardInput: IUpdateCardWithAIInput): Promi
     duration,
     descriptions,
     existingTravaDescriptions,
-    bingDescription,
+    onlineLLMDescription,
     recommendationBadges,
     generateLogistics,
     bestVisitedByPopularTimes,
@@ -131,14 +131,14 @@ export async function updateCardWithAI(cardInput: IUpdateCardWithAIInput): Promi
 
   const travaDescriptionsExist = travaAttraction.descriptionShort && travaAttraction.descriptionLong
 
-  // if type DO, and generateLogistics is true, we only need to generate logistics, which require bingDescription
+  // if type DO, and generateLogistics is true, we only need to generate logistics, which require onlineLLMDescription
   if (isTypeDo) {
-    if (generateLogistics && !bingDescription) {
+    if (generateLogistics && !onlineLLMDescription) {
       throw new TravaCardCreationErrors.TravaDoAttractionMissingBingInfoError({
         attractionId,
         attractionName: name,
         destinationName,
-        message: `Trava DO attraction is missing bingDescription`,
+        message: `Trava DO attraction is missing onlineLLMDescription`,
       })
     } else if (!generateLogistics && travaDescriptionsExist) {
       throw new TravaCardCreationErrors.TravaDoAttractionAlreadyHasDescriptionsError({
@@ -177,7 +177,7 @@ export async function updateCardWithAI(cardInput: IUpdateCardWithAIInput): Promi
     aboutDetailsString,
     ...(reviews ?? []),
     ...(descriptions ?? []),
-    bingDescription,
+    onlineLLMDescription,
   ].filter((item): item is string => Boolean(item))
 
   const relevanceMap = await getSentenceRelevanceMap({
@@ -223,15 +223,15 @@ export async function updateCardWithAI(cardInput: IUpdateCardWithAIInput): Promi
   }
 
   if (isTypeDo) {
-    // must rely on bingDescription for logistics
+    // must rely on onlineLLMDescription for logistics
     if (generateLogistics) {
       try {
-        console.log('updateCardWithAI second pass for type do: using bing response to get logistics from openai')
-        const { attractionCategories, reservation, attractionTargetGroups } = await getLogisticsForTypeDoFromBing({
+        console.log('updateCardWithAI second pass for type do: using onlineLLM response to get logistics from openai')
+        const { attractionCategories, reservation, attractionTargetGroups } = await getLogisticsForTypeDoFromOnlineLLM({
           attractionId,
           attractionName: name,
           destinationName,
-          bingDescription: bingDescription as string, // must be defined because generateLogistics is true
+          onlineLLMDescription: onlineLLMDescription as string, // must be defined because generateLogistics is true
         })
 
         travaAttraction = {
@@ -243,12 +243,12 @@ export async function updateCardWithAI(cardInput: IUpdateCardWithAIInput): Promi
       } catch (error) {
         await logError({
           error: error as Error,
-          context: `getLogisticsForTypeDoFromBing for ${name} in ${destinationName}`,
+          context: `getLogisticsForTypeDoFromOnlineLLM for ${name} in ${destinationName}`,
           shouldThrow: true,
         })
       }
     } else {
-      // if bingDescription doesn't exist, return travaAttraction with trava descriptions & w/o logistics. Generate bingDescription with trava descriptions, then re-invoke this fn with bingDescription
+      // if onlineLLMDescription doesn't exist, return travaAttraction with trava descriptions & w/o logistics. Generate onlineLLMDescription with trava descriptions, then re-invoke this fn with onlineLLMDescription
       return {
         attraction: travaAttraction,
         generatedSummary,
@@ -256,7 +256,7 @@ export async function updateCardWithAI(cardInput: IUpdateCardWithAIInput): Promi
     }
   }
 
-  // categories, reservations, targetGroups may already exist from bingDescription
+  // categories, reservations, targetGroups may already exist from onlineLLMDescription
   if (
     (isTypeDo && !travaAttraction.attractionCategories?.length) ||
     (isTypeEat && !travaAttraction.attractionCuisine?.length)
@@ -359,7 +359,7 @@ export async function updateCardWithAI(cardInput: IUpdateCardWithAIInput): Promi
         recSourcePrice: price,
         attractionType,
         relevanceMap,
-        bingDescription,
+        onlineLLMDescription,
       })
 
       travaAttraction = {

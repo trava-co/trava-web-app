@@ -23,6 +23,7 @@ type TripDestinationUser
       queryField: "listTripDestinationUsersByTripByDestination"
     )
   destinationId: ID!
+  destination: Destination @hasOne(fields: ["destinationId"])
   userId: ID!
   user: User @hasOne(fields: ["userId"])
   isReady: Boolean!

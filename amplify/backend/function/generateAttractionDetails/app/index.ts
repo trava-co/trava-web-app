@@ -14,7 +14,7 @@ import {
 import { IScrapeWebData, ScrapeGoogleWebDataResult, scrapeWebData } from './utils/scrapeWebData'
 import { IGetYelpAPIInput } from './utils/yelp'
 import { IUpdateCardWithAIInput, updateCardWithAI } from './utils/updateCardWithAI'
-import { askBingToClassifyLogistics } from './utils/askBingToClassifyLogistics'
+import { askOnlineLLMToClassifyLogistics } from './utils/askOnlineLLMToClassifyLogistics'
 import { updateAttraction, updateAttractionWithFailure } from './utils/updateAttraction'
 import { updateGooglePlace } from './utils/updateGooglePlace'
 import { OTHER_DESTINATION_ID } from './utils/constants'
@@ -82,6 +82,16 @@ export const handler: AppSyncResolverHandler<GenerateAttractionDetailsQueryVaria
         ...(googlePlace.data.continent && { continent: googlePlace.data.continent }),
       })
       console.log(`updated destinationId: ${destinationId}`)
+    }
+
+    // step 0: if type DO, start request to onlineLLM
+    let onlineLLMDescriptionPromise: Promise<string> | null = null
+    if (attraction.type === ATTRACTION_TYPE.DO) {
+      console.log(`\n\n\n Now calling askOnlineLLMToClassifyLogistics \n\n\n`)
+      onlineLLMDescriptionPromise = askOnlineLLMToClassifyLogistics({
+        attractionName: attraction.name,
+        destinationName: googlePlace.data.city ?? '',
+      })
     }
 
     // step 1: assemble input for scraping web data
@@ -218,15 +228,15 @@ export const handler: AppSyncResolverHandler<GenerateAttractionDetailsQueryVaria
     }
 
     // else, type do
-    // parse response, ask bing chat, and then invoke the function again with generateLogistics = true
+    // parse response, ask onlineLLM, and then invoke the function again with generateLogistics = true
 
-    // step 6: call askBingToClassifyLogistics
-    console.log(`\n\n\n Now calling askBingToClassifyLogistics \n\n\n`)
-    const getLogisticsFromBingResponse = await askBingToClassifyLogistics({
-      attractionName: attraction.name,
-      destinationName: googlePlace.data.city ?? '',
-      descriptionLong: updateCardWithAIResponse.attraction.descriptionLong,
-    })
+    // step 6: await onlineLLMDescriptionPromise
+    const onlineLLMDescription = onlineLLMDescriptionPromise ? await onlineLLMDescriptionPromise : undefined
+
+    if (!onlineLLMDescription) {
+      // should never happen because askOnlineLLMToClassifyLogistics throws an error if onlineLLMDescription is null, but just in case
+      throw new Error('generateAttractionDetails: onlineLLMDescription is null')
+    }
 
     // step 7: call updateCardWithAI again, this time with generateLogistics = true
     const secondPassToGetLogisticsForTypeDo = await updateCardWithAI({
@@ -236,7 +246,7 @@ export const handler: AppSyncResolverHandler<GenerateAttractionDetailsQueryVaria
         existingDescriptionLong: updateCardWithAIResponse.attraction.descriptionLong,
       },
       generateLogistics: true,
-      bingDescription: getLogisticsFromBingResponse,
+      onlineLLMDescription,
     })
 
     console.log(`Finished second pass to get logistics for type DO. Now, updating attraction and googlePlace`)

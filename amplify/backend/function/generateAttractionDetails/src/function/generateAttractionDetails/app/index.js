@@ -7,7 +7,7 @@ exports.handler = void 0;
 const API_1 = require("shared-types/API");
 const scrapeWebData_1 = require("./utils/scrapeWebData");
 const updateCardWithAI_1 = require("./utils/updateCardWithAI");
-const askBingToClassifyLogistics_1 = require("./utils/askBingToClassifyLogistics");
+const askOnlineLLMToClassifyLogistics_1 = require("./utils/askOnlineLLMToClassifyLogistics");
 const updateAttraction_1 = require("./utils/updateAttraction");
 const updateGooglePlace_1 = require("./utils/updateGooglePlace");
 const constants_1 = require("./utils/constants");
@@ -63,6 +63,15 @@ const handler = async (event) => {
                 ...(googlePlace.data.continent && { continent: googlePlace.data.continent }),
             });
             console.log(`updated destinationId: ${destinationId}`);
+        }
+        // step 0: if type DO, start request to onlineLLM
+        let onlineLLMDescriptionPromise = null;
+        if (attraction.type === API_1.ATTRACTION_TYPE.DO) {
+            console.log(`\n\n\n Now calling askOnlineLLMToClassifyLogistics \n\n\n`);
+            onlineLLMDescriptionPromise = (0, askOnlineLLMToClassifyLogistics_1.askOnlineLLMToClassifyLogistics)({
+                attractionName: attraction.name,
+                destinationName: googlePlace.data.city ?? '',
+            });
         }
         // step 1: assemble input for scraping web data
         const placeData = {
@@ -177,14 +186,13 @@ const handler = async (event) => {
             return;
         }
         // else, type do
-        // parse response, ask bing chat, and then invoke the function again with generateLogistics = true
-        // step 6: call askBingToClassifyLogistics
-        console.log(`\n\n\n Now calling askBingToClassifyLogistics \n\n\n`);
-        const getLogisticsFromBingResponse = await (0, askBingToClassifyLogistics_1.askBingToClassifyLogistics)({
-            attractionName: attraction.name,
-            destinationName: googlePlace.data.city ?? '',
-            descriptionLong: updateCardWithAIResponse.attraction.descriptionLong,
-        });
+        // parse response, ask onlineLLM, and then invoke the function again with generateLogistics = true
+        // step 6: await onlineLLMDescriptionPromise
+        const onlineLLMDescription = onlineLLMDescriptionPromise ? await onlineLLMDescriptionPromise : undefined;
+        if (!onlineLLMDescription) {
+            // should never happen because askOnlineLLMToClassifyLogistics throws an error if onlineLLMDescription is null, but just in case
+            throw new Error('generateAttractionDetails: onlineLLMDescription is null');
+        }
         // step 7: call updateCardWithAI again, this time with generateLogistics = true
         const secondPassToGetLogisticsForTypeDo = await (0, updateCardWithAI_1.updateCardWithAI)({
             ...updateCardWithAIInput,
@@ -193,7 +201,7 @@ const handler = async (event) => {
                 existingDescriptionLong: updateCardWithAIResponse.attraction.descriptionLong,
             },
             generateLogistics: true,
-            bingDescription: getLogisticsFromBingResponse,
+            onlineLLMDescription,
         });
         console.log(`Finished second pass to get logistics for type DO. Now, updating attraction and googlePlace`);
         const updateAttractionInput = {

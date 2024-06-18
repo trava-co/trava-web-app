@@ -1,8 +1,8 @@
-import { OpenAI } from "openai";
+import OpenAI from "openai";
 import express from 'express';
 import cors from 'cors';
-import XLSX from 'xlsx';
-import fs from 'fs';
+// import XLSX from 'xlsx';
+// import fs from 'fs';
 
 const app = express();
 const port = 3001;
@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const openai = new OpenAI({
-    apiKey: ""
+    apiKey: "sk-proj-I2O9E4T9ibnv2bEjpa0FT3BlbkFJCBt1LFZmTFR5LiVxOEJT"
 });
 
 // const doData = XLSX.readFile("activity-excel.xlsx");

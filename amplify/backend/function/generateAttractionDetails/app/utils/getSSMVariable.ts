@@ -1,6 +1,11 @@
 import aws from 'aws-sdk'
 
-type SSMVariable = 'GOOGLE_MAPS_API_KEY' | 'YELP_API_KEY' | 'OPENAI_API_KEY' | 'SLACK_WEBHOOK_URL' | 'BING_AI_URL'
+type SSMVariable =
+  | 'GOOGLE_MAPS_API_KEY'
+  | 'YELP_API_KEY'
+  | 'OPENAI_API_KEY'
+  | 'SLACK_WEBHOOK_URL'
+  | 'PERPLEXITY_API_KEY'
 
 export async function getSSMVariable(variableName: SSMVariable) {
   const { Parameters } = await new aws.SSM()

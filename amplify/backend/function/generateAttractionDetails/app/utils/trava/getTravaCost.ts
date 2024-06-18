@@ -23,7 +23,7 @@ interface GetTravaCostInput {
   recSourcePrice?: number | null
   attractionType: ATTRACTION_TYPE
   relevanceMap: Record<string, Record<string, number>>
-  bingDescription?: string
+  onlineLLMDescription?: string
 }
 
 export const getTravaCost = async ({
@@ -33,7 +33,7 @@ export const getTravaCost = async ({
   recSourcePrice,
   attractionType,
   relevanceMap,
-  bingDescription,
+  onlineLLMDescription,
 }: GetTravaCostInput) => {
   console.log(`getTravaCost for ${attractionName}`)
 
@@ -42,26 +42,26 @@ export const getTravaCost = async ({
 
   const possibleCostValuesByType = Object.values(possibleCosts[attractionType])
 
-  if (isTypeDo && bingDescription) {
-    // query openai for categories from bing descriptions
+  if (isTypeDo && onlineLLMDescription) {
+    // query openai for categories from onlineLLM descriptions
     // necessary because for DO, categories from rec sources aren't always available/more variable
     // if value does not conform, then ask gpt-4 functions api
     const possibleCostValuesByTypeWithUnknown = [...possibleCostValuesByType, UNKNOWN]
 
     const possiblyValidValue = await getMostSimilarResponse({
       context: DESCRIPTIVE_CONTEXT.COST,
-      offSchemaValue: bingDescription,
+      offSchemaValue: onlineLLMDescription,
       possibleValues: possibleCostValuesByTypeWithUnknown,
     })
 
     console.log(
-      `gpt-4 chat completions for ${attractionName} in ${destinationName} responded with cost: ${possiblyValidValue} as being most similar to bing description`,
+      `gpt-4 chat completions for ${attractionName} in ${destinationName} responded with cost: ${possiblyValidValue} as being most similar to onlineLLM description`,
     )
 
     if (possibleCostValuesByType.includes(possiblyValidValue)) {
       return possiblyValidValue as ATTRACTION_COST
     }
-    console.log("gpt-4 didn't return a valid value for cost from bing description. Falling back to reviews.")
+    console.log("gpt-4 didn't return a valid value for cost from onlineLLM description. Falling back to reviews.")
   }
 
   if (isTypeEat && recSourcePrice) {

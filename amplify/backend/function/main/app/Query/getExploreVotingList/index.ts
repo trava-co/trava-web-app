@@ -18,6 +18,7 @@ import {
   BADGES,
   AttractionSwipe,
   AUTHOR_TYPE,
+  UserAttraction,
 } from 'shared-types/API'
 import ApiClient from '../../utils/ApiClient/ApiClient'
 import getOpenAIEmbedding from '../../utils/getOpenAIEmbedding'
@@ -28,6 +29,7 @@ import {
   lambdaPrivateListUserAttractions,
 } from 'shared-types/graphql/lambda'
 import { getExploreVotingListItem } from '../../utils/getExploreVotingListItem'
+import getAllPaginatedData from '../../utils/getAllPaginatedData'
 
 const getExploreVotingList: AppSyncResolverHandler<
   GetExploreVotingListQueryVariables,
@@ -71,54 +73,31 @@ const getExploreVotingList: AppSyncResolverHandler<
     searchStringEmbeddingPromise = getOpenAIEmbedding(searchString)
   }
 
-  // query userAttraction by userId to get user's bucket list
-  const userBucketListsPromise = ApiClient.get().apiFetch<
-    LambdaPrivateListUserAttractionsQueryVariables,
-    LambdaPrivateListUserAttractionsQuery
-  >({
-    query: lambdaPrivateListUserAttractions,
-    variables: {
-      userId,
-    },
-  })
+  const userBucketListsPromise = getCurrentUsersBucketLists({ userId })
 
-  // query listAttractionSwipesByTripByDestination to get all attractionIds that the user has voted on
-  const listAttractionSwipesByTripByDestinationPromise = ApiClient.get().apiFetch<
-    LambdaListAttractionSwipesByTripByDestinationQueryVariables,
-    LambdaListAttractionSwipesByTripByDestinationQuery
-  >({
-    query: lambdaListAttractionSwipesByTripByDestination,
-    variables: {
-      tripId,
-      destinationId: {
-        eq: destinationId,
-      },
-      limit: 500,
-    },
-  })
+  // query to get all swipes for this tripId and destinationId
+  const attractionSwipesForTripDestinationPromise = getAttractionSwipes({ tripId, destinationId })
 
   // wait for all three parallel queries to finish
-  const [searchStringEmbedding, userBucketLists, attractionSwipesByTripByDestination] = await Promise.all([
+  const [searchStringEmbedding, userBucketLists, attractionSwipesForTripDestination] = await Promise.all([
     searchStringEmbeddingPromise,
     userBucketListsPromise,
-    listAttractionSwipesByTripByDestinationPromise,
+    attractionSwipesForTripDestinationPromise,
   ])
 
   // determine array of attractionIds w/ >=1 right swipe, determine array of attractionIds user has voted on, determine bucketListedAttractionIds, determine numRightSwipesDictionary, and destinationDates
 
-  const bucketListedAttractionIds = userBucketLists.data.privateListUserAttractions?.items.map(
-    (item) => item?.attractionId,
-  )
+  const bucketListedAttractionIds = userBucketLists.map((item) => item?.attractionId)
 
-  const currentUserAttractionSwipes = (
-    attractionSwipesByTripByDestination.data.listAttractionSwipesByTripByDestination?.items ?? []
-  ).filter((item) => item && item.userId === userId) as AttractionSwipe[]
+  const currentUserAttractionSwipes = attractionSwipesForTripDestination.filter(
+    (item) => item && item.userId === userId,
+  ) as AttractionSwipe[]
 
   // console.log(`currentUserAttractionSwipes: ${JSON.stringify(currentUserAttractionSwipes, null, 2)}`)
 
   const numRightSwipesDictionary: Record<string, number> = {}
 
-  attractionSwipesByTripByDestination.data.listAttractionSwipesByTripByDestination?.items.forEach((item) => {
+  attractionSwipesForTripDestination.forEach((item) => {
     if (item?.swipe === AttractionSwipeResult.LIKE) {
       numRightSwipesDictionary[item.attractionId] = (numRightSwipesDictionary[item.attractionId] ?? 0) + 1
     }
@@ -154,7 +133,7 @@ const getExploreVotingList: AppSyncResolverHandler<
 
   const attractionIdToSwipesDictionary: Record<string, ExploreVotingListSwipe[]> = {}
 
-  attractionSwipesByTripByDestination.data.listAttractionSwipesByTripByDestination?.items.forEach((item) => {
+  attractionSwipesForTripDestination.forEach((item) => {
     if (item) {
       const swipes = attractionIdToSwipesDictionary[item.attractionId] ?? []
       swipes.push({
@@ -683,6 +662,74 @@ function createGeoDistanceCondition(distance: string, coordsInput: CoordsInput) 
       },
     },
   ]
+}
+
+async function getCurrentUsersBucketLists({ userId }: { userId: string }) {
+  const bucketLists: Pick<UserAttraction, 'userId' | 'attractionId' | 'authorId' | 'createdAt' | 'updatedAt'>[] = []
+
+  await getAllPaginatedData(
+    async (nextToken) => {
+      // query userAttraction by userId to get user's bucket list
+      const res = await ApiClient.get().apiFetch<
+        LambdaPrivateListUserAttractionsQueryVariables,
+        LambdaPrivateListUserAttractionsQuery
+      >({
+        query: lambdaPrivateListUserAttractions,
+        variables: {
+          userId,
+          limit: 500,
+          nextToken,
+        },
+      })
+
+      return {
+        nextToken: res.data.privateListUserAttractions?.nextToken,
+        data: res.data,
+      }
+    },
+    (data) => {
+      data?.privateListUserAttractions?.items.forEach((item) => {
+        if (item) bucketLists.push(item)
+      })
+    },
+  )
+
+  return bucketLists
+}
+
+async function getAttractionSwipes({ tripId, destinationId }: { tripId: string; destinationId: string }) {
+  const attractionSwipes: Pick<AttractionSwipe, 'userId' | 'attractionId' | 'swipe' | 'createdAt' | 'user'>[] = []
+
+  await getAllPaginatedData(
+    async (nextToken) => {
+      const res = await ApiClient.get().apiFetch<
+        LambdaListAttractionSwipesByTripByDestinationQueryVariables,
+        LambdaListAttractionSwipesByTripByDestinationQuery
+      >({
+        query: lambdaListAttractionSwipesByTripByDestination,
+        variables: {
+          tripId,
+          destinationId: {
+            eq: destinationId,
+          },
+          limit: 500,
+          nextToken,
+        },
+      })
+
+      return {
+        nextToken: res.data.listAttractionSwipesByTripByDestination?.nextToken,
+        data: res.data,
+      }
+    },
+    (data) => {
+      data?.listAttractionSwipesByTripByDestination?.items.forEach((item) => {
+        if (item) attractionSwipes.push(item)
+      })
+    },
+  )
+
+  return attractionSwipes
 }
 
 export default getExploreVotingList

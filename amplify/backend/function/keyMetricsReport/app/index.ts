@@ -49,7 +49,7 @@ export const handler: ScheduledHandler = async () => {
     .filter((userSession): userSession is UserSession => !!userSession)
     .map(
       (userSession) =>
-        `${userSession.id},${userSession.userId},${userSession.deviceType},${userSession.appVersion},${userSession.createdAt}`,
+        `${userSession.id},${userSession.userId},${userSession.user?.username},${userSession.user?.name},${userSession.user?.email},${userSession.deviceType},${userSession.appVersion},${userSession.createdAt}`,
     )
     .join('\n')
 
@@ -72,16 +72,24 @@ export const handler: ScheduledHandler = async () => {
   const newAttractionSwipesToday = await getAllAttractionSwipesPastDay()
   const newAttractionSwipesTodayLength = newAttractionSwipesToday?.length ?? 0
   console.log(`New swipes today: ${newAttractionSwipesTodayLength}`)
-  const newAttractionSwipesByAuthorId = newAttractionSwipesToday.reduce((acc: Record<string, number>, swipe) => {
-    if (swipe?.userId) {
-      return {
-        ...acc,
-        [swipe.userId]: (acc[swipe.userId] ?? 0) + 1,
+  const newAttractionSwipesByAuthorId = newAttractionSwipesToday.reduce(
+    (acc: Record<string, { swipeCount: number; username: string; name: string; email: string }>, swipe) => {
+      if (swipe?.userId) {
+        return {
+          ...acc,
+          [swipe.userId]: {
+            swipeCount: (acc[swipe.userId]?.swipeCount ?? 0) + 1,
+            username: swipe.user?.username ?? '',
+            name: swipe.user?.name ?? '',
+            email: swipe.user?.email ?? '',
+          },
+        }
+      } else {
+        return acc
       }
-    } else {
-      return acc
-    }
-  }, {} as Record<string, number>)
+    },
+    {} as Record<string, { swipeCount: number; username: string; name: string; email: string }>,
+  )
 
   const newAttractionSwipesByDestinationId = newAttractionSwipesToday.reduce(
     (acc: Record<string, { destinationName: string; swipeCount: number }>, swipe) => {
@@ -101,7 +109,7 @@ export const handler: ScheduledHandler = async () => {
   )
 
   const newAttractionSwipesCsv = Object.entries(newAttractionSwipesByAuthorId)
-    .map(([id, count]) => `${id},${count}`)
+    .map(([id, { swipeCount, username, name, email }]) => `${id},${username},${name},${email},${swipeCount}`)
     .join('\n')
   const newAttractionSwipesByDestinationCsv = Object.entries(newAttractionSwipesByDestinationId)
     .map(([id, { destinationName, swipeCount }]) => `${id},${destinationName},${swipeCount}`)
@@ -118,16 +126,24 @@ export const handler: ScheduledHandler = async () => {
   )
   const userAttractions = newAttractionsCreatedToday.filter((attraction) => attraction?.authorType === AUTHOR_TYPE.USER)
   // assemble dictionary of authorIds to number of attractions created from userAttractions
-  const userAttractionsByAuthorId = userAttractions.reduce((acc: Record<string, number>, attraction) => {
-    if (attraction?.authorId) {
-      return {
-        ...acc,
-        [attraction.authorId]: (acc[attraction.authorId] ?? 0) + 1,
+  const userAttractionsByAuthorId = userAttractions.reduce(
+    (acc: Record<string, { count: number; username: string; name: string; email: string }>, attraction) => {
+      if (attraction?.authorId) {
+        return {
+          ...acc,
+          [attraction.authorId]: {
+            count: (acc[attraction.authorId]?.count ?? 0) + 1,
+            username: attraction.author?.username ?? '',
+            name: attraction.author?.name ?? '',
+            email: attraction.author?.email ?? '',
+          },
+        }
+      } else {
+        return acc
       }
-    } else {
-      return acc
-    }
-  }, {} as Record<string, number>)
+    },
+    {} as Record<string, { count: number; username: string; name: string; email: string }>,
+  )
 
   // assemble a dictionary of destinationIds to number of attractions created, one col for userAttractions and one col for adminAttractions. So like: destinationId, userAttractions, adminAttractions
   const destinationIdsToAttractionsCreated = newAttractionsCreatedToday.reduce(
@@ -168,7 +184,7 @@ export const handler: ScheduledHandler = async () => {
   )
 
   const attractionsCreatedByUserCsv = Object.entries(userAttractionsByAuthorId)
-    .map(([id, count]) => `${id},${count}`)
+    .map(([id, { count, username, name, email }]) => `${id},${username},${name},${email},${count}`)
     .join('\n')
   const attractionsCreatedByDestinationCsv = Object.entries(destinationIdsToAttractionsCreated)
     .map(
@@ -182,7 +198,10 @@ export const handler: ScheduledHandler = async () => {
   const tripDestinationUserViewingItineraryInPastDayLength = tripDestinationUserViewingItineraryInPastDay?.length ?? 0
 
   const itineraryFirstTimeViewsCsv = tripDestinationUserViewingItineraryInPastDay
-    .map((user) => `${user?.userId},${user?.tripId},${user?.destinationId},${user?.tripPlanViewedAt}`)
+    .map(
+      (user) =>
+        `${user?.userId},${user?.user?.username},${user?.user?.name}, ${user?.user?.email},${user?.tripId},${user?.destinationId},${user?.destination?.name},${user?.tripPlanViewedAt}`,
+    )
     .join('\n')
 
   // assemble message

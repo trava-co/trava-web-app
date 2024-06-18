@@ -13,14 +13,14 @@ interface GetLogisticsForTypeDoFromBingInput {
   attractionId: string
   attractionName: string
   destinationName: string
-  bingDescription: string
+  onlineLLMDescription: string
 }
 
-export async function getLogisticsForTypeDoFromBing({
+export async function getLogisticsForTypeDoFromOnlineLLM({
   attractionId,
   attractionName,
   destinationName,
-  bingDescription,
+  onlineLLMDescription,
 }: GetLogisticsForTypeDoFromBingInput) {
   const possibleTravaCategories = Object.values(possibleCategories[ATTRACTION_TYPE.DO]) as ATTRACTION_CATEGORY_TYPE[]
   const possibleReservationValues = Object.values(reservationsMap) as ATTRACTION_RESERVATION[]
@@ -29,16 +29,16 @@ export async function getLogisticsForTypeDoFromBing({
   let logistics: Logistics
 
   try {
-    // query openai for logistics from bing descriptions
+    // query openai for logistics from onlineLLM descriptions
     // necessary because categories from rec sources aren't always available/more variable
     logistics = await determineLogistics({
-      description: bingDescription,
+      description: onlineLLMDescription,
       possibleTravaCategories,
       possibleReservationValues,
       possibleTargetGroups,
     })
   } catch (error) {
-    console.error('Error querying GPT-4 for logistics from bing description for type DO')
+    console.error('Error querying GPT-4 for logistics from onlineLLM description for type DO')
     throw error
   }
 
@@ -69,7 +69,7 @@ export async function getLogisticsForTypeDoFromBing({
   // if there are no valid categories, reservations, or targetGroups from GPT-4, throw an error
   if (validCategories.length === 0 && !validReservations && validTargetGroups.length === 0) {
     throw new Error(
-      `No valid categories, reservations, or targetGroups from GPT-4 for ${attractionName} in ${destinationName}. attractionId: ${attractionId}. Bing description: ${bingDescription}`,
+      `No valid categories, reservations, or targetGroups from GPT-4 for ${attractionName} in ${destinationName}. attractionId: ${attractionId}. onlineLLM description: ${onlineLLMDescription}`,
     )
   }
 

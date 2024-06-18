@@ -34,7 +34,7 @@ export const handler: ScheduledHandler = async () => {
   console.log('updateGooglePlaces started')
   ApiClient.get().useIamAuth()
 
-  const key = await getSSMVariable('GOOGLE_MAPS_API_KEY')
+  const key = await getKey()
 
   // 1. fetch all googlePlaces, oldest first
   const googlePlacesOldestFirst = await fetchGooglePlacesByOldestFirst()
@@ -272,4 +272,12 @@ const createOpenSearchQuery = (googlePlaceId: string) => {
     size: 50,
     query,
   }
+}
+
+async function getKey() {
+  const today = new Date()
+  const isEvenDay = today.getDate() % 2 === 0
+  console.log(`today is ${today.toISOString()}, isEvenDay: ${isEvenDay}`)
+  const keyName = isEvenDay ? 'GOOGLE_MAPS_API_KEY' : 'GOOGLE_MAPS_ALTERNATE_API_KEY'
+  return await getSSMVariable(keyName)
 }

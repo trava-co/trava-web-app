@@ -15,26 +15,26 @@ const logError_1 = require("../logError");
 const mostSimilarResponse_1 = require("../prompts/mostSimilarResponse");
 const travaCostEmbeddings = { DO: embeddings_1.doCostEmbeddings, EAT: embeddings_1.eatCostEmbeddings };
 const RESPONSE_TOKENS = 100; // 100 is the max tokens for a chat response
-const getTravaCost = async ({ attractionId, attractionName, destinationName, recSourcePrice, attractionType, relevanceMap, bingDescription, }) => {
+const getTravaCost = async ({ attractionId, attractionName, destinationName, recSourcePrice, attractionType, relevanceMap, onlineLLMDescription, }) => {
     console.log(`getTravaCost for ${attractionName}`);
     const isTypeDo = attractionType === API_1.ATTRACTION_TYPE.DO;
     const isTypeEat = attractionType === API_1.ATTRACTION_TYPE.EAT;
     const possibleCostValuesByType = Object.values(cost_1.possibleCosts[attractionType]);
-    if (isTypeDo && bingDescription) {
-        // query openai for categories from bing descriptions
+    if (isTypeDo && onlineLLMDescription) {
+        // query openai for categories from onlineLLM descriptions
         // necessary because for DO, categories from rec sources aren't always available/more variable
         // if value does not conform, then ask gpt-4 functions api
         const possibleCostValuesByTypeWithUnknown = [...possibleCostValuesByType, constants_1.UNKNOWN];
         const possiblyValidValue = await (0, mostSimilarResponse_1.getMostSimilarResponse)({
             context: mostSimilarResponse_1.DESCRIPTIVE_CONTEXT.COST,
-            offSchemaValue: bingDescription,
+            offSchemaValue: onlineLLMDescription,
             possibleValues: possibleCostValuesByTypeWithUnknown,
         });
-        console.log(`gpt-4 chat completions for ${attractionName} in ${destinationName} responded with cost: ${possiblyValidValue} as being most similar to bing description`);
+        console.log(`gpt-4 chat completions for ${attractionName} in ${destinationName} responded with cost: ${possiblyValidValue} as being most similar to onlineLLM description`);
         if (possibleCostValuesByType.includes(possiblyValidValue)) {
             return possiblyValidValue;
         }
-        console.log("gpt-4 didn't return a valid value for cost from bing description. Falling back to reviews.");
+        console.log("gpt-4 didn't return a valid value for cost from onlineLLM description. Falling back to reviews.");
     }
     if (isTypeEat && recSourcePrice) {
         // recSourcePrice exists, which will be the case for > 2/3 of restaurants

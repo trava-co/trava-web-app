@@ -28,6 +28,14 @@ exports.lambdaPrivateListUserSessionsByCreatedAt = `
       items {
         id
         userId
+        user {
+          id
+          username
+          name
+          email
+          createdAt
+          updatedAt
+        }
         deviceType
         appVersion
         label
@@ -294,6 +302,11 @@ exports.lambdaPrivateListAttractionSwipesByUpdatedAt = `
         tripId
         destinationId
         attractionId
+        user {
+          username
+          name
+          email
+        }
         destination {
           id
           name
@@ -330,6 +343,14 @@ exports.lambdaPrivateListAttractionsByCreatedAt = `
         attractionCuisine
         attractionTargetGroups
         authorId
+        author {
+          id
+          username
+          name
+          email
+          createdAt
+          updatedAt
+        }
         bestVisited
         costCurrency
         cost
@@ -2092,6 +2113,26 @@ exports.lambdaPrivateListTripDestinationUsers = `
         tripId
         destinationId
         userId
+        destination {
+          id
+          name
+          coords {
+            lat
+            long
+          }
+          isTravaCreated
+          label
+          createdAt
+          updatedAt
+        }
+        user {
+          id
+          username
+          name
+          email
+          createdAt
+          updatedAt
+        }
         isReady
         tripPlanViewedAt
         createdAt
@@ -2990,6 +3031,8 @@ exports.lambdaListAttractionSwipesByTripByDestination = `
             region
             key
           }
+          createdAt
+          updatedAt
         }
       }
       nextToken

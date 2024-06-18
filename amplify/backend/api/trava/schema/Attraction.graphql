@@ -54,6 +54,7 @@ type Attraction
   recommendationBadges: [BADGES]
   generation: Generation
   pendingMigration: Boolean # tracks if attraction is pending migration between source & target backend envs
+  viatorProducts: [ViatorProduct] @hasMany(indexName: "byAttraction", fields: ["id"])
 }
 
 enum AttractionLabel {

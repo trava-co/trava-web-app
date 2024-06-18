@@ -1,6 +1,6 @@
 import aws from 'aws-sdk'
 
-type SSMVariable = 'GOOGLE_MAPS_API_KEY' | 'SLACK_BOT_TOKEN' | 'OPENSEARCH_ENDPOINT'
+type SSMVariable = 'GOOGLE_MAPS_API_KEY' | 'GOOGLE_MAPS_ALTERNATE_API_KEY' | 'SLACK_BOT_TOKEN' | 'OPENSEARCH_ENDPOINT'
 
 export async function getSSMVariable(variableName: SSMVariable) {
   const { Parameters } = await new aws.SSM()

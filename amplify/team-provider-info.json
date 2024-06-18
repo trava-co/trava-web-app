@@ -10,6 +10,86 @@
       "StackName": "amplify-trava-anay-00341",
       "StackId": "arn:aws:cloudformation:us-east-1:736143825081:stack/amplify-trava-anay-00341/48fa20d0-b751-11ee-97a3-0ec11d87e8a5",
       "AmplifyAppId": "d3nzalola22yka"
+    },
+    "categories": {
+      "auth": {
+        "travaf4f82e77": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "planGenerator": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/planGenerator-6e4f5a4c6b506e385943-build.zip"
+        },
+        "main": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/main-61336531664676396a4c-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "notifications": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/notifications-364b4f3170696d314568-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "logTripDestinationUpdate": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/logTripDestinationUpdate-3655636c453630493265-build.zip"
+        },
+        "computeNearbyAttractionsForDestinations": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/computeNearbyAttractionsForDestinations-5534784e4a3938784c58-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "signupSlackNotification": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/signupSlackNotification-2f463543716861635754-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "reflectChangesInTeaRex": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/reflectChangesInTeaRex-426444306f3844396165-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "ensureTearexEntitiesExist": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/ensureTearexEntitiesExist-39466b6e537335493573-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "updateGooglePlaces": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/updateGooglePlaces-70735063494b566c7531-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "ensureOpenSearchDocsExist": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/ensureOpenSearchDocsExist-744b694c49436f327557-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "travapuppeteer": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/travapuppeteer-LambdaLayerVersion42594faa-build.zip"
+        },
+        "retryFailedGenerations": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/retryFailedGenerations-71384f456e4858635653-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "generateAttractionDetails": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/generateAttractionDetails-5874754b446f47644754-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "getAttractionPhotos": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/getAttractionPhotos-4d557135325662735554-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        },
+        "keyMetricsReport": {
+          "deploymentBucketName": "amplify-trava-anay-00341-deployment",
+          "s3Key": "amplify-builds/keyMetricsReport-4b754a515252695a752b-build.zip",
+          "secretsPathAmplifyAppId": "d3nzalola22yka"
+        }
+      }
     }
   }
 }

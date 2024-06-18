@@ -31,7 +31,7 @@ const handler = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     console.log('updateGooglePlaces started');
     ApiClient_1.default.get().useIamAuth();
-    const key = yield getSSMVariable_1.getSSMVariable('GOOGLE_MAPS_API_KEY');
+    const key = yield getKey();
     // 1. fetch all googlePlaces, oldest first
     const googlePlacesOldestFirst = yield fetchGooglePlacesByOldestFirst();
     const existingGooglePlacesCount = googlePlacesOldestFirst === null || googlePlacesOldestFirst === void 0 ? void 0 : googlePlacesOldestFirst.length;
@@ -226,3 +226,12 @@ const createOpenSearchQuery = (googlePlaceId) => {
         query,
     };
 };
+function getKey() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const today = new Date();
+        const isEvenDay = today.getDate() % 2 === 0;
+        console.log(`today is ${today.toISOString()}, isEvenDay: ${isEvenDay}`);
+        const keyName = isEvenDay ? 'GOOGLE_MAPS_API_KEY' : 'GOOGLE_MAPS_ALTERNATE_API_KEY';
+        return yield getSSMVariable_1.getSSMVariable(keyName);
+    });
+}

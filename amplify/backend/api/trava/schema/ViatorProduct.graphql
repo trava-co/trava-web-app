@@ -1,0 +1,30 @@
+type ViatorProduct
+  @model(subscriptions: null, queries: null, mutations: { create: "privateCreateViatorProduct" })
+  @auth(
+    rules: [
+      { allow: private, identityClaim: "sub", operations: [create, update, delete, read] }
+      { allow: groups, groups: ["admin"] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  id: ID!
+  attractionId: ID! @index(name: "byAttraction")
+  viatorLink: String!
+  name: String!
+  priceText: String!
+  rating: Rating!
+  coverImageUrl: String!
+  displayOrder: Int!
+  # below are not displayed in UI
+  duration: String
+  pricing: String
+  currency: String
+  createdAt: AWSDateTime!
+}
+
+input AdminCreateViatorProductInput {
+  id: ID!
+  url: String!
+  attractionId: ID!
+  displayOrder: Int!
+}

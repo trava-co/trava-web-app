@@ -152,6 +152,28 @@
                   "OPENSEARCH_ENDPOINT"
                 ]
               ]
+            },
+            "GOOGLE_MAPS_ALTERNATE_API_KEY": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Fn::Sub": [
+                      "/amplify/${appId}/${env}/AMPLIFY_${functionName}_",
+                      {
+                        "appId": {
+                          "Ref": "secretsPathAmplifyAppId"
+                        },
+                        "env": {
+                          "Ref": "env"
+                        },
+                        "functionName": "updateGooglePlaces"
+                      }
+                    ]
+                  },
+                  "GOOGLE_MAPS_ALTERNATE_API_KEY"
+                ]
+              ]
             }
           }
         },

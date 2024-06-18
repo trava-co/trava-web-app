@@ -19,8 +19,9 @@ const createQueryObjects_1 = require("../../utils/createQueryObjects");
 const createStatsOpenSearchQuery_1 = require("../../utils/createStatsOpenSearchQuery");
 const lambda_1 = require("shared-types/graphql/lambda");
 const getExploreVotingListItem_1 = require("../../utils/getExploreVotingListItem");
+const getAllPaginatedData_1 = __importDefault(require("../../utils/getAllPaginatedData"));
 const getExploreVotingList = (event) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b;
     console.log('getExploreVotingList');
     // check authorization type === AMAZON_COGNITO_USER_POOLS
     if (!(event.identity && 'sub' in event.identity)) {
@@ -37,36 +38,21 @@ const getExploreVotingList = (event) => __awaiter(void 0, void 0, void 0, functi
     if (searchString) {
         searchStringEmbeddingPromise = (0, getOpenAIEmbedding_1.default)(searchString);
     }
-    // query userAttraction by userId to get user's bucket list
-    const userBucketListsPromise = ApiClient_1.default.get().apiFetch({
-        query: lambda_1.lambdaPrivateListUserAttractions,
-        variables: {
-            userId,
-        },
-    });
-    // query listAttractionSwipesByTripByDestination to get all attractionIds that the user has voted on
-    const listAttractionSwipesByTripByDestinationPromise = ApiClient_1.default.get().apiFetch({
-        query: lambda_1.lambdaListAttractionSwipesByTripByDestination,
-        variables: {
-            tripId,
-            destinationId: {
-                eq: destinationId,
-            },
-            limit: 500,
-        },
-    });
+    const userBucketListsPromise = getCurrentUsersBucketLists({ userId });
+    // query to get all swipes for this tripId and destinationId
+    const attractionSwipesForTripDestinationPromise = getAttractionSwipes({ tripId, destinationId });
     // wait for all three parallel queries to finish
-    const [searchStringEmbedding, userBucketLists, attractionSwipesByTripByDestination] = yield Promise.all([
+    const [searchStringEmbedding, userBucketLists, attractionSwipesForTripDestination] = yield Promise.all([
         searchStringEmbeddingPromise,
         userBucketListsPromise,
-        listAttractionSwipesByTripByDestinationPromise,
+        attractionSwipesForTripDestinationPromise,
     ]);
     // determine array of attractionIds w/ >=1 right swipe, determine array of attractionIds user has voted on, determine bucketListedAttractionIds, determine numRightSwipesDictionary, and destinationDates
-    const bucketListedAttractionIds = (_a = userBucketLists.data.privateListUserAttractions) === null || _a === void 0 ? void 0 : _a.items.map((item) => item === null || item === void 0 ? void 0 : item.attractionId);
-    const currentUserAttractionSwipes = ((_c = (_b = attractionSwipesByTripByDestination.data.listAttractionSwipesByTripByDestination) === null || _b === void 0 ? void 0 : _b.items) !== null && _c !== void 0 ? _c : []).filter((item) => item && item.userId === userId);
+    const bucketListedAttractionIds = userBucketLists.map((item) => item === null || item === void 0 ? void 0 : item.attractionId);
+    const currentUserAttractionSwipes = attractionSwipesForTripDestination.filter((item) => item && item.userId === userId);
     // console.log(`currentUserAttractionSwipes: ${JSON.stringify(currentUserAttractionSwipes, null, 2)}`)
     const numRightSwipesDictionary = {};
-    (_d = attractionSwipesByTripByDestination.data.listAttractionSwipesByTripByDestination) === null || _d === void 0 ? void 0 : _d.items.forEach((item) => {
+    attractionSwipesForTripDestination.forEach((item) => {
         var _a;
         if ((item === null || item === void 0 ? void 0 : item.swipe) === API_1.AttractionSwipeResult.LIKE) {
             numRightSwipesDictionary[item.attractionId] = ((_a = numRightSwipesDictionary[item.attractionId]) !== null && _a !== void 0 ? _a : 0) + 1;
@@ -95,7 +81,7 @@ const getExploreVotingList = (event) => __awaiter(void 0, void 0, void 0, functi
     // @ts-ignore
     const msearchResponsePromise = ApiClient_1.default.get().openSearchMSearch('attraction', msearchQuery);
     const attractionIdToSwipesDictionary = {};
-    (_e = attractionSwipesByTripByDestination.data.listAttractionSwipesByTripByDestination) === null || _e === void 0 ? void 0 : _e.items.forEach((item) => {
+    attractionSwipesForTripDestination.forEach((item) => {
         var _a, _b;
         if (item) {
             const swipes = (_a = attractionIdToSwipesDictionary[item.attractionId]) !== null && _a !== void 0 ? _a : [];
@@ -115,8 +101,8 @@ const getExploreVotingList = (event) => __awaiter(void 0, void 0, void 0, functi
         selectedAttractionPromise = (0, getExploreVotingListItem_1.getExploreVotingListItem)({
             attractionId: selectedAttractionId,
             destinationDates,
-            inMyBucketList: (_f = bucketListedAttractionIds === null || bucketListedAttractionIds === void 0 ? void 0 : bucketListedAttractionIds.includes(selectedAttractionId)) !== null && _f !== void 0 ? _f : false,
-            swipes: (_g = attractionIdToSwipesDictionary[selectedAttractionId]) !== null && _g !== void 0 ? _g : [],
+            inMyBucketList: (_a = bucketListedAttractionIds === null || bucketListedAttractionIds === void 0 ? void 0 : bucketListedAttractionIds.includes(selectedAttractionId)) !== null && _a !== void 0 ? _a : false,
+            swipes: (_b = attractionIdToSwipesDictionary[selectedAttractionId]) !== null && _b !== void 0 ? _b : [],
         });
     }
     const msearchResponse = yield msearchResponsePromise;
@@ -540,5 +526,63 @@ function createGeoDistanceCondition(distance, coordsInput) {
             },
         },
     ];
+}
+function getCurrentUsersBucketLists({ userId }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const bucketLists = [];
+        yield (0, getAllPaginatedData_1.default)((nextToken) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            // query userAttraction by userId to get user's bucket list
+            const res = yield ApiClient_1.default.get().apiFetch({
+                query: lambda_1.lambdaPrivateListUserAttractions,
+                variables: {
+                    userId,
+                    limit: 500,
+                    nextToken,
+                },
+            });
+            return {
+                nextToken: (_a = res.data.privateListUserAttractions) === null || _a === void 0 ? void 0 : _a.nextToken,
+                data: res.data,
+            };
+        }), (data) => {
+            var _a;
+            (_a = data === null || data === void 0 ? void 0 : data.privateListUserAttractions) === null || _a === void 0 ? void 0 : _a.items.forEach((item) => {
+                if (item)
+                    bucketLists.push(item);
+            });
+        });
+        return bucketLists;
+    });
+}
+function getAttractionSwipes({ tripId, destinationId }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const attractionSwipes = [];
+        yield (0, getAllPaginatedData_1.default)((nextToken) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const res = yield ApiClient_1.default.get().apiFetch({
+                query: lambda_1.lambdaListAttractionSwipesByTripByDestination,
+                variables: {
+                    tripId,
+                    destinationId: {
+                        eq: destinationId,
+                    },
+                    limit: 500,
+                    nextToken,
+                },
+            });
+            return {
+                nextToken: (_a = res.data.listAttractionSwipesByTripByDestination) === null || _a === void 0 ? void 0 : _a.nextToken,
+                data: res.data,
+            };
+        }), (data) => {
+            var _a;
+            (_a = data === null || data === void 0 ? void 0 : data.listAttractionSwipesByTripByDestination) === null || _a === void 0 ? void 0 : _a.items.forEach((item) => {
+                if (item)
+                    attractionSwipes.push(item);
+            });
+        });
+        return attractionSwipes;
+    });
 }
 exports.default = getExploreVotingList;

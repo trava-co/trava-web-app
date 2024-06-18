@@ -56,6 +56,11 @@ type Mutation {
   deleteUserByAdmin(input: CustomDeleteUserInput!): User @function(name: "main-${env}") @aws_cognito_user_pools
   deleteUserBySelf: Boolean @function(name: "main-${env}") @aws_cognito_user_pools
 
+  # create viator product
+  adminCreateViatorProduct(input: AdminCreateViatorProductInput!): ViatorProduct
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
   # Timeline service START
   createTimelineEntryFlight(input: CreateTimelineEntryFlightInput): TimelineEntry
     @function(name: "main-${env}")

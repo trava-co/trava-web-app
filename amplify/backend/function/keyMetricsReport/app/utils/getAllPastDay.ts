@@ -14,6 +14,8 @@ import {
   LambdaPrivateListUserSessionsByCreatedAtQuery,
   LambdaPrivateListUserSessionsByCreatedAtQueryVariables,
   UserSessionLabel,
+  AUTHOR_TYPE,
+  UserSession,
 } from 'shared-types/API'
 import getAllPaginatedData from './getAllPaginatedData'
 import {
@@ -40,6 +42,7 @@ const yesterday = () => {
 }
 
 const getAllUsersPastDay = async () => {
+  console.log(`getting all users created in past day`)
   const users: Pick<User, 'id' | 'username' | 'name' | 'email' | 'phone'>[] = []
 
   await getAllPaginatedData(
@@ -70,46 +73,139 @@ const getAllUsersPastDay = async () => {
   return users
 }
 
+type Swipe = {
+  userId: string
+  user?: {
+    username: string
+    name: string
+    email: string
+  }
+  destinationId: string
+  destination: {
+    name: string
+  }
+}
+
 const getAllAttractionSwipesPastDay = async () => {
-  const result = await ApiClient.get().apiFetch<
-    LambdaPrivateListAttractionSwipesByUpdatedAtQueryVariables,
-    LambdaPrivateListAttractionSwipesByUpdatedAtQuery
-  >({
-    query: lambdaPrivateListAttractionSwipesByUpdatedAt,
-    variables: {
-      label: AttractionSwipeLabel.SWIPE,
-      updatedAt: { ge: yesterday() },
+  console.log(`getting all attraction swipes in past day`)
+  const attractionSwipes: Swipe[] = []
+
+  await getAllPaginatedData(
+    async (nextToken) => {
+      const res = await ApiClient.get().apiFetch<
+        LambdaPrivateListAttractionSwipesByUpdatedAtQueryVariables,
+        LambdaPrivateListAttractionSwipesByUpdatedAtQuery
+      >({
+        query: lambdaPrivateListAttractionSwipesByUpdatedAt,
+        variables: {
+          nextToken,
+          label: AttractionSwipeLabel.SWIPE,
+          updatedAt: { ge: yesterday() },
+          limit: 500,
+        },
+      })
+      return {
+        nextToken: res.data.privateListAttractionSwipesByUpdatedAt?.nextToken,
+        data: res.data,
+      }
     },
-  })
+    (data) => {
+      data?.privateListAttractionSwipesByUpdatedAt?.items.forEach((item) => {
+        if (item) {
+          attractionSwipes.push({
+            userId: item.userId,
+            user: {
+              username: item.user?.username ?? '',
+              name: item.user?.name ?? '',
+              email: item.user?.email ?? '',
+            },
+            destinationId: item.destinationId,
+            destination: {
+              name: item.destination?.name ?? item.destinationId,
+            },
+          })
+        }
+      })
+    },
+  )
 
-  console.log(`result: ${JSON.stringify(result, null, 2)}\n`)
+  console.log(`attractionSwipes length: ${attractionSwipes.length}\n`)
 
-  return result.data?.privateListAttractionSwipesByUpdatedAt?.items ?? []
+  return attractionSwipes
+}
+
+type AttractionCreated = {
+  id: string
+  name: string
+  authorId: string | null | undefined
+  author: {
+    username: string
+    name: string
+    email: string
+  }
+  authorType: AUTHOR_TYPE
+  destinationId: string
+  destination: {
+    name: string
+  }
 }
 
 // attractions created
 const getAllAttractionsCreatedPastDay = async () => {
   console.log(`getting all attractions created in past day`)
-  const result = await ApiClient.get().apiFetch<
-    LambdaPrivateListAttractionsByCreatedAtQueryVariables,
-    LambdaPrivateListAttractionsByCreatedAtQuery
-  >({
-    query: lambdaPrivateListAttractionsByCreatedAt,
-    variables: {
-      label: AttractionLabel.ATTRACTION,
-      createdAt: { ge: yesterday() },
+  const attractionsCreated: AttractionCreated[] = []
+
+  await getAllPaginatedData(
+    async (nextToken) => {
+      const result = await ApiClient.get().apiFetch<
+        LambdaPrivateListAttractionsByCreatedAtQueryVariables,
+        LambdaPrivateListAttractionsByCreatedAtQuery
+      >({
+        query: lambdaPrivateListAttractionsByCreatedAt,
+        variables: {
+          nextToken,
+          label: AttractionLabel.ATTRACTION,
+          createdAt: { ge: yesterday() },
+          limit: 500,
+        },
+      })
+      return {
+        nextToken: result.data.privateListAttractionsByCreatedAt?.nextToken,
+        data: result.data,
+      }
     },
-  })
+    (data) => {
+      data?.privateListAttractionsByCreatedAt?.items.forEach((item) => {
+        if (item) {
+          attractionsCreated.push({
+            id: item.id,
+            name: item.name,
+            authorId: item.authorId,
+            author: {
+              username: item.author?.username ?? '',
+              name: item.author?.name ?? '',
+              email: item.author?.email ?? '',
+            },
+            authorType: item.authorType,
+            destinationId: item.destinationId,
+            destination: {
+              name: item.destination?.name ?? item.destinationId,
+            },
+          })
+        }
+      })
+    },
+  )
 
-  console.log(`result: ${JSON.stringify(result, null, 2)}\n`)
+  console.log(`attractions created length ${attractionsCreated.length} \n`)
 
-  return result.data?.privateListAttractionsByCreatedAt?.items ?? []
+  return attractionsCreated
 }
 
 // itineraries viewed in past 24 hours
 // get all trip destination users with tripPlanViewwedAt > 24 hours ago
 const getAllItineraryViewsPastDay = async () => {
-  console.log(`yesterday: ${yesterday()}`)
+  console.log(`getting all itinerary views in past day`)
   const itineraries: TripDestinationUser[] = []
 
   await getAllPaginatedData(
@@ -140,25 +236,43 @@ const getAllItineraryViewsPastDay = async () => {
     },
   )
 
-  console.log(`result: ${JSON.stringify(itineraries, null, 2)}\n`)
+  console.log(`itinerary views: ${itineraries.length} \n`)
   return itineraries
 }
 
 const getAllAppSessionsPastDay = async () => {
-  const result = await ApiClient.get().apiFetch<
-    LambdaPrivateListUserSessionsByCreatedAtQueryVariables,
-    LambdaPrivateListUserSessionsByCreatedAtQuery
-  >({
-    query: lambdaPrivateListUserSessionsByCreatedAt,
-    variables: {
-      label: UserSessionLabel.SESSION,
-      createdAt: { ge: yesterday() },
+  const sessions: UserSession[] = []
+
+  await getAllPaginatedData(
+    async (nextToken) => {
+      const res = await ApiClient.get().apiFetch<
+        LambdaPrivateListUserSessionsByCreatedAtQueryVariables,
+        LambdaPrivateListUserSessionsByCreatedAtQuery
+      >({
+        query: lambdaPrivateListUserSessionsByCreatedAt,
+        variables: {
+          nextToken,
+          label: UserSessionLabel.SESSION,
+          createdAt: { ge: yesterday() },
+          limit: 500,
+        },
+      })
+
+      return {
+        nextToken: res.data.privateListUserSessionsByCreatedAt?.nextToken,
+        data: res.data,
+      }
     },
-  })
+    (data) => {
+      data?.privateListUserSessionsByCreatedAt?.items.forEach((item) => {
+        if (item) sessions.push(item)
+      })
+    },
+  )
 
-  console.log(`result: ${JSON.stringify(result, null, 2)}\n`)
+  console.log(`sessions: ${sessions.length} \n`)
 
-  return result.data?.privateListUserSessionsByCreatedAt?.items ?? []
+  return sessions
 }
 
 export {

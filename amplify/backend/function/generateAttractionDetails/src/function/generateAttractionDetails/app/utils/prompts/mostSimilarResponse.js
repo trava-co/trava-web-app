@@ -84,7 +84,7 @@ const determineLogisticsConversation = (description) => {
 };
 const determineLogisticsFunctions = ({ possibleTravaCategories, possibleReservationValues, possibleTargetGroups, }) => {
     // for each argument, add "UNKNOWN" as a possible value
-    // if bing doesn't provide this info, then we'll fallback to user reviews to determine the logistics
+    // if onlineLLM doesn't provide this info, then we'll fallback to user reviews to determine the logistics
     const possibleTravaCategoriesWithUnknown = [...possibleTravaCategories, constants_1.UNKNOWN];
     const possibleReservationValuesWithUnknown = [...possibleReservationValues, constants_1.UNKNOWN];
     const possibleTargetGroupsWithUnknown = [...possibleTargetGroups, constants_1.UNKNOWN];
@@ -143,7 +143,7 @@ const determineLogistics = async ({ description, possibleTravaCategories, possib
             },
         },
         maxTokensForAnswer: 100,
-        context: `determine logistics from bing descriptions`,
+        context: `determine logistics from onlineLLM descriptions`,
     }));
     // for each of the logistics, filter out UNKNOWN
     const { categories, reservations, targetGroups } = logistics;

@@ -233,6 +233,29 @@ export const onUpdateTripDestinationUserByTripId = /* GraphQL */ `
     onUpdateTripDestinationUserByTripId(tripId: $tripId) {
       tripId
       destinationId
+      destination {
+        id
+        authorId
+        name
+        icon
+        timezone
+        nearbyThingsToDoCount
+        nearbyPlacesToEatCount
+        nearbyTravaThingsToDoCount
+        nearbyTravaPlacesToEatCount
+        state
+        country
+        continent
+        deletedAt
+        isTravaCreated
+        googlePlaceId
+        featured
+        altName
+        label
+        pendingMigration
+        createdAt
+        updatedAt
+      }
       userId
       user {
         id
@@ -508,6 +531,9 @@ export const onUpdateAttraction = /* GraphQL */ `
         lastFailureReason
       }
       pendingMigration
+      viatorProducts {
+        nextToken
+      }
     }
   }
 `;

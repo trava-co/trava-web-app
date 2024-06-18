@@ -10,6 +10,52 @@ function User() {
   const [loadingText, setLoadingText] = useState('');
   const navigate = useNavigate();
 
+  function transformApiResponse(apiResponse, userId, destinationName, coords) {
+    return {
+      data: {
+        getUser: {
+          userTrips: {
+            items: [
+              {
+                trip: {
+                  attractionSwipes: {
+                    items: apiResponse.attractionSwipes.items.map(item => ({
+                      attractionId: item.attractionId,
+                      swipe: item.swipe,
+                      userId: userId,
+                      attraction: {
+                        name: item.attraction.name,
+                        type: item.attraction.type
+                      }
+                    }))
+                  },
+                  members: {
+                    items: [
+                      {
+                        status: "APPROVED",
+                        userId: userId
+                      }
+                    ]
+                  },
+                  tripDestinations: {
+                    items: [
+                      {
+                        destination: {
+                          name: destinationName,
+                          coords: coords
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    };
+  }
+
   const handleDone = async () => {
     try {
         var response = await axios.post('http://localhost:3001/ask', {
@@ -20,7 +66,13 @@ function User() {
         }
       });
       
-      console.log(response.data.data);
+      console.log(response.data);
+
+      var mockResponse = transformApiResponse(response.data, "4e296663-60d1-461c-bccf-ca76e956f628", "Chicago", {lat: 41.8781, long: -87.6298})
+
+      console.log(mockResponse);
+
+
 
     //   let jsonData = JSON.parse(cleanJson);
     //   console.log(jsonData);
