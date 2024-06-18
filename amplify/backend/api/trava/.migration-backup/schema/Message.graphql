@@ -1,0 +1,14 @@
+type Message
+  @model(queries: { get: null, list: null }, subscriptions: null)
+  @key(name: "byTripByCreatedAt", fields: ["tripId", "createdAt"]) {
+  id: ID!
+  tripId: ID!
+  userId: ID!
+  user: User @connection(fields: ["userId"])
+  text: String
+  system: Boolean
+  image: S3Object
+  sent: Boolean! # default true
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}

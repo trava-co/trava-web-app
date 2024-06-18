@@ -1,0 +1,23 @@
+type Update
+  @model(queries: { get: null, list: null }, mutations: { create: "privateCreateUpdate" }, subscriptions: null)
+  @auth(
+    rules: [
+      { allow: private, identityClaim: "sub", operations: [read] }
+      { allow: private, provider: iam, operations: [create, read, update, delete] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  type: UpdateType! @index(name: "byType", queryField: "listUpdatesByType", sortKeyFields: ["createdAt"])
+  parityLastProcessed: Parity!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum UpdateType {
+  DESTINATION_NEARBY_ATTRACTION_COUNT
+}
+
+enum Parity {
+  ODD
+  EVEN
+  ALL
+}

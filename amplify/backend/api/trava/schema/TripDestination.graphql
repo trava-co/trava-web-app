@@ -1,0 +1,80 @@
+type TripDestination
+  @model(
+    queries: { get: null, list: null }
+    mutations: {
+      create: "privateCreateTripDestination"
+      update: "privateUpdateTripDestination"
+      delete: "privateDeleteTripDestination"
+    }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: private, identityClaim: "sub", operations: [create, update, delete, read] }
+      { allow: private, provider: iam, operations: [read] }
+    ]
+  ) {
+  tripId: ID! @primaryKey(sortKeyFields: ["destinationId"])
+  destinationId: ID!
+  attractionSwipes: [AttractionSwipe] @hasMany(indexName: "byTripByDestination", fields: ["tripId", "destinationId"])
+  destination: Destination @hasOne(fields: ["destinationId"])
+  startDate: Int
+  endDate: Int
+  startTime: TripDestinationTime
+  endTime: TripDestinationTime
+  tripPlan: [TripPlanDay]
+  tripDestinationUsers: [TripDestinationUser]
+    @hasMany(indexName: "byTripByDestination", fields: ["tripId", "destinationId"])
+}
+
+enum TripDestinationTime {
+  MORNING
+  AFTERNOON
+  EVENING
+}
+
+type TripPlanDayItem {
+  attractionId: ID!
+  locId: ID!
+  attraction: Attraction # handled by custom resolver as @connect can not be used on type without @model directive
+}
+
+type TripPlanDay {
+  dayOfYear: Int! # YYYYMMDD
+  tripPlanDayItems: [TripPlanDayItem]!
+}
+
+input CreateTripDestinationInput {
+  tripId: ID!
+  destinationId: ID!
+  startDate: Int
+  endDate: Int
+  startTime: TripDestinationTime
+  endTime: TripDestinationTime
+  tripPlan: [TripPlanDayInput]
+}
+
+input UpdateTripDestinationInput {
+  tripId: ID!
+  destinationId: ID!
+  startDate: Int
+  endDate: Int
+  startTime: TripDestinationTime
+  endTime: TripDestinationTime
+  tripPlan: [TripPlanDayInput]
+}
+
+input DeleteTripDestinationInput {
+  tripId: ID!
+  destinationId: ID!
+}
+
+input TripPlanDayInput {
+  dayOfYear: Int!
+  tripPlanDayItems: [TripPlanDayItemInput]
+}
+
+input TripPlanDayItemInput {
+  locId: ID!
+  attractionId: ID!
+}

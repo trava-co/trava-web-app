@@ -1,0 +1,55 @@
+type UserTrip
+  @model(
+    queries: { get: null, list: null }
+    mutations: { create: "privateCreateUserTrip", update: "privateUpdateUserTrip", delete: "privateDeleteUserTrip" }
+    subscriptions: null
+  )
+  @key(fields: ["userId", "tripId"])
+  @key(name: "byTrip", fields: ["tripId", "userId"], queryField: "listUserTripByTrip")
+  @auth(
+    rules: [
+      {
+        allow: private
+        identityClaim: "sub"
+        operations: [create, update, delete, read] # checked by lambda hook
+      }
+      { allow: groups, groups: ["admin"], operations: [update, delete, read] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  userId: ID!
+  user: User @connection(fields: ["userId"])
+  tripId: ID!
+  trip: Trip @connection(fields: ["tripId"])
+  status: UserTripStatus! # TODO default value PENDING
+  invitedByUserId: ID!
+  invitedByUser: User @connection(fields: ["invitedByUserId"])
+  lastMessageReadDate: AWSDateTime
+}
+
+enum UserTripStatus {
+  PENDING
+  APPROVED
+}
+
+# Below inputs for Mutation.graphql
+
+input CreateUserTripInput {
+  userId: ID!
+  tripId: ID!
+  status: UserTripStatus!
+  invitedByUserId: ID!
+}
+
+input UpdateUserTripInput {
+  userId: ID!
+  tripId: ID!
+  status: UserTripStatus
+  invitedByUserId: ID
+  lastMessageReadDate: AWSDateTime
+}
+
+input DeleteUserTripInput {
+  userId: ID!
+  tripId: ID!
+}

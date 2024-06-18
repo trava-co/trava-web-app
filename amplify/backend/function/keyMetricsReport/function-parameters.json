@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "api": {
+      "trava": [
+        "Query"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "secretNames": [
+    "SLACK_BOT_TOKEN"
+  ]
+}

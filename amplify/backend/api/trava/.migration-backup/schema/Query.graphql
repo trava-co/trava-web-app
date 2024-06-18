@@ -1,0 +1,24 @@
+# IMPORTANT: all custom query have to be in a single file
+# as @function directive does not work with the use of extend
+
+type Query {
+  # TripPlan START
+  generateTripPlan(
+    attractions: [TripPlanAttraction]!
+    group: TripPlanGroup!
+    config: GenerateTripPlanConfigInput
+  ): TripPlanResponse @function(name: "planGenerator-${env}") @aws_iam @aws_cognito_user_pools
+  # TripPlan END
+
+  # mapBox GetDistances START
+  mapBoxGetDistances(locations: [MapBoxAttractionLocationsInput!]!): MapboxGetDistancesResult
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  # mapBox GetDistances END
+
+  # mapBox GetPlaces START
+  mapBoxGetPlaces(location: String, language: String, bounds: [Float]): [MapboxGetPlacesResult]
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  # mapBox GetPlaces END
+}

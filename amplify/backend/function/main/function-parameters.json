@@ -1,0 +1,80 @@
+{
+  "permissions": {
+    "auth": {
+      "travaf4f82e77": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "api": {
+      "trava": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    },
+    "storage": {
+      "trava": [
+        "read"
+      ],
+      "Attraction:@model(appsync)": [
+        "create",
+        "read",
+        "update"
+      ],
+      "Comment:@model(appsync)": [
+        "create"
+      ],
+      "Destination:@model(appsync)": [
+        "create",
+        "read"
+      ],
+      "GooglePlace:@model(appsync)": [
+        "create",
+        "read",
+        "update"
+      ],
+      "Post:@model(appsync)": [
+        "update"
+      ],
+      "User:@model(appsync)": [
+        "update"
+      ],
+      "UserAttraction:@model(appsync)": [
+        "create",
+        "delete"
+      ],
+      "UserPostLike:@model(appsync)": [
+        "create",
+        "delete"
+      ],
+      "UserTrip:@model(appsync)": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "secretNames": [
+    "SLACK_WEBHOOK_URL",
+    "MAPBOX_TOKEN",
+    "GOOGLE_MAPS_API_KEY",
+    "FLIGHTSTATS_APPID",
+    "FLIGHTSTATS_APPKEY",
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET",
+    "DYNAMO_LAMBDA_ADMIN_ACCESS_KEY_ID",
+    "DYNAMO_LAMBDA_ADMIN_SECRET_ACCESS_KEY",
+    "TEAREX_URL",
+    "TEAREX_API_KEY",
+    "API_CLIENT_PRODUCTION_ACCESS_KEY_ID",
+    "API_CLIENT_PRODUCTION_SECRET_ACCESS_KEY",
+    "OPENAI_API_KEY",
+    "GOOGLE_AUTOCOMPLETE_API_KEY_IOS",
+    "GOOGLE_AUTOCOMPLETE_API_KEY_ANDROID",
+    "GOOGLE_AUTOCOMPLETE_API_KEY_DEV"
+  ],
+  "environmentVariableList": []
+}

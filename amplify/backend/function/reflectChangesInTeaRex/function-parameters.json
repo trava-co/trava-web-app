@@ -1,0 +1,7 @@
+{
+  "lambdaLayers": [],
+  "secretNames": [
+    "TEAREX_API_KEY",
+    "TEAREX_URL"
+  ]
+}

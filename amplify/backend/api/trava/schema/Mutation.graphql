@@ -1,0 +1,161 @@
+# IMPORTANT: all custom mutations have to be in a single file
+# as @function directive does not work with the use of extend
+
+type Mutation {
+  signUp(input: SignUpInput): SignUpResponse
+    @function(name: "main-${env}")
+    @auth(rules: [{ allow: public, provider: iam }])
+
+  federatedSignUp(input: FederatedSignUpInput): FederatedSignUpResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  signOut(input: SignOutInput!): SignOutResponse @function(name: "main-${env}") @aws_cognito_user_pools
+  # Auth END
+
+  settingsSendReport(input: SettingsSendReportInput!): SettingsSendReportResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  createTrip(input: CustomCreateTripInput!): Trip @function(name: "main-${env}") @aws_cognito_user_pools
+  updateTrip(input: UpdateTripInput!): Trip @function(name: "main-${env}") @aws_cognito_user_pools
+  createUserTrip(input: CreateUserTripInput!): UserTrip @function(name: "main-${env}") @aws_cognito_user_pools @aws_iam
+  updateUserTrip(input: UpdateUserTripInput!): UserTrip @function(name: "main-${env}") @aws_cognito_user_pools
+  deleteUserTrip(input: DeleteUserTripInput!): UserTrip @function(name: "main-${env}") @aws_cognito_user_pools
+  createTripDestination(input: CreateTripDestinationInput!): TripDestination
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+    @aws_iam
+  updateTripDestination(input: UpdateTripDestinationInput!): TripDestination
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  deleteTripDestination(input: DeleteTripDestinationInput!): TripDestination
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  createUserFollow(input: CreateUserFollowInput!): UserFollow @function(name: "main-${env}") @aws_cognito_user_pools
+  updateUserFollow(input: UpdateUserFollowInput!): UserFollow @function(name: "main-${env}") @aws_cognito_user_pools
+  createUserReferral(input: CreateUserReferralInput!): UserReferral
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  putAttractionSwipe(input: PutAttractionSwipeInput!): AttractionSwipe
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  # attractions modified in admin tool
+  adminCreateAttraction(input: CreateAttractionInput!): Attraction
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  adminUpdateAttraction(input: UpdateAttractionInput!): Attraction
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  createAttractionFromPlaceId(input: CreateAttractionFromPlaceIdInput!): CreateAttractionFromPlaceIdResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  deleteAttraction(input: CustomDeleteAttractionInput!): Attraction
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  deleteUserByAdmin(input: CustomDeleteUserInput!): User @function(name: "main-${env}") @aws_cognito_user_pools
+  deleteUserBySelf: Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+
+  # Timeline service START
+  createTimelineEntryFlight(input: CreateTimelineEntryFlightInput): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createTimelineEntryRentalPickup(input: CreateTimelineEntryRentalPickupInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createTimelineEntryRentalDropoff(input: CreateTimelineEntryRentalDropoffInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createTimelineEntryLodgingArrival(input: CreateTimelineEntryLodgingArrivalInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createTimelineEntryLodgingDeparture(input: CreateTimelineEntryLodgingDepartureInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  updateTimelineEntryFlight(input: UpdateTimelineEntryFlightInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  updateTimelineEntryRentalPickup(input: UpdateTimelineEntryRentalPickupInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  updateTimelineEntryRentalDropoff(input: UpdateTimelineEntryRentalDropoffInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  updateTimelineEntryLodgingArrival(input: UpdateTimelineEntryLodgingArrivalInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  updateTimelineEntryLodgingDeparture(input: UpdateTimelineEntryLodgingDepartureInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  deleteTimelineEntry(input: DeleteTimelineEntryInput!): TimelineEntry
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  # Timeline service END
+
+  createDestination(input: CreateDestinationInput!): Destination @function(name: "main-${env}") @aws_cognito_user_pools
+
+  # Attraction Details -> Toggle BucketList Icon
+  addRemoveFromBucketList(input: addRemoveFromBucketListInput!): Boolean
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createPost(input: CustomCreatePostInput!): ID @function(name: "main-${env}") @aws_cognito_user_pools
+  deletePost(input: CustomDeletePostInput!): Post @function(name: "main-${env}") @aws_cognito_user_pools
+
+  # Home feed -> Toggle like dislike post within story
+  likeDislikePost(input: likeDislikePostInput!): Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+
+  # Home feed -> Post comments -> Create comment
+  createComment(input: CustomCreateComment!): Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+
+  updateUser(input: UpdateUserInput!): User @function(name: "main-${env}") @aws_cognito_user_pools
+
+  syncContacts(input: SyncContactsInput!): Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+
+  # Trip tabs -> Chat
+  createTripMessageNotifications(input: CreateTripMessageNotificationsInput!): Boolean
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  # TeaRex
+  teaRexCreateEntity(input: TeaRexCreateEntityInput!): Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+  teaRexDeleteEntity(input: TeaRexDeleteEntityInput!): Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+  teaRexCreateEvent(input: TeaRexCreateEventInput!): Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+  teaRexDeleteEvent(input: TeaRexDeleteEventInput!): Boolean @function(name: "main-${env}") @aws_cognito_user_pools
+
+  createUserBlock(input: CreateUserBlockInput!): UserBlock @function(name: "main-${env}") @aws_cognito_user_pools
+
+  # Cloudinary
+  uploadToCloudinary(input: UploadToCloudinaryInput!): UploadToCloudinaryResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  #
+  # DATA LOSS POSSIBLE - USE WITH CAUTION !!!
+  #
+  tableMigration(input: TableMigrationInput!): TableMigrationResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  migrateSingleAttraction(input: MigrateSingleAttractionInput!): TableMigrationResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  addMigrationFlag(input: AddMigrationFlagInput!): AddMigrationFlagResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  updateGoogleAPIKey(input: UpdateGoogleAPIKeyInput!): UpdateGoogleAPIKeyResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+}

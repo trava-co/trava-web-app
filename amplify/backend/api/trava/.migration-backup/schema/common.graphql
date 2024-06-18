@@ -1,0 +1,35 @@
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+enum CURRENCY_TYPE {
+  USD
+}
+
+# TODO: TRV-584 Reconsider attraction locations field in db
+type Location {
+  street: String
+  number: String
+  city: String
+  state: String # or district
+  postCode: String
+  coords: Coords!
+  locationImage: S3Object
+}
+
+type Coords {
+  long: Float!
+  lat: Float!
+}
+
+# Settings send reports START
+input SettingsSendReportInput {
+  message: String!
+}
+
+type SettingsSendReportResponse @aws_iam @aws_cognito_user_pools {
+  messageId: String!
+}
+# Settings send reports END

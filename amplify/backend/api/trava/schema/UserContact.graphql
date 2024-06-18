@@ -1,0 +1,55 @@
+type UserContact
+  @model(
+    queries: { get: null, list: "privateListUserContacts" }
+    subscriptions: null
+    mutations: {
+      create: "privateCreateUserContact"
+      update: "privateUpdateUserContact"
+      delete: "privateDeleteUserContact"
+    }
+  )
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId", identityClaim: "sub", operations: [create, update, delete, read] }
+      { allow: private, provider: iam, operations: [create, update, delete, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  userId: ID!
+    @primaryKey(sortKeyFields: ["recordId"]) # userId is owner of contact, recordId is device generated id for the contact, together they are unique
+    @index(
+      name: "byUserByContactName"
+      queryField: "privateGetUserContactsByUserByContactName"
+      sortKeyFields: ["name"]
+    ) # local secondary index for searching by user, returning the user's contacts alphabetically
+  recordId: String! # device generated id for the contact
+  travaUserIds: [String] # users on trava that match this contact
+  name: String
+  email: [String]
+  phone: [String]
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input PhoneBookContact {
+  recordId: String!
+  name: String
+  email: [String]!
+  phone: [String]!
+}
+
+input SyncContactsInput {
+  contacts: [PhoneBookContact!]!
+}
+
+type Contact {
+  emailAddresses: [String]!
+  phoneNumbers: [String]!
+  name: String
+  id: ID!
+}
+
+type GetUserContactsResponse {
+  contactsOnTrava: [SearchUser!]!
+  contactsNotOnTrava: [Contact!]!
+  userContactsOnTravaIds: [String!]!
+}

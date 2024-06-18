@@ -1,0 +1,35 @@
+type UserReferral
+  @model(mutations: { create: "privateCreateUserReferral" }, subscriptions: null)
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId", identityClaim: "sub", operations: [create, read] }
+      { allow: owner, ownerField: "referredUserId", identityClaim: "sub", operations: [create, read, delete] }
+    ]
+  ) {
+  userId: ID! @primaryKey(sortKeyFields: ["referredUserId"])
+  user: User @hasOne(fields: ["userId"])
+  referredUserId: ID!
+  referredUser: User @belongsTo(fields: ["referredUserId"])
+  referralType: REFERRAL_TYPES!
+  sourceOS: String
+  matchGuaranteed: Boolean
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input CreateUserReferralInput {
+  userId: ID!
+  referredUserId: ID!
+  referralType: REFERRAL_TYPES!
+  sourceOS: String
+  matchGuaranteed: Boolean
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+enum REFERRAL_TYPES {
+  TRIP_INVITE
+  PLATFORM_INVITE
+  ATTRACTION_SHARE
+  POST_SHARE
+}

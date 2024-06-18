@@ -1,0 +1,19 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "api": {
+      "trava": [
+        "Query"
+      ]
+    }
+  },
+  "secretNames": [
+    "GOOGLE_SERVICE_ACCOUNT_KEY"
+  ],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "isEnabled",
+      "environmentVariableName": "IS_ENABLED"
+    }
+  ]
+}

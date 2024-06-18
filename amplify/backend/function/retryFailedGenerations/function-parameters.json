@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "api": {
+      "trava": [
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "secretNames": [
+    "SLACK_WEBHOOK_URL",
+    "OPENSEARCH_ENDPOINT"
+  ]
+}

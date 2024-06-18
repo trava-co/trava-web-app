@@ -1,0 +1,10 @@
+{
+  "lambdaLayers": [],
+  "permissions": {
+    "storage": {
+      "Distance:@model(appsync)": [
+        "read"
+      ]
+    }
+  }
+}

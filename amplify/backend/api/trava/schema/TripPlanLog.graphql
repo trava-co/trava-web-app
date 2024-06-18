@@ -1,0 +1,29 @@
+type TripPlanLog
+@model (
+  queries: { get: null, list: null }
+  mutations: {
+    create: "createTripPlanLog"
+    update: null
+    delete: null
+  }
+  subscriptions: null
+)
+@auth (
+  rules: [
+    { allow: private, provider: iam, operations: [read, create] }
+  ]
+)
+{
+  tripPlan: [TripPlanLogDay!]!
+  createdAt: AWSDateTime!
+}
+
+type TripPlanLogDay {
+  dayOfYear: Int! # YYYYMMDD
+  tripPlanDayItems: [TripPlanLogItem]!
+}
+
+type TripPlanLogItem {
+  attractionId: ID!
+  locId: ID!
+}

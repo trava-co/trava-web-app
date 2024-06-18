@@ -1,0 +1,21 @@
+# mapBox GetDistances START
+input MapBoxAttractionLocationInput {
+  attractionId: String!
+  long: Float!
+  lat: Float!
+}
+
+input MapBoxAttractionLocationsInput {
+  locations: [[MapBoxAttractionLocationInput!]!]!
+}
+
+type MapboxGetDistancesResult {
+  locations: [DistanceBetweenLocations!]!
+}
+
+type DistanceBetweenLocations {
+  attractionId_1: String!
+  attractionId_2: String!
+  distance: Float!
+}
+# mapBox GetDistances END

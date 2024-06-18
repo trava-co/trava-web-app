@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "target": "ESNext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "paths": {
+      "shared-types/*": ["../../../shared-types/*"]
+    },
+    "baseUrl": ".",
+    "outDir": "../src",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "sourceMap": false,
+    "strict": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules"]
+}

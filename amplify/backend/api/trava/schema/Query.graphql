@@ -1,0 +1,91 @@
+# IMPORTANT: all custom query have to be in a single file
+# as @function directive does not work with the use of extend
+
+type Query {
+  generateTripPlan(
+    attractions: [TripPlanAttraction]!
+    group: TripPlanGroup!
+    config: GenerateTripPlanConfigInput
+  ): TripPlanResponse @function(name: "planGenerator-${env}") @aws_iam @aws_cognito_user_pools
+  getAttractionPhotos(input: GetAttractionPhotosInput!): Boolean
+    @function(name: "getAttractionPhotos-${env}")
+    @aws_iam
+    @aws_cognito_user_pools
+  generateAttractionDetails(attractionId: String!): Boolean
+    @function(name: "generateAttractionDetails-${env}")
+    @aws_iam
+    @aws_cognito_user_pools
+  mapBoxGetDistances(input: MapBoxAttractionLocationsInput!): MapboxGetDistancesResult
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  mapBoxGetPlaces(input: MapboxGetPlacesInput): [MapboxGetPlacesResult]
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  mapBoxGetToken: MapboxGetTokenResult @function(name: "main-${env}") @aws_cognito_user_pools
+  checkForExistingCards(input: CheckForExistingCardsInput!): CheckForExistingCardsResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  getAttractionsToTagToPost(input: GetAttractionsToTagToPostInput!): GetAttractionsToTagToPostResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  googleGetPlaces(input: GoogleGetPlacesInput): [GoogleGetPlacesResult]
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  googleGetPlaceDetails(input: GoogleGetPlaceDetailsInput): GoogleGetPlaceDetailsResult
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  flightStatsGetScheduleDetails(input: FlightStatsGetScheduleDetailsInput): FlightStatsScheduleDetails
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  homeTabsFeed: HomeTabsFeedResponse @function(name: "main-${env}") @aws_cognito_user_pools
+  homeTabsFeedPeopleOnThisTrip(input: HomeTabsFeedPeopleOnThisTripInput): HomeTabsFeedPeopleOnThisTripResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  homeTabsFeedPostComments(input: HomeTabsFeedPostCommentsInput): HomeTabsFeedPostCommentsResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  homeTabsAccountTrips(input: HomeTabsAccountTripsInput): HomeTabsAccountTripsResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  homeTabsSuggestedFeed(input: HomeTabsSuggestedFeedInput): HomeTabsSuggestedFeedResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  notificationPost(input: NotificationPostInput): NotificationPostResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  signUpCheckGetUserByUsername(username: String): ID
+    @function(name: "main-${env}")
+    @auth(rules: [{ allow: public, provider: iam }, { allow: private, identityClaim: "sub" }]) # cognito for federated, iam for unauthenticated user
+  signInErrorCheckIfUsernameExists(username: String): SignInErrorCheckIfUsernameExistsResponse
+    @function(name: "main-${env}")
+    @auth(rules: [{ allow: public, provider: iam }]) # iam for unauthenticated user
+  getUserContacts: GetUserContactsResponse @function(name: "main-${env}") @aws_cognito_user_pools
+  exploreSearchAttractions(input: ExploreSearchAttractionsInput): ExploreSearchAttractionsResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  exploreMapSearchAttractions(input: ExploreMapSearchAttractionsInput): ExploreMapSearchAttractionsResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  openSearchDestinations(input: OpenSearchDestinationsInput): OpenSearchDestinationsResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  exploreTopUsers: ExploreTopUsersResponse @function(name: "main-${env}") @aws_cognito_user_pools
+  openSearchListNearbyAttractions(input: OpenSearchListNearbyAttractionsInput): OpenSearchListNearbyAttractionsResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  addToItinerarySearch(input: AddToItinerarySearchInput): AddToItinerarySearchResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  addToItineraryMapSearch(input: AddToItineraryMapSearchInput): AddToItineraryMapSearchResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  getExploreVotingList(input: GetExploreVotingListInput!): GetExploreVotingListResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  getGoogleAPIKey(input: GetGoogleAPIKeyInput!): GoogleGetAPIKeyResult
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+  getAttractionsForScheduler(input: GetAttractionsForScheduler): GetAttractionsForSchedulerResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+}

@@ -1,0 +1,41 @@
+type Trip
+  @model(
+    queries: { get: null, list: null }
+    mutations: { create: "privateCreateTrip", update: "privateUpdateTrip", delete: null }
+    subscriptions: null
+  )
+  @auth(rules: [{ allow: private, identityClaim: "sub", operations: [create, update, read] }]) {
+  id: ID!
+  name: String!
+  tripDestinations: [TripDestination] @connection(fields: ["id"])
+  members: [UserTrip] @connection(keyName: "byTrip", fields: ["id"])
+  attractionSwipes: [AttractionSwipe] @connection(keyName: "byTripByDestination", fields: ["id"])
+  attractionSwipesByUser: [AttractionSwipe] @connection(keyName: "byTripByUser", fields: ["id"])
+  attractionSwipesByAttraction: [AttractionSwipe] @connection(keyName: "byTripByAttraction", fields: ["id"]) # for removing attractionSwipes by attractionId (remove card flow)
+  tripDestinationAttractions: [TripDestinationAttraction] @connection(keyName: "byTripByIsTravaCreated", fields: ["id"]) # trip settings -> created cards
+  # TODO: Add conversation model
+  # conversationId: ID!
+  # conversation: Conversation @connection(fields: "conversationId")
+  completed: Boolean
+  messages: [Message] @connection(keyName: "byTripByCreatedAt", fields: ["id"])
+}
+
+input CustomCreateTripInput {
+  id: ID
+  name: String!
+  completed: Boolean
+  userIds: [String!]!
+  destinationIdsWithDates: [destinationIdWithDates!]!
+}
+
+input destinationIdWithDates {
+  id: ID!
+  startDate: Int
+  endDate: Int
+}
+
+input UpdateTripInput {
+  id: ID!
+  name: String
+  completed: Boolean
+}

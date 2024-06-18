@@ -1,0 +1,20 @@
+type TimelineEntryMember
+  @model(
+    queries: null
+    subscriptions: null
+    mutations: { create: "privateCreateTimelineEntryMember", delete: "privateDeleteTimelineEntryMember" }
+  )
+  @auth(
+    rules: [
+      {
+        allow: private
+        identityClaim: "sub"
+        operations: [create, delete, read] # checked by lambda hook
+      }
+      { allow: private, provider: iam, operations: [create, read, delete] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  timelineEntryId: ID! @primaryKey(sortKeyFields: ["userId"]) @index(name: "byTimelineEntry")
+  userId: ID!
+  user: User @hasOne(fields: ["userId"])
+}

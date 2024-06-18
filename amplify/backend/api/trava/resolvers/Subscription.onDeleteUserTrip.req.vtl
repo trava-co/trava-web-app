@@ -1,0 +1,12 @@
+{
+    "version" : "2018-05-29",
+    "operation": "GetItem",
+    "key": {
+        "userId": $util.dynamodb.toDynamoDBJson($ctx.identity.claims.get("sub")),
+        ## the only important part in this resolver is amplify/backend/api/trava/resolvers/Subscription.onDeleteUserTrip.res.vtl,
+        ## where we check if the userId arguments matches the user id from the cognito identity
+        ## ideally we shouldn't make a request here, but it's impossible to skip this part
+        ## we don't have a key for querying the table by userId only, so the tripId argument needs to be included in the query.
+        "tripId": $util.dynamodb.toDynamoDBJson($ctx.identity.claims.get("sub"))
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "storage": {
+      "Attraction:@model(appsync)": [
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "secretNames": [
+    "OPENSEARCH_ENDPOINT",
+    "SLACK_BOT_TOKEN"
+  ]
+}

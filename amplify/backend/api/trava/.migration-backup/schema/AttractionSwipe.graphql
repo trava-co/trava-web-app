@@ -1,0 +1,51 @@
+type AttractionSwipe
+  @model(
+    queries: { get: null, list: null }
+    subscriptions: null
+    mutations: {
+      create: "privateCreateAttractionSwipe"
+      update: "updateAttractionSwipe"
+      delete: "deleteAttractionSwipe"
+    }
+  )
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId", operations: [create, read, update] }
+      { allow: private, identityClaim: "sub", operations: [create, read, update] }
+      { allow: private, provider: iam, operations: [read] }
+    ]
+  )
+  @key(fields: ["userId", "tripId", "attractionId"])
+  @key(name: "byTripByDestination", fields: ["tripId", "destinationId"])
+  @key(name: "byAttraction", fields: ["attractionId"], queryField: "listAttractionSwipesByAttraction")
+  @key(name: "byTripByAttraction", fields: ["tripId", "attractionId"]) # for removing attractionSwipes by attractionId (remove card flow)
+  @key(name: "byTripByUser", fields: ["tripId", "userId"]) {
+  userId: ID!
+  tripId: ID!
+  destinationId: ID! # TODO: TRV-396 - lambda check before create AttractionSwipe if attraction has same destinationId
+  destination: Destination @connection(fields: ["destinationId"])
+  attractionId: ID!
+  attraction: Attraction @connection(fields: ["attractionId"])
+  swipe: AttractionSwipeResult!
+}
+
+enum AttractionSwipeResult {
+  LIKE
+  DISLIKE
+}
+
+input CreateAttractionSwipeInput {
+  userId: String!
+  tripId: String!
+  destinationId: String!
+  attractionId: String!
+  swipe: AttractionSwipeResult!
+}
+
+input UpdateAttractionSwipeInput {
+  userId: String!
+  tripId: String!
+  destinationId: String
+  attractionId: String!
+  swipe: AttractionSwipeResult
+}

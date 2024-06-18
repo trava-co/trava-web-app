@@ -1,0 +1,20 @@
+type UserSession
+  @model(queries: null, mutations: { create: "createUserSession", update: null, delete: null }, subscriptions: null)
+  @auth(
+    rules: [
+      { allow: private, operations: [create, read] }
+      { allow: groups, groups: ["admin"], operations: [update, delete, read] }
+    ]
+  ) {
+  id: ID!
+  userId: ID!
+  deviceType: PLATFORM!
+  appVersion: String!
+  label: UserSessionLabel!
+    @index(name: "byLabel", queryField: "privateListUserSessionsByCreatedAt", sortKeyFields: ["createdAt"]) # constant of value "SESSION" to sort by createdAt
+  createdAt: AWSDateTime!
+}
+
+enum UserSessionLabel {
+  SESSION
+}

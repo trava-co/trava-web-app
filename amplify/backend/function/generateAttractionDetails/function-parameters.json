@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "api": {
+      "trava": [
+        "Query",
+        "Mutation"
+      ]
+    },
+    "storage": {
+      "Attraction:@model(appsync)": [
+        "create",
+        "read",
+        "update"
+      ],
+      "GooglePlace:@model(appsync)": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": [
+    {
+      "type": "ProjectLayer",
+      "resourceName": "travapuppeteer",
+      "version": "Always choose latest version",
+      "isLatestVersionSelected": true,
+      "env": "rn"
+    }
+  ],
+  "secretNames": [
+    "GOOGLE_MAPS_API_KEY",
+    "YELP_API_KEY",
+    "OPENAI_API_KEY",
+    "SLACK_WEBHOOK_URL",
+    "BING_AI_URL"
+  ]
+}

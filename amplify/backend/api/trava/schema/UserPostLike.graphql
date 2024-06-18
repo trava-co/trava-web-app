@@ -1,0 +1,19 @@
+type UserPostLike
+  @model(queries: { get: null, list: null }, mutations: null, subscriptions: null)
+  @auth(rules: [{ allow: private, identityClaim: "sub", operations: [read] }]) {
+  userId: ID! @primaryKey(sortKeyFields: ["postId"]) @index(name: "byCreatedAt", sortKeyFields: ["createdAt"])
+  postId: ID!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input likeDislikePostInput {
+  userId: ID!
+  postId: ID!
+  action: LIKE_DISLIKE_ACTION_INPUT!
+}
+
+enum LIKE_DISLIKE_ACTION_INPUT {
+  ADD
+  REMOVE
+}

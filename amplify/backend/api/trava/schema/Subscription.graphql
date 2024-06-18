@@ -1,0 +1,15 @@
+type Subscription {
+  onCreateMessage(tripId: ID!): Message @aws_subscribe(mutations: ["createMessage"])
+  onDeleteUserTrip(userId: ID!): UserTrip @aws_subscribe(mutations: ["deleteUserTrip"])
+  onCreateUserTripByTripId(tripId: ID!): UserTrip @aws_subscribe(mutations: ["createUserTrip"])
+  onDeleteUserTripByTripId(tripId: ID!): UserTrip @aws_subscribe(mutations: ["deleteUserTrip"])
+  onUpdateTripDestinationUserByTripId(tripId: ID!): TripDestinationUser
+    @aws_subscribe(mutations: ["updateTripDestinationUser"])
+  onUpdateTripDestinationByTripId(tripId: ID!): TripDestination @aws_subscribe(mutations: ["updateTripDestination"])
+  onCreateTripDestination(tripId: ID!): TripDestination @aws_subscribe(mutations: ["createTripDestination"])
+  onDeleteTripDestination(tripId: ID!): TripDestination @aws_subscribe(mutations: ["deleteTripDestination"])
+  onUpdateFeatureFlag(id: FeatureFlagName!): FeatureFlag @aws_subscribe(mutations: ["privateUpdateFeatureFlag"])
+  onUpdateAttraction(id: ID!): Attraction @aws_subscribe(mutations: ["privateUpdateAttraction"])
+  onPutAttractionSwipeByTripIdByDestinationId(tripId: ID!, destinationId: ID!): AttractionSwipe
+    @aws_subscribe(mutations: ["privateCreateAttractionSwipe", "privateUpdateAttractionSwipe"])
+}

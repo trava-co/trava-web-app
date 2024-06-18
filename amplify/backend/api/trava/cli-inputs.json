@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "serviceName": "AppSync",
+    "defaultAuthType": {
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authtravaf4f82e77"
+    },
+    "additionalAuthTypes": [
+      {
+        "mode": "AWS_IAM"
+      }
+    ],
+    "conflictResolution": {},
+    "apiName": "trava",
+    "gqlSchemaPath": "/Users/dimaandreyuk/Projects/Trava/trava-mobile/amplify/backend/api/trava/schema.graphql"
+  }
+}

@@ -1,0 +1,22 @@
+type Comment
+  @model(queries: { get: "getComment", list: null }, mutations: null, subscriptions: null)
+  @auth(
+    rules: [
+      { allow: private, operations: [read] } # notifications screen - get access to read comment resolver
+      { allow: private, provider: iam, operations: [read] }
+    ]
+  ) {
+  id: ID! @primaryKey
+  postId: ID! @index(name: "byPost", sortKeyFields: ["createdAt"])
+  userId: ID!
+  user: User @hasOne(fields: ["userId"])
+  text: String!
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input CustomCreateComment {
+  postId: ID!
+  text: String!
+}

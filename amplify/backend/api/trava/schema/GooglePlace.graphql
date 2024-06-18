@@ -1,0 +1,186 @@
+type GooglePlace
+  @model(
+    queries: { get: "getGooglePlace", list: null }
+    mutations: { create: "privateCreateGooglePlace", update: "privateUpdateGooglePlace", delete: null }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: private, identityClaim: "sub", operations: [read] }
+      { allow: private, provider: iam, operations: [create, read, update] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  id: ID! @primaryKey # googlePlaceId
+  # if place request returns error, then set this to false, so we no longer update it
+  # Booleans can't be used in secondary indexes, hence using an Int (0 or 1)
+  isValid: Int!
+    @index(
+      name: "byIsValidByDataLastCheckedAt"
+      queryField: "googlePlacesByIsValidByDataLastCheckedAt"
+      sortKeyFields: ["dataLastCheckedAt"]
+    )
+    @index(
+      name: "byIsValidByDataLastUpdatedAt"
+      queryField: "googlePlacesByIsValidByDataLastUpdatedAt"
+      sortKeyFields: ["dataLastUpdatedAt"]
+    )
+  # api data start
+  data: PlaceData!
+  consecutiveFailedRequests: Int # number of consecutive failed requests to fetch data for this place
+  dataLastCheckedAt: AWSDateTime # time when we last queried Google for this place
+  dataLastUpdatedAt: AWSDateTime # time when we last updated the data field for this place
+  # api data end
+  webData: PlaceWebData # data from google web
+  yelpData: YelpData # data from yelp api + web
+  generatedSummary: String # ai generated summary of the place. serves as input to generating long description.
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type PlaceData {
+  coords: Coords!
+  city: String
+  state: String # or district
+  country: String
+  continent: String
+  name: String
+  formattedAddress: String
+  googlePlacePageLink: String
+  websiteLink: String
+  phone: String
+  hours: Hours
+  businessStatus: BusinessStatus
+  rating: Rating
+  mealServices: MealServices
+  photos: [PlacePhoto]
+  reservable: Boolean
+  price: Int
+  reviews: [Review]
+  editorialSummary: String
+  types: [String]
+}
+
+type PlaceWebData {
+  menuLink: String
+  reservationLink: String
+  popularTimes: DayData
+  bestVisitedByPopularTimes: [ATTRACTION_BEST_VISIT_TIME]
+  aboutBusiness: AboutBusiness
+  reviews: [Review] # reviews from google web
+}
+
+type AboutBusiness {
+  fromTheBusiness: [InfoItem]
+  serviceOptions: [InfoItem]
+  highlights: [InfoItem]
+  popularFor: [InfoItem]
+  accessibility: [InfoItem]
+  offerings: [InfoItem]
+  diningOptions: [InfoItem]
+  amenities: [InfoItem]
+  atmosphere: [InfoItem]
+  crowd: [InfoItem]
+  children: [InfoItem]
+  planning: [InfoItem]
+  payments: [InfoItem]
+}
+
+type YelpData {
+  id: String # yelp business id
+  url: String
+  amenities: [InfoItem]
+  price: Int
+  categories: [String]
+  reviews: [Review]
+}
+
+type Review {
+  authorName: String
+  authorUrl: String
+  language: String
+  originalLanguage: String
+  profilePhotoUrl: String
+  rating: Int
+  relativeTimeDescription: String
+  text: String
+  time: String
+  translated: Boolean
+}
+
+type Hours {
+  weekdayText: [String!]!
+  periods: [Period!]!
+}
+
+enum BusinessStatus {
+  OPERATIONAL
+  CLOSED_TEMPORARILY
+  CLOSED_PERMANENTLY
+}
+
+type Rating {
+  score: Float
+  count: Int
+}
+
+type Period {
+  open: OpenCloseTime!
+  close: OpenCloseTime
+}
+
+type OpenCloseTime {
+  day: Int!
+  time: String!
+}
+
+type MealServices {
+  servesBreakfast: Boolean
+  servesBrunch: Boolean
+  servesLunch: Boolean
+  servesDinner: Boolean
+  dineIn: Boolean
+  takeout: Boolean
+  delivery: Boolean
+  servesBeer: Boolean
+  servesWine: Boolean
+  servesVegetarianFood: Boolean
+}
+
+input PlacePhotoInput {
+  photo_reference: String
+  height: Float
+  width: Float
+  html_attributions: [String]
+}
+
+type PlacePhoto {
+  photo_reference: String
+  height: Float
+  width: Float
+  html_attributions: [String]
+}
+
+type InfoItem {
+  name: String!
+  affirmative: Boolean
+  negative: Boolean
+}
+
+type HourData {
+  hour: Int!
+  value: Int!
+}
+
+type HourlyData {
+  hours: [HourData!]!
+}
+
+type DayData {
+  Sunday: HourlyData
+  Monday: HourlyData
+  Tuesday: HourlyData
+  Wednesday: HourlyData
+  Thursday: HourlyData
+  Friday: HourlyData
+  Saturday: HourlyData
+}

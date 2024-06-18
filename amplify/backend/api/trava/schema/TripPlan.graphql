@@ -1,0 +1,83 @@
+input GenerateTripPlanConfigInput {
+  weights: TripPlanWeights
+  thresholds: TripPlanThresholds
+  maxPreferredTimes: Int
+  busyness: Int # 0-2, 0 is slowest, 2 is busiest, how busy is the plan
+  breakfast: Boolean # whether to include breakfast in the plan
+}
+
+input TripPlanWeights {
+  rating: Float
+  distance: Float
+  category: Float
+  dayTime: Float
+}
+
+input TripPlanThresholds {
+  rating: Float
+}
+
+input Season {
+  startMonth: Int # 0-11
+  startDay: Int # 0-30 (0 = first day of month)
+  endMonth: Int # 0-11
+  endDay: Int # 0-30 (0 = first day of month)
+}
+
+input TripPlanLocationHoursInput {
+  periods: [PeriodInput!]!
+}
+
+input PeriodInput {
+  open: OpenCloseTimeInput!
+  close: OpenCloseTimeInput
+}
+
+input OpenCloseTimeInput {
+  day: Int!
+  time: String!
+}
+
+input TripPlanLocation {
+  id: String!
+  googlePlaceId: String!
+  coords: CoordsInput!
+  hours: TripPlanLocationHoursInput
+}
+
+input TripPlanStartEndLocation {
+  id: String!
+  startLoc: TripPlanLocation!
+  endLoc: TripPlanLocation!
+}
+
+input TripPlanAttraction {
+  attractionId: String!
+  name: String!
+  type: String
+  locations: [TripPlanStartEndLocation]!
+  duration: Int
+  preferredTime: [String]
+  category: String
+  seasons: [Season]
+  travaCard: Boolean
+}
+
+input TripPlanGroup {
+  ratings: [[Int]]!
+  nDays: Int!
+  startTime: String!
+  endTime: String!
+  startDate: Int! #YYYYMMDD
+}
+
+type TripPlanItem @aws_iam @aws_cognito_user_pools {
+  day: Int!
+  order: Int!
+  attractionId: String!
+  locId: String!
+}
+
+type TripPlanResponse @aws_iam @aws_cognito_user_pools {
+  plan: [[TripPlanItem]]!
+}

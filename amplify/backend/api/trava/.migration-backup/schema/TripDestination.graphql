@@ -1,0 +1,84 @@
+type TripDestination
+  @model(
+    queries: { get: "getTripDestination", list: null }
+    mutations: {
+      create: "privateCreateTripDestination"
+      update: "privateUpdateTripDestination"
+      delete: "privateDeleteTripDestination"
+    }
+    subscriptions: null
+  )
+  @key(fields: ["tripId", "destinationId"])
+  @auth(
+    rules: [
+      {
+        allow: private
+        identityClaim: "sub"
+        operations: [create, update, delete, read] # checked by lambda hook
+      }
+    ]
+  ) {
+  tripId: ID!
+  destinationId: ID!
+  attractionSwipes: [AttractionSwipe] @connection(keyName: "byTripByDestination", fields: ["tripId", "destinationId"])
+  destination: Destination @connection(fields: ["destinationId"])
+  startDate: Int
+  endDate: Int
+  startTime: TripDestinationTime
+  endTime: TripDestinationTime
+  tripPlan: [TripPlanDay]
+  tripDestinationAttractions: [TripDestinationAttraction]
+    @connection(keyName: "byTripByDestination", fields: ["tripId", "destinationId"])
+}
+
+enum TripDestinationTime {
+  MORNING
+  AFTERNOON
+  EVENING
+}
+
+type TripPlanDayItem {
+  attractionId: ID!
+  attraction: Attraction # handled by custom resolver as @connect can not be used on type without @model directive
+}
+
+type TripPlanDay {
+  dayOfYear: Int! # YYYYMMDD
+  tripPlanDayItems: [TripPlanDayItem]!
+}
+
+# Below inputs for Mutation.graphql
+
+input CreateTripDestinationInput {
+  tripId: ID!
+  destinationId: ID!
+  startDate: Int
+  endDate: Int
+  startTime: TripDestinationTime
+  endTime: TripDestinationTime
+  tripPlan: [TripPlanDayInput]
+}
+
+input UpdateTripDestinationInput {
+  tripId: ID!
+  destinationId: ID!
+  startDate: Int
+  endDate: Int
+  startTime: TripDestinationTime
+  endTime: TripDestinationTime
+  tripPlan: [TripPlanDayInput]
+}
+
+input DeleteTripDestinationInput {
+  tripId: ID!
+  destinationId: ID!
+}
+
+input TripPlanDayInput {
+  dayOfYear: Int!
+  tripPlanDayItems: [TripPlanDayItemInput]
+}
+
+input TripPlanDayItemInput {
+  attractionId: ID!
+}

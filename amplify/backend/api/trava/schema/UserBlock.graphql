@@ -1,0 +1,26 @@
+type UserBlock
+  @model(
+    mutations: { create: "privateCreateUserBlock", update: "updateUserBlock", delete: "deleteUserBlock" }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId", identityClaim: "sub", operations: [create, read, delete] }
+      { allow: owner, ownerField: "blockedUserId", identityClaim: "sub", operations: [create, read, delete] }
+      { allow: private, provider: iam, operations: [read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  userId: ID! @primaryKey(sortKeyFields: ["blockedUserId"])
+  user: User @hasOne(fields: ["userId"])
+  blockedUserId: ID! @index(name: "byBlockedUser", sortKeyFields: ["userId"])
+  blockedUser: User @belongsTo(fields: ["blockedUserId"])
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input CreateUserBlockInput {
+  userId: ID!
+  blockedUserId: ID!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}

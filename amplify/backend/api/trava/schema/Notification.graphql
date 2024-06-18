@@ -1,0 +1,57 @@
+type Notification
+  @model(subscriptions: null)
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "receiverUserId", identityClaim: "sub" }
+      { allow: private, operations: [create, update, delete] }
+      { allow: private, provider: iam, operations: [create, read, update] }
+    ]
+  ) {
+  id: ID!
+  receiverUserId: ID!
+    @index(name: "byReceiverUser", queryField: "listNotificationsByReceiverUser", sortKeyFields: ["showInApp"])
+  senderUser: User @hasOne(fields: ["senderUserId"])
+  senderUserId: ID!
+  type: NOTIFICATION_TYPE!
+  text: String
+  tripId: ID
+  trip: Trip @hasOne(fields: ["tripId"])
+  postId: ID
+  post: Post @hasOne(fields: ["postId"])
+  attractionId: ID
+  attraction: Attraction @hasOne(fields: ["attractionId"])
+  commentId: ID
+  comment: Comment @hasOne(fields: ["commentId"])
+  showInApp: Int!
+}
+
+enum NOTIFICATION_TYPE {
+  NEW_FOLLOW
+  FOLLOW_REQUEST_ACCEPTED
+  FOLLOW_REQUEST_SENT
+  TRIP_INVITATION_SENT
+  TRIP_INVITATION_ACCEPTED
+  JOIN_TRIP
+  CREATE_CALENDAR
+  EDIT_CALENDAR
+  EDIT_DATES
+  RENAME_TRIP
+  ADD_DESTINATION
+  REMOVE_DESTINATION
+  ADD_FLIGHT
+  ADD_LODGING
+  ADD_CAR_RENTAL
+  REMOVE_FLIGHT
+  REMOVE_LODGING
+  REMOVE_CAR_RENTAL
+  RECALCULATE_CALENDAR
+  INVITE_MEMBER
+  REMOVE_MEMBER
+  LEAVE_TRIP
+  USER_MESSAGE
+  LIKE_POST
+  COMMENT_POST
+  BUCKET_LIST_ATTRACTION
+  REFERRAL_JOINED
+  REFERRAL_ONBOARDING
+}

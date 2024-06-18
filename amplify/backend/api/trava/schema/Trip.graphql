@@ -1,0 +1,44 @@
+type Trip
+  @model(
+    queries: { get: "privateGetTrip", list: null }
+    mutations: { create: "privateCreateTrip", update: "privateUpdateTrip", delete: null }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: private, identityClaim: "sub", operations: [create, update, read] }
+      { allow: private, provider: iam, operations: [read] }
+    ]
+  ) {
+  id: ID!
+  name: String!
+  tripDestinations: [TripDestination] @hasMany(fields: ["id"])
+  members: [UserTrip] @hasMany(indexName: "byTrip", fields: ["id"])
+  attractionSwipes: [AttractionSwipe] @hasMany(indexName: "byTripByDestination", fields: ["id"])
+  attractionSwipesByUser: [AttractionSwipe] @hasMany(indexName: "byTripByUser", fields: ["id"])
+  timelineEntries: [TimelineEntry] @hasMany(indexName: "byTripByStartDate", fields: ["id"])
+  completed: Boolean
+  messages: [Message] @hasMany(indexName: "byTripByCreatedAt", fields: ["id"])
+  link: String
+}
+
+input CustomCreateTripInput {
+  id: ID
+  link: String # used to create admin's usertrip invite link
+  name: String!
+  completed: Boolean
+  userIds: [String!]!
+  destinationIdsWithDates: [destinationIdWithDates!]!
+}
+
+input destinationIdWithDates {
+  id: ID!
+  startDate: Int
+  endDate: Int
+}
+
+input UpdateTripInput {
+  id: ID!
+  name: String
+  completed: Boolean
+}

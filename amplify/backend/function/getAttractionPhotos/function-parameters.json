@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "api": {
+      "trava": [
+        "Mutation"
+      ]
+    },
+    "storage": {
+      "Attraction:@model(appsync)": [
+        "create",
+        "read",
+        "update"
+      ],
+      "Photographer:@model(appsync)": [
+        "create",
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "secretNames": [
+    "GOOGLE_MAPS_API_KEY",
+    "SLACK_WEBHOOK_URL"
+  ]
+}

@@ -1,0 +1,45 @@
+enum TeaRexEventLabel {
+  WATCHED
+  SWIPE
+}
+
+enum TeaRexLabel {
+  User
+  Post
+  Attraction
+}
+
+type TeaRexEntity {
+  id: ID!
+  label: TeaRexLabel!
+}
+
+input TeaRexEntityInput {
+  id: ID!
+  label: TeaRexLabel!
+}
+
+input TeaRexCreateEntityInput {
+  teaRexEntity: TeaRexEntityInput!
+}
+
+input TeaRexDeleteEntityInput {
+  teaRexEntity: TeaRexEntityInput!
+}
+
+input TeaRexCreateEventInput {
+  inEventEntity: TeaRexEntityInput!
+  teaRexEvent: TeaRexEventInput!
+  outEventEntity: TeaRexEntityInput!
+}
+
+input TeaRexEventInput {
+  label: TeaRexEventLabel!,
+  weight: Float!,
+}
+
+input TeaRexDeleteEventInput {
+  inEventEntity: TeaRexEntityInput!
+  teaRexEvent: TeaRexEventInput!
+  outEventEntity: TeaRexEntityInput!
+}

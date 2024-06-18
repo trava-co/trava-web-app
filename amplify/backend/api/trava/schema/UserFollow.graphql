@@ -1,0 +1,39 @@
+type UserFollow
+  @model(
+    mutations: { create: "privateCreateUserFollow", update: "privateUpdateUserFollow", delete: "deleteUserFollow" }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId", identityClaim: "sub", operations: [create, read, delete] }
+      { allow: owner, ownerField: "followedUserId", identityClaim: "sub", operations: [create, read, delete] }
+      { allow: private, provider: iam, operations: [read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+      { allow: private, operations: [read, update] }
+    ]
+  ) {
+  userId: ID! @primaryKey(sortKeyFields: ["followedUserId"])
+  user: User @hasOne(fields: ["userId"])
+  followedUserId: ID! @index(name: "byFollowedUser", sortKeyFields: ["userId"])
+  followedUser: User @belongsTo(fields: ["followedUserId"])
+  approved: Boolean!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+input CreateUserFollowInput {
+  userId: ID!
+  followedUserId: ID!
+  approved: Boolean!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  userFollowUserId: ID
+}
+
+input UpdateUserFollowInput {
+  userId: ID!
+  followedUserId: ID!
+  approved: Boolean
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  userFollowUserId: ID
+}

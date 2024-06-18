@@ -1,0 +1,10 @@
+type Distance
+  @model(
+    queries: { get: "privateGetDistance", list: null }
+    subscriptions: null
+    mutations: { create: "privateCreateDistance", update: null, delete: null }
+  )
+  @auth(rules: [{ allow: private, provider: iam, operations: [read, create] }]) {
+  key: String! @primaryKey
+  value: Float!
+}

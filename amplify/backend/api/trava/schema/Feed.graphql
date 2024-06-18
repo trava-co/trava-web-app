@@ -1,0 +1,98 @@
+# homeTabsFeed
+type HomeTabsFeedResponse {
+  stories: [Story]
+}
+
+type Story {
+  storyId: String!
+  story: [PostWithinStory]!
+}
+
+type PostWithinStory {
+  id: String!
+  createdAt: String!
+  userId: String!
+  tripId: String!
+  membersLength: Int!
+  description: String!
+  cloudinaryUrl: String!
+  avatar: S3Object
+  username: String!
+  authorPublic: Boolean
+  viewed: Boolean!
+  destinationState: String
+  destinationCountry: String
+  destinationIcon: String
+  destinationCoverImage: S3Object
+  destinationName: String
+  attractionId: String
+  attractionName: String
+  attractionImage: S3Object
+  likesCount: Int!
+  commentsCount: Int!
+  mediaType: MEDIA_TYPES!
+  videoDuration: Float
+}
+
+# homeTabsFeed -> People on this trip
+input HomeTabsFeedPeopleOnThisTripInput {
+  userId: String!
+  tripId: String!
+}
+
+type HomeTabsFeedPeopleOnThisTripResponse {
+  members: [UserTrip]
+  userFollows: [UserFollow]
+}
+
+# homeTabsFeed -> Post comments
+input HomeTabsFeedPostCommentsInput {
+  postId: String!
+}
+
+type HomeTabsFeedPostCommentsResponse {
+  id: ID!
+  userId: ID!
+  tripId: ID!
+  avatar: S3Object
+  username: String!
+  membersLength: Int!
+  description: String
+  comments: [HomeTabsFeedPostCommentsResponseComment]
+}
+
+type HomeTabsFeedPostCommentsResponseComment {
+  id: ID!
+  userId: ID!
+  username: String!
+  avatar: S3Object
+  text: String!
+  updatedAt: AWSDateTime!
+}
+
+type ReferringUserInfo {
+  id: String!
+  avatar: S3Object
+  username: String!
+}
+
+type HomeTabsSuggestedFeedResponse {
+  stories: [Story]
+  sharedPostError: SharedPostError
+  referringUserInfo: ReferringUserInfo
+}
+
+type SharedPostError {
+  type: SHARED_POST_ERROR_TYPE!
+  authorId: String
+  authorUsername: String
+  authorAvatar: S3Object
+}
+
+enum SHARED_POST_ERROR_TYPE {
+  PRIVATE_POST # Post is private and user does not follow author
+  POST_DELETED # Post has been deleted
+  POST_NOT_FOUND # Post does not exist
+  BLOCKED_USER # User is blocked by author
+  BLOCKED_AUTHOR # Author is blocked by user
+}

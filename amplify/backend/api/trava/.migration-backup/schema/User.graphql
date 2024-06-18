@@ -1,0 +1,47 @@
+type User
+  @model(subscriptions: null)
+  # @searchable TODO: TRV-370: Restore @searchable
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "id", identityClaim: "sub", operations: [update, delete, read] }
+      { allow: private, identityClaim: "sub", operations: [read] }
+      { allow: groups, groups: ["admin"], operations: [update, delete, read] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  id: ID! # sub value from cognito
+  username: String
+  name: String
+  avatar: S3Object
+  email: String
+  phone: String
+  privacy: PRIVACY
+  dateOfBirth: AWSDate
+  facebookId: String
+  googleId: String
+  appleId: String
+  follows: [UserFollow] @connection(fields: ["id"])
+  followedBy: [UserFollow] @connection(keyName: "byFollowedUser", fields: ["id"])
+  userFollowByMe: UserFollow @function(name: "main-${env}")
+  userTrips: [UserTrip]
+    @connection(fields: ["id"])
+    @auth(
+      rules: [
+        { allow: owner, ownerField: "id", identityClaim: "sub" }
+        { allow: groups, groups: ["admin"], operations: [update, delete, read] }
+      ]
+    )
+  description: String
+  location: String
+}
+
+enum PRIVACY {
+  PUBLIC
+  PRIVATE
+}
+
+# testQuery START
+type TestQueryResponse @aws_iam {
+  id: String
+}
+# testQuery END

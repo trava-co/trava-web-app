@@ -1,0 +1,51 @@
+# IMPORTANT: all custom mutations have to be in a single file
+# as @function directive does not work with the use of extend
+
+type Mutation {
+  # Auth START
+  signUp(input: SignUpInput): SignUpResponse
+    @function(name: "main-${env}")
+    @auth(rules: [{ allow: public, provider: iam }])
+  # Auth END
+
+  settingsSendReport(input: SettingsSendReportInput!): SettingsSendReportResponse
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createTrip(input: CustomCreateTripInput!): Trip @function(name: "main-${env}") @aws_cognito_user_pools
+
+  updateTrip(input: UpdateTripInput!): Trip @function(name: "main-${env}") @aws_cognito_user_pools
+
+  createUserTrip(input: CreateUserTripInput!): UserTrip @function(name: "main-${env}") @aws_cognito_user_pools @aws_iam
+
+  updateUserTrip(input: UpdateUserTripInput!): UserTrip @function(name: "main-${env}") @aws_cognito_user_pools
+
+  deleteUserTrip(input: DeleteUserTripInput!): UserTrip @function(name: "main-${env}") @aws_cognito_user_pools
+
+  createTripDestination(input: CreateTripDestinationInput!): TripDestination
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+    @aws_iam
+
+  updateTripDestination(input: UpdateTripDestinationInput!): TripDestination
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  deleteTripDestination(input: DeleteTripDestinationInput!): TripDestination
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createUserFollow(input: CreateUserFollowInput!): UserFollow @function(name: "main-${env}") @aws_cognito_user_pools
+
+  createAttractionSwipe(input: CreateAttractionSwipeInput!): AttractionSwipe
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  createAttraction(input: CustomCreateAttractionInput!): Attraction
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+
+  deleteAttraction(input: CustomDeleteAttractionInput!): Attraction
+    @function(name: "main-${env}")
+    @aws_cognito_user_pools
+}

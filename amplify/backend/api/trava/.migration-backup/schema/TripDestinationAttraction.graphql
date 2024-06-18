@@ -1,0 +1,31 @@
+type TripDestinationAttraction
+  @model(
+    queries: { get: null, list: null }
+    mutations: {
+      create: "privateCreateTripDestinationAttraction"
+      update: null
+      delete: "privateDeleteTripDestinationAttraction"
+    }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      {
+        allow: private
+        identityClaim: "sub"
+        operations: [create, update, delete, read] #?
+      }
+    ]
+  )
+  @key(fields: ["tripId", "attractionId", "destinationId"])
+  @key(name: "byAttraction", fields: ["attractionId"], queryField: "listTripDestinationAttractionsByAttraction")
+  @key(name: "byTripByDestination", fields: ["tripId", "destinationId"])
+  @key(name: "byTripByIsTravaCreated", fields: ["tripId", "isTravaCreated"]) {
+  attractionId: ID!
+  tripId: ID!
+  destinationId: ID!
+  attraction: Attraction @connection(fields: ["attractionId"])
+  isTravaCreated: Int! # 0 or 1, default 0. Cannot use boolean, because booleans cannot be used as sort keys
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}

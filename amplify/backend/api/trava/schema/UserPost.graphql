@@ -1,0 +1,19 @@
+type UserPost
+  @model(
+    queries: { get: null, list: null }
+    mutations: { create: "createUserPost", update: null, delete: null }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId", identityClaim: "sub", operations: [read, create] }
+      { allow: private, provider: iam, operations: [read] }
+    ]
+  ) {
+  userId: ID! @primaryKey(sortKeyFields: ["postId"]) @index(name: "byCreatedAt", sortKeyFields: ["createdAt"])
+  postId: ID!
+  post: Post @hasOne(fields: ["postId"])
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}

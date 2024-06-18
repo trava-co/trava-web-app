@@ -1,0 +1,13 @@
+type Photographer
+  @model(timestamps: null, subscriptions: null)
+  @auth(
+    rules: [
+      { allow: groups, groups: ["admin"], operations: [create, update, read, delete] }
+      { allow: private, operations: [read] }
+    ]
+  ) {
+  id: ID!
+  name: String! @index(name: "byPhotographerName", queryField: "listPhotographersByName", sortKeyFields: ["id"])
+  url: String
+  pendingMigration: Boolean # tracks if attraction is pending migration between source & target backend envs
+}

@@ -1,0 +1,50 @@
+type UserTrip
+  @model(
+    queries: { get: null, list: null }
+    mutations: { create: "privateCreateUserTrip", update: "privateUpdateUserTrip", delete: "privateDeleteUserTrip" }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: private, identityClaim: "sub", operations: [create, update, delete, read] }
+      { allow: groups, groups: ["admin"] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  userId: ID! @primaryKey(sortKeyFields: ["tripId"])
+  user: User @hasOne(fields: ["userId"])
+  tripId: ID! @index(name: "byTrip", queryField: "listUserTripByTrip", sortKeyFields: ["userId"])
+  trip: Trip @belongsTo(fields: ["tripId"])
+  status: UserTripStatus!
+  invitedByUserId: ID!
+  invitedByUser: User @hasOne(fields: ["invitedByUserId"])
+  inviteLink: String
+  lastMessageReadDate: AWSDateTime
+}
+
+enum UserTripStatus {
+  PENDING
+  APPROVED
+}
+
+input CreateUserTripInput {
+  userId: ID!
+  tripId: ID!
+  status: UserTripStatus!
+  invitedByUserId: ID!
+  inviteLink: String
+}
+
+input UpdateUserTripInput {
+  userId: ID!
+  tripId: ID!
+  status: UserTripStatus
+  invitedByUserId: ID
+  lastMessageReadDate: AWSDateTime
+  inviteLink: String
+}
+
+input DeleteUserTripInput {
+  userId: ID!
+  tripId: ID!
+}

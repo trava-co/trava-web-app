@@ -1,0 +1,25 @@
+type GoogleGetPlaceDetailsLocation {
+  coords: Coords!
+  city: String
+  state: String # or district
+  country: String
+  continent: String
+  googlePlaceId: String!
+  formattedAddress: String
+  googlePlacePageLink: String
+  websiteLink: String
+  phone: String
+  hours: Hours
+  businessStatus: BusinessStatus
+  googleRating: Rating
+  timezone: String
+}
+
+type GoogleGetPlaceDetailsResult {
+  location: GoogleGetPlaceDetailsLocation
+  placeName: String
+}
+
+input GoogleGetPlaceDetailsInput {
+  placeId: String!
+}

@@ -1,0 +1,21 @@
+# UserAttraction refers to a bucket list item
+type UserAttraction
+  @model(queries: { get: null, list: "privateListUserAttractions" }, mutations: null, subscriptions: null)
+  @auth(rules: [{ allow: private, identityClaim: "sub", operations: [read] }]) {
+  userId: ID! @primaryKey(sortKeyFields: ["attractionId"])
+  attractionId: ID! @index(name: "byAttraction", queryField: "userAttractionsByAttraction")
+  attraction: Attraction @hasOne(fields: ["attractionId"])
+  authorId: ID # author of the attraction
+  createdAt: AWSDateTime
+}
+
+input addRemoveFromBucketListInput {
+  userId: ID!
+  attractionId: ID!
+  action: BUCKET_LIST_ACTION_INPUT!
+}
+
+enum BUCKET_LIST_ACTION_INPUT {
+  ADD
+  REMOVE
+}

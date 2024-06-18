@@ -1,0 +1,16 @@
+# signUp START
+input SignUpInput {
+  email: String
+  phone: String
+  dateOfBirth: AWSDate!
+  name: String!
+  username: String!
+  privacy: String!
+  password: String!
+}
+
+type SignUpResponse @aws_iam {
+  id: String
+  destination: String
+}
+# signUp END

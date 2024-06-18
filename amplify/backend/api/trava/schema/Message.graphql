@@ -1,0 +1,12 @@
+type Message @model(queries: { get: null, list: null }, subscriptions: null) @auth(rules: [{ allow: private }]) {
+  id: ID!
+  tripId: ID! @index(name: "byTripByCreatedAt", sortKeyFields: ["createdAt"])
+  userId: ID!
+  user: User @hasOne(fields: ["userId"])
+  text: String
+  system: Boolean
+  image: S3Object
+  sent: Boolean! # default true
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}

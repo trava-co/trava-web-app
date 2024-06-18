@@ -1,0 +1,235 @@
+type FlightStatsEquipments {
+  iata: String
+  name: String
+  turboProp: Boolean
+  jet: Boolean
+  widebody: Boolean
+  regional: Boolean
+}
+
+type FlightStatsAirports {
+  fs: String
+  iata: String
+  icao: String
+  faa: String
+  name: String
+  city: String
+  cityCode: String
+  stateCode: String
+  postalCode: String
+  countryCode: String
+  countryName: String
+  regionName: String
+  timeZoneRegionName: String
+  weatherZone: String
+  localTime: String
+  utcOffsetHours: Int
+  latitude: Float
+  longitude: Float
+  elevationFeet: Int
+  classification: Int
+  active: Boolean
+}
+
+type FlightStatsAirlines {
+  fs: String
+  iata: String
+  icao: String
+  name: String
+  active: Boolean
+}
+
+type FlightStatsAppendix {
+  equipments: [FlightStatsEquipments]
+  airports: [FlightStatsAirports]
+  airlines: [FlightStatsAirlines]
+}
+
+type FlightStatsCodeshares {
+  carrierFsCode: String
+  flightNumber: String
+  serviceType: String
+  referenceCode: Int
+  trafficRestrictions: [String]
+  serviceClasses: [String]
+}
+
+type FlightStatsScheduledFlights {
+  carrierFsCode: String
+  flightNumber: String
+  departureAirportFsCode: String
+  arrivalAirportFsCode: String
+  departureTime: String
+  arrivalTime: String
+  stops: Int
+  departureTerminal: String
+  arrivalTerminal: String
+  flightEquipmentIataCode: String
+  isCodeshare: Boolean
+  isWetlease: Boolean
+  serviceType: String
+  referenceCode: String
+  codeshares: [FlightStatsCodeshares]
+  trafficRestrictions: [String]
+  serviceClasses: [String]
+}
+
+type FlightStatsDate {
+  year: String
+  month: String
+  day: String
+  interpreted: String
+}
+
+type FlightStatsCodeType {
+  requested: String
+  interpreted: String
+}
+
+type FlightStatsFlightNumber {
+  requested: String
+  interpreted: String
+}
+
+type FlightStatsCarrier {
+  requestedCode: String
+  fsCode: String
+}
+
+type FlightStatsRequest {
+  departing: Boolean
+  url: String
+  date: FlightStatsDate
+  codeType: FlightStatsCodeType
+  flightNumber: FlightStatsFlightNumber
+  carrier: FlightStatsCarrier
+}
+
+type FlightStatsScheduleDetails {
+  appendix: FlightStatsAppendix
+  scheduledFlights: [FlightStatsScheduledFlights]
+  request: FlightStatsRequest
+}
+
+# INPUT
+input FlightStatsGetScheduleDetailsInput {
+  carrier: String!
+  flightNumber: Int!
+  year: Int!
+  month: Int!
+  day: Int!
+  codeType: String
+}
+
+input FlightStatsEquipmentsInput {
+  iata: String
+  name: String
+  turboProp: Boolean
+  jet: Boolean
+  widebody: Boolean
+  regional: Boolean
+}
+
+input FlightStatsAirportsInput {
+  fs: String
+  iata: String
+  icao: String
+  faa: String
+  name: String
+  city: String
+  cityCode: String
+  stateCode: String
+  postalCode: String
+  countryCode: String
+  countryName: String
+  regionName: String
+  timeZoneRegionName: String
+  weatherZone: String
+  localTime: String
+  utcOffsetHours: Int
+  latitude: Float
+  longitude: Float
+  elevationFeet: Int
+  classification: Int
+  active: Boolean
+}
+
+input FlightStatsAirlinesInput {
+  fs: String
+  iata: String
+  icao: String
+  name: String
+  active: Boolean
+}
+
+input FlightStatsAppendixInput {
+  equipments: [FlightStatsEquipmentsInput]
+  airports: [FlightStatsAirportsInput]
+  airlines: [FlightStatsAirlinesInput]
+}
+
+input FlightStatsCodesharesInput {
+  carrierFsCode: String
+  flightNumber: String
+  serviceType: String
+  referenceCode: Int
+  trafficRestrictions: [String]
+  serviceClasses: [String]
+}
+
+input FlightStatsScheduledFlightsInput {
+  carrierFsCode: String
+  flightNumber: String
+  departureAirportFsCode: String
+  arrivalAirportFsCode: String
+  departureTime: String
+  arrivalTime: String
+  stops: Int
+  departureTerminal: String
+  arrivalTerminal: String
+  flightEquipmentIataCode: String
+  isCodeshare: Boolean
+  isWetlease: Boolean
+  serviceType: String
+  referenceCode: String
+  codeshares: [FlightStatsCodesharesInput]
+  trafficRestrictions: [String]
+  serviceClasses: [String]
+}
+
+input FlightStatsDateInput {
+  year: String
+  month: String
+  day: String
+  interpreted: String
+}
+
+input FlightStatsCodeTypeInput {
+  requested: String
+  interpreted: String
+}
+
+input FlightStatsFlightNumberInput {
+  requested: String
+  interpreted: String
+}
+
+input FlightStatsCarrierInput {
+  requestedCode: String
+  fsCode: String
+}
+
+input FlightStatsRequestInput {
+  departing: Boolean
+  url: String
+  date: FlightStatsDateInput
+  codeType: FlightStatsCodeTypeInput
+  flightNumber: FlightStatsFlightNumberInput
+  carrier: FlightStatsCarrierInput
+}
+
+input FlightStatsScheduleDetailsInput {
+  appendix: FlightStatsAppendixInput
+  scheduledFlights: [FlightStatsScheduledFlightsInput]
+  request: FlightStatsRequestInput
+}

@@ -1,0 +1,210 @@
+type Attraction
+  @model(
+    subscriptions: null
+    queries: { list: "listAttractions", get: "getAttraction" }
+    mutations: { create: "privateCreateAttraction", update: "updateAttraction", delete: "privateDeleteAttraction" }
+  )
+  @auth(
+    rules: [
+      {
+        allow: private
+        identityClaim: "sub"
+        operations: [read] # checked by lambda hook
+      }
+      { allow: owner, ownerField: "authorId", identityClaim: "sub", operations: [create, update, delete] }
+      { allow: groups, groups: ["admin"], operations: [create, update, delete, read] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  )
+  @key(name: "byDestination", fields: ["destinationId", "id"], queryField: "listAttractionsByDestination")
+  @key(
+    name: "byIsTravaCreatedByDestination"
+    fields: ["isTravaCreated", "destinationId"]
+    queryField: "listAttractionsByIsTravaCreatedByDestination"
+  ) {
+  id: ID!
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  author: User @connection(fields: ["authorId"])
+  authorId: ID
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  costCurrency: CURRENCY_TYPE!
+  cost: ATTRACTION_COST
+  costNote: String
+  costType: ATTRACTION_COST_TYPE!
+  descriptionLong: String!
+  descriptionShort: String!
+  destination: Destination @connection(fields: ["destinationId"])
+  destinationId: ID!
+  duration: ATTRACTION_DURATION
+  images: [S3Object]
+  reservation: ATTRACTION_RESERVATION
+  locations: [Location]
+  name: String!
+  reservationNote: String
+  type: ATTRACTION_TYPE!
+  isTravaCreated: Int! # 0 or 1, default 0. Cannot use boolean, because booleans cannot be used as sort keys
+  deletedAt: AWSDateTime # soft delete Trava attractions
+}
+
+enum ATTRACTION_CATEGORY_TYPE {
+  ACTION_AND_ADVENTURE
+  ARTS_AND_CULTURE
+  ENTERTAINMENT
+  LEISURE
+  NATURE
+  NIGHTLIFE_AND_DRINKING
+  NON_APPLICABLE
+  SHOPPING
+  SIGHTS_AND_LANDMARKS
+}
+
+enum ATTRACTION_TARGET_GROUP {
+  GROUP
+  COUPLE
+  FAMILY
+  FRIENDS
+  SOLO
+}
+
+enum ATTRACTION_BEST_VISIT_TIME {
+  AFTERNOON
+  BREAKFAST
+  DINNER
+  EVENING
+  LUNCH
+  MORNING
+  NON_APPLICABLE
+  SNACK
+}
+
+enum ATTRACTION_CUISINE_TYPE {
+  AFRICAN
+  AMERICAN_NEW
+  AMERICAN_TRADITIONAL
+  BAKERY
+  BARBEQUE
+  BREAKFAST
+  BRUNCH
+  BURGERS
+  CAJUN_CREOLE
+  CHINESE
+  COFFEE_AND_TEA
+  CUBAN
+  FAST_FOOD
+  FRENCH
+  GERMAN
+  GREEK
+  HAWAIIAN
+  ICE_CREAM_AND_DESSERTS
+  INDIAN
+  ITALIAN
+  JAPANESE
+  KOREAN
+  MEDITERRANEAN
+  MEXICAN
+  MIDDLE_EASTERN
+  OTHER
+  PERUVIAN
+  PIZZA
+  SANDWICHES
+  SEAFOOD
+  SOUL
+  SOUTHERN
+  SOUTHWESTERN
+  STEAKHOUSE
+  SUSHI
+  TAPAS_AND_SMALL_PLATES
+  TEX
+  THAI
+  VEGAN
+  VEGETARIAN
+  VIETNAMESE
+}
+
+enum ATTRACTION_TYPE {
+  DO
+  EAT
+}
+
+enum ATTRACTION_COST_TYPE {
+  GROUP
+  PERSON
+}
+
+enum ATTRACTION_RESERVATION {
+  REQUIRED
+  RECOMMENDED
+  OPTIONAL
+  NOT_TAKEN
+}
+
+enum ATTRACTION_DURATION {
+  LESS_THAN_AN_HOUR
+  ONE_TWO_HOURS
+  TWO_THREE_HOURS
+  MORE_THAN_THREE_HOURS
+}
+
+enum ATTRACTION_COST {
+  FREE
+  UNDER_TEN
+  UNDER_TWENTY_FIVE
+  TEN_TO_THIRTY
+  TWENTY_FIVE_TO_FIFTY
+  THIRTY_TO_SIXTY
+  FIFTY_TO_SEVENTY_FIVE
+  OVER_SIXTY
+  OVER_SEVENTY_FIVE
+}
+
+input CustomCreateAttractionInput {
+  id: ID
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  authorId: ID
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  costCurrency: CURRENCY_TYPE!
+  cost: ATTRACTION_COST
+  costNote: String
+  costType: ATTRACTION_COST_TYPE!
+  descriptionLong: String!
+  descriptionShort: String!
+  destinationId: ID!
+  duration: ATTRACTION_DURATION
+  images: [S3ObjectInput]
+  reservation: ATTRACTION_RESERVATION
+  locations: [LocationInput]
+  name: String!
+  reservationNote: String
+  type: ATTRACTION_TYPE!
+  isTravaCreated: Int!
+  tripId: ID # if admin creates trava attraction
+}
+
+input S3ObjectInput {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+input LocationInput {
+  street: String
+  number: String
+  city: String
+  state: String
+  postCode: String
+  coords: CoordsInput!
+  locationImage: S3ObjectInput
+}
+
+input CoordsInput {
+  long: Float!
+  lat: Float!
+}
+
+input CustomDeleteAttractionInput {
+  id: ID!
+}

@@ -1,0 +1,4 @@
+type MapboxGetPlacesResult {
+  location: Location
+  placeName: String!
+}

@@ -1,0 +1,54 @@
+type AttractionSwipe
+  @model(
+    queries: { get: "privateGetAttractionSwipe", list: null }
+    subscriptions: null
+    mutations: {
+      create: "privateCreateAttractionSwipe"
+      update: "privateUpdateAttractionSwipe"
+      delete: "privateDeleteAttractionSwipe"
+    }
+  )
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId" }
+      { allow: private, identityClaim: "sub", operations: [create, read, update, delete] }
+      { allow: private, provider: iam, operations: [read, delete] }
+    ]
+  ) {
+  userId: ID! @primaryKey(sortKeyFields: ["tripId", "attractionId"])
+  user: User @hasOne(fields: ["userId"])
+  tripId: ID!
+    @index(
+      name: "byTripByDestination"
+      sortKeyFields: ["destinationId"]
+      queryField: "listAttractionSwipesByTripByDestination"
+    )
+    @index(name: "byTripByAttraction", sortKeyFields: ["attractionId"])
+    @index(name: "byTripByUser", sortKeyFields: ["userId"])
+  destinationId: ID!
+  destination: Destination @hasOne(fields: ["destinationId"])
+  attractionId: ID!
+  attraction: Attraction @hasOne(fields: ["attractionId"])
+  swipe: AttractionSwipeResult!
+  label: AttractionSwipeLabel!
+    @index(name: "byLabel", queryField: "privateListAttractionSwipesByUpdatedAt", sortKeyFields: ["updatedAt"]) # constant of value "Swipe" to sort by updatedAt
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum AttractionSwipeLabel {
+  SWIPE
+}
+
+enum AttractionSwipeResult {
+  LIKE
+  DISLIKE
+}
+
+input PutAttractionSwipeInput {
+  userId: String!
+  tripId: String!
+  destinationId: String!
+  attractionId: String!
+  swipe: AttractionSwipeResult!
+}

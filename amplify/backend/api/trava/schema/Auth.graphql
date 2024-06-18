@@ -1,0 +1,53 @@
+# Auth START
+input SignUpInput {
+  email: String
+  phone: String
+  dateOfBirth: AWSDate!
+  name: String!
+  username: String!
+  privacy: String!
+  password: String!
+}
+
+input FederatedSignUpInput {
+  appleId: String
+  dateOfBirth: AWSDate!
+  email: String
+  facebookId: String
+  googleId: String
+  name: String!
+  phone: String
+  privacy: String!
+  sub: String!
+  username: String!
+}
+
+type SignUpResponse @aws_iam {
+  id: String
+  destination: String
+}
+
+type FederatedSignUpResponse @aws_cognito_user_pools {
+  id: String
+}
+
+input SignOutInput {
+  id: String
+  fcmToken: String
+}
+
+type SignOutResponse @aws_cognito_user_pools {
+  id: String
+}
+
+type SignInErrorCheckIfUsernameExistsResponse @aws_iam {
+  provider: PROVIDER
+}
+
+enum PROVIDER {
+  NONE
+  FACEBOOK
+  GOOGLE
+  APPLE
+}
+# Auth END

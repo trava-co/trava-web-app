@@ -1,0 +1,44 @@
+# generateTripPlan START
+input GenerateTripPlanConfigInput {
+  weights: TripPlanWeights
+  thresholds: TripPlanThresholds
+  maxPreferredTimes: Int
+}
+
+input TripPlanWeights {
+  rating: Float
+  distance: Float
+  category: Float
+}
+
+input TripPlanThresholds {
+  rating: Float
+}
+
+input TripPlanAttraction {
+  attractionId: String!
+  name: String!
+  type: String
+  loc: [Float]!
+  duration: Int
+  preferredTime: [String]
+  category: String
+}
+
+input TripPlanGroup {
+  ratings: [[Int]]!
+  nDays: Int!
+  startTime: String!
+  endTime: String!
+}
+
+type TripPlanItem @aws_iam @aws_cognito_user_pools {
+  day: Int!
+  order: Int!
+  attractionId: String!
+}
+
+type TripPlanResponse @aws_iam @aws_cognito_user_pools {
+  plan: [[TripPlanItem]]!
+}
+# generateTripPlan END

@@ -1,0 +1,17 @@
+type Destination
+  @model(subscriptions: null)
+  @auth(
+    rules: [
+      { allow: private, operations: [read] }
+      { allow: groups, groups: ["admin"], operations: [create, update, delete, read] }
+    ]
+  ) {
+  id: ID!
+  name: String!
+  icon: String! # SVG as a string
+  coverImage: S3Object
+  timezone: String!
+  attractions: [Attraction] @connection(keyName: "byDestination", fields: ["id"])
+  coords: Coords! #destination's center coords
+  deletedAt: AWSDateTime
+}

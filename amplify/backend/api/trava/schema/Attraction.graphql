@@ -1,0 +1,671 @@
+type Attraction
+  @model(
+    subscriptions: null
+    queries: { list: "listAttractions", get: "getAttraction" }
+    mutations: { create: "privateCreateAttraction", update: "privateUpdateAttraction", delete: null }
+  )
+  @auth(
+    rules: [
+      { allow: private, identityClaim: "sub", operations: [read] }
+      { allow: owner, ownerField: "authorId", identityClaim: "sub", operations: [create, update] }
+      { allow: groups, groups: ["admin"], operations: [create, update, read, delete] }
+      { allow: private, provider: iam, operations: [create, read, update] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  )
+  @searchable {
+  id: ID!
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  author: User @hasOne(fields: ["authorId"])
+  authorId: ID @index(name: "byAuthor")
+  authorType: AUTHOR_TYPE! # ADMIN = cards created by Trava admin team, USER = cards created by user
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  costCurrency: CURRENCY_TYPE!
+  cost: ATTRACTION_COST
+  costNote: String
+  costType: ATTRACTION_COST_TYPE!
+  descriptionLong: String!
+  descriptionShort: String!
+  destination: Destination @belongsTo(fields: ["destinationId"])
+  destinationId: ID! @index(name: "byDestination", queryField: "listAttractionsByDestination", sortKeyFields: ["id"])
+  duration: ATTRACTION_DURATION
+  images: [S3Object]
+  reservation: ATTRACTION_RESERVATION
+  locations: [StartEndLocation]
+  name: String!
+  reservationNote: String
+  type: ATTRACTION_TYPE! @index(name: "byType", queryField: "listAttractionsByType", sortKeyFields: ["bucketListCount"])
+  isTravaCreated: Int!
+    @index(
+      name: "byIsTravaCreatedByDestination"
+      queryField: "listAttractionsByIsTravaCreatedByDestination"
+      sortKeyFields: ["destinationId"]
+    ) # Booleans can't be used in secondary indexes, hence using an Int (0 or 1)
+  deletedAt: AWSDateTime @index(name: "byDeletedAt") # soft delete
+  privacy: ATTRACTION_PRIVACY! @index(name: "byPrivacy")
+  bucketListCount: Int!
+  rank: Int
+  seasons: [AttractionSeason]
+  label: AttractionLabel!
+    @index(name: "byLabel", queryField: "privateListAttractionsByCreatedAt", sortKeyFields: ["createdAt"]) # constant of value "ATTRACTION" to sort by createdAt
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime
+  recommendationBadges: [BADGES]
+  generation: Generation
+  pendingMigration: Boolean # tracks if attraction is pending migration between source & target backend envs
+}
+
+enum AttractionLabel {
+  ATTRACTION
+}
+
+type Generation {
+  step: GenerationStep!
+  status: Status!
+  lastUpdatedAt: AWSDateTime!
+  failureCount: Int
+  lastFailureReason: String
+}
+
+input GenerationInput {
+  step: GenerationStep!
+  status: Status!
+  lastUpdatedAt: AWSDateTime!
+  failureCount: Int
+  lastFailureReason: String
+}
+
+# for attractions generated from googlePlaceId
+enum GenerationStep {
+  GET_PHOTOS
+  GET_DETAILS
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  SUCCEEDED
+  FAILED
+}
+
+enum BADGES {
+  MICHELIN_BIB_GOURMAND
+  MICHELIN_ONE_STAR
+  MICHELIN_TWO_STAR
+  MICHELIN_THREE_STAR
+  TIMEOUT
+  EATER
+  INFATUATION
+  THRILLIST
+  CONDE_NAST
+  TRIP_ADVISOR
+  TRAVAS_CHOICE
+}
+
+type AttractionSeason {
+  startMonth: Int # 0-11
+  startDay: Int # 0-30 (0 = first day of month)
+  endMonth: Int # 0-11
+  endDay: Int # 0-30 (0 = first day of month)
+}
+
+enum ATTRACTION_PRIVACY {
+  PUBLIC
+  PRIVATE
+}
+
+enum ATTRACTION_CATEGORY_TYPE {
+  ACTION_AND_ADVENTURE
+  ARTS_AND_CULTURE
+  ENTERTAINMENT
+  LEISURE
+  NATURE
+  NIGHTLIFE_AND_DRINKING
+  NON_APPLICABLE
+  SHOPPING
+  SIGHTS_AND_LANDMARKS
+}
+
+enum ATTRACTION_TARGET_GROUP {
+  RAINY
+  COUPLE
+  LARGE_GROUP
+  KID
+  PET
+  BACHELOR
+  OUTDOOR
+  VEGETARIAN
+}
+
+enum ATTRACTION_BEST_VISIT_TIME {
+  AFTERNOON
+  BREAKFAST
+  DINNER
+  EVENING
+  LUNCH
+  MORNING
+  NON_APPLICABLE
+  SNACK
+}
+
+enum ATTRACTION_CUISINE_TYPE {
+  AFRICAN
+  AMERICAN_NEW
+  AMERICAN_TRADITIONAL
+  BAKERY
+  BARBEQUE
+  BREAKFAST
+  BRUNCH
+  BURGERS
+  CAJUN_CREOLE
+  CARIBBEAN
+  CHINESE
+  COFFEE_AND_TEA
+  CUBAN
+  EUROPEAN
+  FARMERS_MARKET
+  FAST_FOOD
+  FINE_DINING
+  FOOD_HALL
+  FRENCH
+  FUSION
+  GERMAN
+  GREEK
+  HAWAIIAN
+  ICE_CREAM_AND_DESSERTS
+  INDIAN
+  ITALIAN
+  JAPANESE
+  KOREAN
+  LATIN_AMERICAN
+  MEDITERRANEAN
+  MEXICAN
+  MIDDLE_EASTERN
+  MODERN
+  OTHER
+  PERUVIAN
+  PIZZA
+  PUB
+  SANDWICHES
+  SEAFOOD
+  SOUL
+  SOUTHERN
+  SOUTHWESTERN
+  STEAKHOUSE
+  SUSHI
+  SPANISH
+  TAPAS_AND_SMALL_PLATES
+  TEX
+  THAI
+  VEGAN
+  VEGETARIAN
+  VIETNAMESE
+}
+
+enum ATTRACTION_TYPE {
+  DO
+  EAT
+}
+
+enum ATTRACTION_COST_TYPE {
+  GROUP
+  PERSON
+}
+
+enum ATTRACTION_RESERVATION {
+  REQUIRED
+  RECOMMENDED
+  OPTIONAL
+  NOT_TAKEN
+}
+
+enum ATTRACTION_DURATION {
+  LESS_THAN_AN_HOUR
+  ONE_TWO_HOURS
+  TWO_THREE_HOURS
+  MORE_THAN_THREE_HOURS
+}
+
+enum ATTRACTION_COST {
+  FREE
+  UNDER_TEN
+  UNDER_TWENTY_FIVE
+  TEN_TO_THIRTY
+  TWENTY_FIVE_TO_FIFTY
+  THIRTY_TO_SIXTY
+  FIFTY_TO_SEVENTY_FIVE
+  OVER_SIXTY
+  OVER_SEVENTY_FIVE
+}
+
+enum AUTHOR_TYPE {
+  ADMIN # cards created internally by Trava (outside of the app)
+  USER # cards created by user
+}
+
+input HoursInput {
+  weekdayText: [String!]!
+  periods: [PeriodInput!]!
+}
+
+input CoordsInput {
+  long: Float!
+  lat: Float!
+}
+
+# create trava attraction
+input CreateAttractionInput {
+  id: ID
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  authorId: ID
+  authorType: AUTHOR_TYPE!
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  bucketListCount: Int!
+  costCurrency: CURRENCY_TYPE!
+  cost: ATTRACTION_COST
+  costNote: String
+  costType: ATTRACTION_COST_TYPE!
+  createdAt: AWSDateTime
+  deletedAt: AWSDateTime
+  descriptionLong: String!
+  descriptionShort: String!
+  destinationId: ID
+  duration: ATTRACTION_DURATION
+  images: [S3ObjectInput]
+  isTravaCreated: Int!
+  rank: Int
+  reservation: ATTRACTION_RESERVATION
+  locations: [StartEndLocationInput]
+  name: String!
+  reservationNote: String
+  seasons: [AttractionSeasonInput]
+  type: ATTRACTION_TYPE!
+  label: AttractionLabel!
+  updatedAt: AWSDateTime
+  privacy: ATTRACTION_PRIVACY!
+  recommendationBadges: [BADGES]
+  generation: GenerationInput
+}
+
+input UpdateAttractionInput {
+  id: ID!
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  attractionTargetGroups: [ATTRACTION_TARGET_GROUP]
+  authorId: ID
+  authorType: AUTHOR_TYPE
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  bucketListCount: Int
+  costCurrency: CURRENCY_TYPE
+  cost: ATTRACTION_COST
+  costNote: String
+  costType: ATTRACTION_COST_TYPE
+  createdAt: AWSDateTime
+  deletedAt: AWSDateTime
+  descriptionLong: String
+  descriptionShort: String
+  destinationId: ID
+  duration: ATTRACTION_DURATION
+  images: [S3ObjectInput]
+  isTravaCreated: Int
+  rank: Int
+  reservation: ATTRACTION_RESERVATION
+  locations: [StartEndLocationInput]
+  name: String
+  reservationNote: String
+  seasons: [AttractionSeasonInput]
+  type: ATTRACTION_TYPE
+  updatedAt: AWSDateTime
+  privacy: ATTRACTION_PRIVACY
+  recommendationBadges: [BADGES]
+  generation: GenerationInput
+}
+
+input AttractionSeasonInput {
+  startMonth: Int # 0-11
+  startDay: Int # 0-30 (0 = first day of month)
+  endMonth: Int # 0-11
+  endDay: Int # 0-30 (0 = first day of month)
+}
+
+input StartEndLocationInput {
+  id: ID
+  displayOrder: Int!
+  deleted: Boolean # deleted location
+  startLoc: LocationInput!
+  endLoc: LocationInput!
+}
+
+input LocationInput {
+  id: ID
+  googlePlaceId: String!
+  timezone: String
+}
+
+# Soft Delete Attraction
+input CustomDeleteAttractionInput {
+  id: ID!
+}
+
+input S3ObjectInput {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+# Explore Search Attractions
+input BoundingBoxInput {
+  topLeftCoords: CoordsInput!
+  bottomRightCoords: CoordsInput!
+}
+
+input ExploreSearchAttractionsInput {
+  searchString: String
+  attractionType: ATTRACTION_TYPE
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  insideBoundingBox: BoundingBoxInput
+  outsideBoundingBox: BoundingBoxInput
+  centerCoords: CoordsInput
+  selectedAttractionId: ID
+  sortByDistance: Boolean!
+  excludeAttractionIds: [ID] # exclude already fetched attractions to enable infinite scroll
+}
+
+type ExploreSearchAttractionsResponse {
+  attractions: [ExploreSearchAttractionItem]
+  nextPageExists: Boolean!
+}
+
+type ExploreSearchAttractionItem {
+  id: ID!
+  name: String!
+  locations: [SearchStartEndLocation]
+  distance: Float
+  isTravaCreated: Int!
+  images: [S3Object]
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  author: SearchAttractionAuthorItem
+  bucketListCount: Int!
+  duration: ATTRACTION_DURATION
+  type: ATTRACTION_TYPE!
+  recommendationBadges: [BADGES]
+}
+
+type SearchAttractionAuthorItem {
+  id: ID!
+  name: String
+  username: String!
+  avatar: S3Object
+}
+
+input ExploreMapSearchAttractionsInput {
+  searchString: String
+  attractionType: ATTRACTION_TYPE
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  boundingBox: BoundingBoxInput!
+  centerCoords: CoordsInput!
+  selectedAttractionId: ID
+  sortByDistance: Boolean!
+}
+
+type ExploreMapSearchAttractionsResponse {
+  attractions: [ExploreSearchAttractionItem]
+}
+
+input OpenSearchListNearbyAttractionsInput {
+  centerCoords: CoordsInput!
+  radius: Int!
+}
+
+input GetAttractionsForScheduler {
+  centerCoords: CoordsInput!
+  radius: Int!
+  tripId: ID!
+  destinationId: ID!
+}
+
+type GetAttractionsForSchedulerResponse {
+  attractions: [OpenSearchListAttractionItem]
+}
+
+type OpenSearchListAttractionItem {
+  id: ID!
+  name: String!
+  type: ATTRACTION_TYPE!
+  bestVisited: [ATTRACTION_BEST_VISIT_TIME]
+  duration: ATTRACTION_DURATION
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  locations: [SearchStartEndLocation]
+  seasons: [AttractionSeason]
+  isTravaCreated: Int!
+  authorType: AUTHOR_TYPE!
+  deletedAt: AWSDateTime
+}
+
+type OpenSearchListNearbyAttractionsResponse {
+  attractions: [OpenSearchListAttractionItem]!
+}
+
+input VotingResultsInput {
+  yesVotes: Int!
+  noVotes: Int!
+}
+
+input AttractionVotingResultsInput {
+  attractionId: ID!
+  votingResults: VotingResultsInput!
+}
+
+input AddToItinerarySearchInput {
+  tripId: ID! # to determine if in voting deck
+  destinationId: ID! # to determine if in voting deck
+  insideBoundingBox: BoundingBoxInput!
+  outsideBoundingBox: BoundingBoxInput
+  centerCoords: CoordsInput!
+  destinationDates: [String!]!
+  searchString: String
+  attractionType: ATTRACTION_TYPE
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  selectedAttractionId: ID
+  attractionVotingResults: [AttractionVotingResultsInput!]
+  excludeAttractionIds: [ID] # exclude already fetched attractions to enable infinite scroll
+}
+
+type AddToItinerarySearchResponse {
+  attractions: [ItinerarySearchAttractionItem!]!
+  nextPageExists: Boolean!
+}
+
+input AddToItineraryMapSearchInput {
+  tripId: ID! # to determine if in voting deck
+  destinationId: ID! # to determine if in voting deck
+  boundingBox: BoundingBoxInput!
+  centerCoords: CoordsInput!
+  destinationDates: [String!]!
+  attractionType: ATTRACTION_TYPE
+  searchString: String
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  selectedAttractionId: ID
+  attractionVotingResults: [AttractionVotingResultsInput!]
+}
+
+type ItinerarySearchAttractionItem {
+  id: ID!
+  name: String!
+  locations: [SearchStartEndLocation]
+  isTravaCreated: Int!
+  images: [S3Object]
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  author: SearchAttractionAuthorItem
+  bucketListCount: Int!
+  duration: ATTRACTION_DURATION
+  type: ATTRACTION_TYPE!
+  distance: Float!
+  inSeason: Boolean!
+  inMyBucketList: Boolean!
+  onItinerary: Boolean!
+  yesVotes: Int!
+  noVotes: Int!
+  recommendationBadges: [BADGES]
+}
+
+type AddToItineraryMapSearchResponse {
+  attractions: [ItinerarySearchAttractionItem]
+}
+
+type SearchStartEndLocation {
+  id: ID!
+  displayOrder: Int
+  deleted: Boolean
+  startLoc: SearchLocation!
+  endLoc: SearchLocation!
+}
+
+type SearchLocation {
+  id: ID!
+  googlePlaceId: String!
+  timezone: String
+  # OpenSearch stream does not capture relationship fields, so we grabbed just a few in override.ts
+  googlePlace: SearchGooglePlace
+}
+
+type SearchGooglePlace {
+  data: SearchGooglePlaceData!
+}
+
+type SearchGooglePlaceData {
+  coords: Coords!
+  name: String
+  city: String
+  formattedAddress: String
+  businessStatus: BusinessStatus
+  rating: Rating
+  hours: Hours
+}
+
+input CheckForExistingCardsInput {
+  googlePlaceId: String!
+  destinationDates: [String]
+}
+
+type CheckForExistingCardsResponse {
+  attractions: [AttractionExistsItem]
+}
+
+type AttractionExistsItem {
+  id: ID!
+  name: String!
+  destinationName: String
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  bucketListCount: Int!
+  isTravaCreated: Int!
+  locations: [SearchStartEndLocation]
+  duration: ATTRACTION_DURATION
+  recommendationBadges: [BADGES]
+  images: [S3Object]
+  author: SearchAttractionAuthorItem
+  type: ATTRACTION_TYPE!
+  deletedAt: AWSDateTime
+  outOfSeason: Boolean
+}
+
+input GetAttractionsToTagToPostInput {
+  searchString: String
+  radius: Int
+  destinationCoords: CoordsInput
+}
+
+type GetAttractionsToTagToPostResponse {
+  attractions: [AttractionToTagToPostItem]
+}
+
+type AttractionToTagToPostItem {
+  id: ID!
+  name: String!
+  destinationName: String
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  bucketListCount: Int!
+  type: ATTRACTION_TYPE!
+  author: SearchAttractionAuthorItem
+  images: [S3Object]
+  isTravaCreated: Int!
+}
+
+input CreateAttractionFromPlaceIdInput {
+  googlePlaceId: String!
+  destinationDates: [String]
+  authorType: AUTHOR_TYPE!
+  recommendationBadges: [BADGES!]
+}
+
+type CreateAttractionFromPlaceIdResponse {
+  existingAttractions: [AttractionExistsItem]
+  createdAttraction: AttractionExistsItem
+}
+
+input GetAttractionPhotosInput {
+  attractionId: ID!
+  photos: [PlacePhotoInput]
+}
+
+# Get explore voting list
+input GetExploreVotingListInput {
+  tripId: ID!
+  destinationId: ID!
+  destinationCoords: CoordsInput!
+  searchString: String
+  attractionType: ATTRACTION_TYPE
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  distanceType: DistanceType!
+  isViewingMyRecentVotes: Boolean!
+  destinationDates: [String!]
+  excludeAttractionIds: [ID] # exclude already fetched attractions to enable infinite scroll
+  selectedAttractionId: ID
+  pageSize: Int
+}
+
+enum DistanceType {
+  NEARBY
+  FARTHER_AWAY
+}
+
+type GetExploreVotingListResponse {
+  attractions: [ExploreVotingListItem!]!
+  nextPageExists: Boolean!
+  votedOnAttractionIds: [ID!]!
+}
+
+type ExploreVotingListItem {
+  attractionCategories: [ATTRACTION_CATEGORY_TYPE]
+  attractionCuisine: [ATTRACTION_CUISINE_TYPE]
+  cost: ATTRACTION_COST
+  descriptionShort: String!
+  id: ID!
+  image: S3Object
+  inMyBucketList: Boolean!
+  inSeason: Boolean!
+  name: String!
+  rating: Rating
+  recommendationBadges: [BADGES]
+  swipes: [ExploreVotingListSwipe]
+  type: ATTRACTION_TYPE!
+}
+
+type ExploreVotingListSwipe {
+  result: AttractionSwipeResult!
+  createdAt: AWSDateTime!
+  authorAvatar: S3Object
+  authorId: ID!
+}

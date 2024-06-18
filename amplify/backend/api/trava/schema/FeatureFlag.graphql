@@ -1,0 +1,12 @@
+type FeatureFlag
+  @model(mutations: { update: "privateUpdateFeatureFlag" }, subscriptions: null)
+  @auth(
+    rules: [{ allow: private, operations: [read] }, { allow: groups, groups: ["admin"], operations: [update, read] }]
+  ) {
+  id: FeatureFlagName!
+  isEnabled: Boolean!
+}
+
+enum FeatureFlagName {
+  MAINTENANCE_MODE
+}

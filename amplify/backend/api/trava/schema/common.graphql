@@ -1,0 +1,213 @@
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+  googlePhotoReference: String
+}
+
+enum CURRENCY_TYPE {
+  USD
+}
+
+# TODO: TRV-584 Reconsider attraction locations field in db
+type Location {
+  id: ID! # unique id
+  googlePlaceId: String!
+  googlePlace: GooglePlace! # handled by custom resolver as @connect can not be used on type without @model directive
+  timezone: String # for open now status on detailed card
+}
+
+type StartEndLocation {
+  id: ID!
+  displayOrder: Int!
+  deleted: Boolean # deleted location
+  startLoc: Location!
+  endLoc: Location!
+}
+
+type Coords {
+  long: Float!
+  lat: Float!
+}
+
+# Settings send reports START
+input SettingsSendReportInput {
+  message: String!
+  userEmail: String # temporarily preserve for version compatibility
+  userContactEmail: String
+}
+
+type SettingsSendReportResponse @aws_iam @aws_cognito_user_pools {
+  messageId: String!
+}
+# Settings send reports END
+
+# Feed START
+input HomeTabsSuggestedFeedInput {
+  sharedPostId: String # post id from deep link
+  referringUserId: String # referring user id from deep link
+}
+# Feed END
+
+# homeTabsAccountTrips START
+input HomeTabsAccountTripsInput {
+  id: ID!
+}
+
+type HomeTabsAccountTripsResponse {
+  stories: [StoryAccountTrips]
+}
+
+type StoryAccountTrips {
+  storyId: String!
+  story: [PostWithinStoryAccountTrips]!
+}
+
+type PostWithinStoryAccountTrips {
+  id: String!
+  createdAt: String!
+  userId: String!
+  tripId: String!
+  membersLength: Int!
+  description: String!
+  cloudinaryUrl: String!
+  avatar: S3Object
+  username: String!
+  authorPublic: Boolean
+  viewed: Boolean!
+  dateRange: String!
+  destinations: String!
+  destinationId: String
+  destinationIcon: String
+  destinationCoverImage: S3Object
+  destinationName: String
+  destinationState: String
+  destinationCountry: String
+  destinationGooglePlaceId: String
+  attractionId: String
+  attractionName: String
+  attractionImage: S3Object
+  likesCount: Int!
+  commentsCount: Int!
+  mediaType: MEDIA_TYPES!
+  videoDuration: Float
+}
+# homeTabsAccountTrips END
+
+# notificationPost START
+input NotificationPostInput {
+  id: ID!
+}
+
+type NotificationPost {
+  id: String!
+  createdAt: String!
+  userId: String!
+  tripId: String!
+  membersLength: Int!
+  description: String!
+  cloudinaryUrl: String!
+  avatar: S3Object
+  username: String!
+  authorPublic: Boolean
+  destinationId: String
+  destinationIcon: String
+  destinationCoverImage: S3Object
+  destinationName: String
+  destinationState: String
+  destinationCountry: String
+  attractionId: String
+  attractionName: String
+  attractionImage: S3Object
+  likesCount: Int!
+  commentsCount: Int!
+  mediaType: MEDIA_TYPES
+  deletedAt: AWSDateTime
+}
+
+type NotificationPostResponse {
+  post: NotificationPost
+}
+# notificationPost END
+
+# createTripMessageNotifications START
+input CreateTripMessageNotificationsInput {
+  tripId: ID!
+  type: NOTIFICATION_TYPE!
+  text: String
+}
+# createTripMessageNotifications END
+
+# tableMigration START
+enum OPERATION_TYPE {
+  INSERT
+  PUT
+}
+
+input TableMigrationInput {
+  tableName: String!
+  sourceEnv: BACKEND_ENV_NAME!
+  targetEnv: BACKEND_ENV_NAME!
+  operationType: OPERATION_TYPE!
+}
+
+input MigrateSingleAttractionInput {
+  attractionId: ID!
+  sourceEnv: BACKEND_ENV_NAME!
+  targetEnv: BACKEND_ENV_NAME!
+}
+
+type MigrationResult {
+  success: Int!
+  fail: Int!
+  skipped: Int!
+  remaining: Int!
+}
+
+type TableMigrationResponse {
+  mainTableResult: MigrationResult!
+  imageResult: MigrationResult! # copying images over to target env
+}
+
+input AddMigrationFlagInput {
+  tableName: String!
+  sourceEnv: BACKEND_ENV_NAME!
+}
+
+type AddMigrationFlagResponse {
+  success: Int!
+  fail: Int!
+}
+
+input UpdateGoogleAPIKeyInput {
+  googleAPIKey: String!
+  platform: PLATFORM!
+  isDev: Boolean!
+}
+
+input GetGoogleAPIKeyInput {
+  platform: PLATFORM!
+  isDev: Boolean!
+}
+
+enum PLATFORM {
+  IOS
+  ANDROID
+}
+
+type UpdateGoogleAPIKeyResponse {
+  envsUpdated: [BACKEND_ENV_NAME!]!
+  envsFailed: [BACKEND_ENV_NAME!]!
+}
+
+enum BACKEND_ENV_NAME {
+  RN
+  DIMA
+  NICK
+  NEAL
+  ANAY
+  DEV
+  STAGING
+  PROD
+}
+# tableMigration END

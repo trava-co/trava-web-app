@@ -1,0 +1,85 @@
+type Post
+@model(
+  queries: { get: "privateGetPost", list: "privateListPosts" }
+  mutations: { create: "privateCreatePost", update: "privateUpdatePost", delete: null }
+  subscriptions: null
+)
+@auth(
+  rules: [
+    { allow: owner, ownerField: "userId", identityClaim: "sub", operations: [read] } # notifications screen - get access to read post resolver
+    { allow: groups, groups: ["admin"], operations: [update] }
+    { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+  ]
+) {
+  id: ID!
+  userId: ID! @index(name: "byUserByCreatedAt", sortKeyFields: ["createdAt"])
+  user: User @hasOne(fields: ["userId"])
+  tripId: ID! @index(name: "byTripByUser", queryField: "privateListPostsByTripByUser", sortKeyFields: ["userId"])
+  trip: Trip @hasOne(fields: ["tripId"])
+  destinationId: ID
+  destination: Destination @hasOne(fields: ["destinationId"])
+  attractionId: ID
+  attraction: Attraction @hasOne(fields: ["attractionId"])
+  description: String # max 1000 characters
+  # likedByMe: PostLike - can be handled through vtl resolver
+  # likeCount: Number - # how to implement: dynamodb scan - if number is small, dynamoDB streams, transactions (ref: https://advancedweb.hu/how-to-keep-accurate-counts-in-dynamodb/) - lambda resolver?
+  # shareCount: Number - # how to implement: dynamodb scan - if number is small, dynamoDB streams, transactions (ref: https://advancedweb.hu/how-to-keep-accurate-counts-in-dynamodb/) - lambda resolver?
+
+  commentsCount: Int!
+  comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
+
+  mediaType: MEDIA_TYPES!
+
+  # fields for images
+  cloudinaryUrl: String!
+  width: Int!
+  height: Int!
+  format: String
+  videoDuration: Float
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  deletedAt: AWSDateTime @index(name: "byDeletedAt") # soft delete
+
+  likesCount: Int!
+}
+
+enum MEDIA_TYPES {
+  IMAGE
+  VIDEO
+}
+
+enum VIDEO_FORMATS {
+  mov
+  mp4
+}
+
+# INPUTS
+
+input CloudinaryInput {
+  cloudinaryUrl: String!
+  videoDuration: Float
+  width: Int!
+  height: Int!
+  format: String!
+}
+
+input CustomCreatePostInput {
+  id: ID
+  userId: ID!
+  tripId: ID!
+  destinationId: ID
+  attractionId: ID
+  description: String
+  mediaType: MEDIA_TYPES!
+  width: Int
+  height: Int
+  format: String
+  bufferItem: S3ObjectInput
+  cloudinaryInput: CloudinaryInput
+}
+
+# Soft Delete Post
+input CustomDeletePostInput {
+  id: ID!
+}

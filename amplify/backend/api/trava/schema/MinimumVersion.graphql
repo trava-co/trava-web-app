@@ -1,0 +1,16 @@
+type MinimumVersion
+  @model(
+    queries: { get: "getMinimumVersion", list: null }
+    mutations: { update: "privateUpdateMinimumVersion" }
+    subscriptions: null
+  )
+  @auth(
+    rules: [{ allow: private, operations: [read] }, { allow: groups, groups: ["admin"], operations: [update, read] }]
+  ) {
+  id: MinimumVersionName!
+  minimumVersion: String!
+}
+
+enum MinimumVersionName {
+  MINIMUM_VERSION_REQUIRED
+}

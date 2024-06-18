@@ -1,0 +1,30 @@
+type TripDestinationUser
+  @model(
+    queries: { get: null, list: "privateListTripDestinationUsers" }
+    mutations: {
+      create: "privateCreateTripDestinationUser"
+      update: "updateTripDestinationUser"
+      delete: "privateDeleteTripDestinationUser"
+    }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "userId", identityClaim: "sub", operations: [update] }
+      { allow: private, identityClaim: "sub", operations: [read] }
+      { allow: private, provider: iam, operations: [create, delete] }
+    ]
+  ) {
+  tripId: ID!
+    @primaryKey(sortKeyFields: ["destinationId", "userId"])
+    @index(
+      name: "byTripByDestination"
+      sortKeyFields: ["destinationId"]
+      queryField: "listTripDestinationUsersByTripByDestination"
+    )
+  destinationId: ID!
+  userId: ID!
+  user: User @hasOne(fields: ["userId"])
+  isReady: Boolean!
+  tripPlanViewedAt: AWSDateTime
+}

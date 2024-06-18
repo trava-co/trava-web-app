@@ -1,0 +1,6 @@
+type Subscription {
+  onCreateMessage(tripId: ID!): Message @aws_subscribe(mutations: ["createMessage"])
+  onDeleteUserTrip(userId: ID!): UserTrip @aws_subscribe(mutations: ["deleteUserTrip"])
+  onCreateTripDestination(tripId: ID!): TripDestination @aws_subscribe(mutations: ["createTripDestination"])
+  onDeleteTripDestination(tripId: ID!): TripDestination @aws_subscribe(mutations: ["deleteTripDestination"])
+}

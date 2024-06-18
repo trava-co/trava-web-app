@@ -1,0 +1,21 @@
+# for each prediction of Google's, we'll return this to the client:
+type GoogleGetPlacesResult {
+  mainText: String
+  secondaryText: String
+  placeId: String
+  types: [String]
+}
+
+input GoogleCoordinates {
+  latitude: Float!
+  longitude: Float!
+}
+
+input GoogleGetPlacesInput {
+  input: String!
+  location: GoogleCoordinates # center of the search
+  radius: Float # radius of the search
+  strictbounds: Boolean
+  language: String
+  types: [String!]
+}

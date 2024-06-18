@@ -1,0 +1,156 @@
+type TimelineEntry
+  @model(
+    queries: { get: "privateGetTimelineEntry", list: null }
+    mutations: {
+      create: "privateCreateTimelineEntry"
+      update: "privateUpdateTimelineEntry"
+      delete: "privateDeleteTimelineEntry"
+    }
+    subscriptions: null
+  )
+  @auth(
+    rules: [
+      {
+        allow: private
+        identityClaim: "sub"
+        operations: [create, delete, read] # checked by lambda hook
+      }
+      { allow: private, provider: iam, operations: [create, read, delete] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  ) {
+  id: ID! @primaryKey
+  tripId: ID! @index(name: "byTripByStartDate", sortKeyFields: ["date"])
+  members: [TimelineEntryMember] @hasMany(indexName: "byTimelineEntry", fields: ["id"])
+  timelineEntryType: TimelineEntryType!
+  notes: String
+  date: Int! # YYYYMMDD
+  time: Int! # HHMM
+  # FLIGHT:
+  flightDetails: FlightStatsScheduleDetails
+
+  # RENTAL_PICKUP:
+  rentalPickupLocation: String
+
+  # RENTAL_DROPOFF:
+  rentalDropoffLocation: String
+
+  # LODGING_ARRIVAL:
+  lodgingArrivalNameAndAddress: String
+
+  # LODGING_DEPARTURE:
+  lodgingDepartureNameAndAddress: String
+}
+
+input CreateTimelineEntryFlightInput {
+  tripId: ID!
+  notes: String
+  date: Int!
+  time: Int!
+  memberIds: [String!]!
+
+  # FLIGHT
+  flightDetails: FlightStatsScheduleDetailsInput!
+}
+
+input CreateTimelineEntryRentalPickupInput {
+  tripId: ID!
+  notes: String
+  date: Int!
+  time: Int!
+  memberIds: [String!]!
+
+  # RENTAL_PICKUP:
+  rentalPickupLocation: String!
+}
+
+input CreateTimelineEntryRentalDropoffInput {
+  tripId: ID!
+  notes: String
+  date: Int!
+  time: Int!
+  memberIds: [String!]!
+
+  # RENTAL_DROPOFF:
+  rentalDropoffLocation: String!
+}
+
+input CreateTimelineEntryLodgingArrivalInput {
+  tripId: ID!
+  notes: String
+  date: Int!
+  time: Int!
+  memberIds: [String!]!
+
+  # LODGING_ARRIVAL:
+  lodgingArrivalNameAndAddress: String!
+}
+
+input UpdateTimelineEntryFlightInput {
+  id: ID!
+  notes: String
+  date: Int
+  time: Int
+  memberIds: [String!]!
+
+  # FLIGHT
+  flightDetails: FlightStatsScheduleDetailsInput
+}
+
+input CreateTimelineEntryLodgingDepartureInput {
+  tripId: ID!
+  notes: String
+  date: Int!
+  time: Int!
+  memberIds: [String!]!
+
+  # LODGING_DEPARTURE:
+  lodgingDepartureNameAndAddress: String!
+}
+
+input UpdateTimelineEntryRentalPickupInput {
+  id: ID!
+  notes: String
+  date: Int
+  time: Int
+  memberIds: [String!]!
+
+  # RENTAL_PICKUP:
+  rentalPickupLocation: String
+}
+
+input UpdateTimelineEntryRentalDropoffInput {
+  id: ID!
+  notes: String
+  date: Int
+  time: Int
+  memberIds: [String!]!
+
+  # RENTAL_DROPOFF:
+  rentalDropoffLocation: String
+}
+
+input UpdateTimelineEntryLodgingArrivalInput {
+  id: ID!
+  notes: String
+  date: Int
+  time: Int
+  memberIds: [String!]!
+
+  # LODGING_ARRIVAL:
+  lodgingArrivalNameAndAddress: String
+}
+
+input UpdateTimelineEntryLodgingDepartureInput {
+  id: ID!
+  notes: String
+  date: Int
+  time: Int
+  memberIds: [String!]!
+
+  # LODGING_DEPARTURE:
+  lodgingDepartureNameAndAddress: String
+}
+
+input DeleteTimelineEntryInput {
+  id: ID!
+}

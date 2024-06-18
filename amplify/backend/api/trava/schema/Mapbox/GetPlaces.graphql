@@ -1,0 +1,22 @@
+type MapBoxGetPlacesLocation {
+  street: String
+  number: String
+  city: String
+  state: String # or district
+  postCode: String
+  coords: Coords!
+  country: String
+}
+
+type MapboxGetPlacesResult {
+  location: MapBoxGetPlacesLocation
+  placeName: String!
+}
+
+input MapboxGetPlacesInput {
+  location: String!
+  language: String
+  bounds: [Float]
+  types: [String!]!
+  limit: Int
+}

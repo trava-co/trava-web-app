@@ -1,0 +1,13 @@
+input UploadToCloudinaryInput {
+  bufferItem: S3ObjectInput!
+  resource_type: String!
+  mediaType: MEDIA_TYPES!
+}
+
+type UploadToCloudinaryResponse {
+  cloudinaryUrl: String!
+  videoDuration: Float
+  width: Int!
+  height: Int!
+  format: String!
+}

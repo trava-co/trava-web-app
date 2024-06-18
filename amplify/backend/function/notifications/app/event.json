@@ -1,0 +1,46 @@
+{
+    "Records": [
+        {
+            "eventID": "c7c3529f9a7d0576ed488b43bc6263cd",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1645091643,
+                "Keys": {
+                    "id": {
+                        "S": "2d7e109c-2c2c-4f96-9d28-037974a65469"
+                    }
+                },
+                "NewImage": {
+                    "createdAt": {
+                        "S": "2022-02-16T17:52:41.579Z"
+                    },
+                    "senderUserId": {
+                        "S": "0844bff3-83b4-4f4d-af4d-8cb835f9d812"
+                    },
+                    "__typename": {
+                        "S": "Notification"
+                    },
+                    "id": {
+                        "S": "2d7e109c-2c2c-4f96-9d28-037974a65469"
+                    },
+                    "type": {
+                        "S": "NEW_FOLLOW"
+                    },
+                    "receiverUserId": {
+                        "S": "5ffce938-152d-4041-b987-30d835a33298"
+                    },
+                    "updatedAt": {
+                        "S": "2022-02-16T17:52:41.579Z"
+                    }
+                },
+                "SequenceNumber": "331820000000000019178345465",
+                "SizeBytes": 276,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-east-1:736143825081:table/Notification-kl74x5e5vvhnppieeacsaxsciq-adam/stream/2021-12-09T15:41:30.732"
+        }
+    ]
+}

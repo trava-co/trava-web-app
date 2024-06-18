@@ -1,0 +1,133 @@
+type User
+@searchable
+@model(
+  subscriptions: null
+  mutations: { create: "createUser", update: "privateUpdateUser", delete: "privateDeleteUser" }
+)
+@auth(
+  rules: [
+    { allow: owner, ownerField: "id", identityClaim: "sub", operations: [update, delete, read] }
+    { allow: private, identityClaim: "sub", operations: [read] } # TODO: TRV-687 User can change account privacy
+    { allow: groups, groups: ["admin"], operations: [create, update, delete, read] }
+    { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+  ]
+) {
+  id: ID! # sub value from cognito
+  appleId: String
+  avatar: S3Object
+  dateOfBirth: AWSDate
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "id", identityClaim: "sub", operations: [update, delete, read] }
+      { allow: groups, groups: ["admin"], operations: [create, update, delete, read] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  )
+  description: String
+  email: String
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "id", identityClaim: "sub", operations: [update, delete, read] }
+      { allow: groups, groups: ["admin"], operations: [create, update, delete, read] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  )
+  contactEmail: String
+    @auth(
+    rules: [
+      { allow: owner, ownerField: "id", identityClaim: "sub", operations: [update, delete, read] }
+      { allow: groups, groups: ["admin"], operations: [create, update, delete, read] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  )
+  facebookId: String
+  fcmToken: String
+  followedBy: [UserFollow] @hasMany(indexName: "byFollowedUser", fields: ["id"])
+  follows: [UserFollow] @hasMany(fields: ["id"])
+  blocks: [UserBlock] @hasMany(fields: ["id"])
+  blockedBy: [UserBlock] @hasMany(indexName: "byBlockedUser", fields: ["id"])
+  posts: [Post] @hasMany(indexName: "byUserByCreatedAt", fields: ["id"])
+  viewedPosts: [UserPost] @hasMany(indexName: "byCreatedAt", fields: ["id"])
+  googleId: String
+  location: String
+  name: String
+  phone: String
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "id", identityClaim: "sub", operations: [update, delete, read] }
+      { allow: groups, groups: ["admin"], operations: [create, update, delete, read] }
+      { allow: private, provider: iam, operations: [create, read] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  )
+  privacy: PRIVACY
+  pushNotifications: Boolean
+  referralLink: String # platform referral link
+  referrals: [UserReferral] @hasMany(fields: ["id"])
+  userFollowByMe: UserFollow @function(name: "main-${env}")
+  username: String @index(name: "byUsername", queryField: "getUserByUsername")
+  userTrips: [UserTrip]
+  @hasMany(fields: ["id"])
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "id", identityClaim: "sub" }
+      { allow: private, identityClaim: "sub", operations: [read] } # TODO: TRV-687 User can change account privacy
+      { allow: groups, groups: ["admin"], operations: [update, delete, read] }
+      { allow: private, provider: iam, operations: [read] }
+    ]
+  )
+  myCards: [Attraction] @hasMany(indexName: "byAuthor", fields: ["id"])
+  bucketList: [UserAttraction] @hasMany(fields: ["id"])
+  likedPosts: [UserPostLike] @hasMany(indexName: "byCreatedAt", fields: ["id"])
+  createdAt: AWSDateTime!
+}
+
+enum PRIVACY {
+  PUBLIC
+  PRIVATE
+}
+
+input CustomDeleteUserInput {
+  id: ID!
+}
+
+input UpdateUserInput {
+  id: ID!
+  appleId: String
+  avatar: S3ObjectInput
+  dateOfBirth: AWSDate
+  description: String
+  email: String
+  contactEmail: String
+  facebookId: String
+  fcmToken: String
+  googleId: String
+  location: String
+  name: String
+  phone: String
+  privacy: PRIVACY
+  pushNotifications: Boolean
+  username: String
+  referralLink: String
+}
+
+type SearchUser {
+  id: ID!
+  username: String
+  email: String
+  phone: String
+  name: String
+  avatar: S3Object
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  bucketListsCollected: Int
+}
+
+# testQuery START
+type TestQueryResponse @aws_iam {
+  id: String
+}
+# testQuery END
+
+type ExploreTopUsersResponse {
+  users: [SearchUser]
+}

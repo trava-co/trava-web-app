@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "api": {
+      "trava": [
+        "Query"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "secretNames": [
+    "TEAREX_URL",
+    "TEAREX_API_KEY"
+  ]
+}

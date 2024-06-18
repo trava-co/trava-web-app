@@ -1,0 +1,8 @@
+{
+    "version" : "2018-05-29",
+    "operation": "GetItem",
+    "key": {
+        "tripId": $util.dynamodb.toDynamoDBJson($ctx.args.tripId),
+        "userId": $util.dynamodb.toDynamoDBJson($ctx.identity.claims.get("sub"))
+    }
+}

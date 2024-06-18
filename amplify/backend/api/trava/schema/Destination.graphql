@@ -1,0 +1,72 @@
+type Destination
+  @model(subscriptions: null, mutations: { create: "privateCreateDestination", update: "updateDestination" })
+  @auth(
+    rules: [
+      { allow: private, operations: [read] }
+      { allow: groups, groups: ["admin"], operations: [update, delete] }
+      { allow: private, provider: iam, operations: [create, read, update] } # TODO TRV-234 Remove AppSync permissions from the AuthRole, so that users can not call the IAM permitted APIs
+    ]
+  )
+  @searchable {
+  id: ID!
+  author: User @hasOne(fields: ["authorId"])
+  authorId: ID @index(name: "byAuthor")
+  name: String!
+  icon: String # SVG as a string
+  coverImage: S3Object
+  timezone: String
+  attractions: [Attraction] @hasMany(indexName: "byDestination", fields: ["id"])
+  nearbyThingsToDoCount: Int # number of public things to do within 15 mi of the destination
+  nearbyPlacesToEatCount: Int # number of public places to eat within 15 mi of the destination
+  nearbyTravaThingsToDoCount: Int # number of trava dos tagged to the destination
+  nearbyTravaPlacesToEatCount: Int # number of trava eats tagged to the destination
+  coords: Coords! # destination's center coords
+  state: String
+  country: String
+  continent: String
+  deletedAt: AWSDateTime
+  isTravaCreated: Int!
+    @index(name: "byIsTravaCreated", queryField: "listDestinationsByIsTravaCreated", sortKeyFields: ["name"])
+  googlePlaceId: String
+  featured: Boolean # only 15 destinations with 80+ Trava cards are featured at launch
+  altName: String
+  label: String! @index(name: "byLabel", queryField: "listDestinationsByLabel", sortKeyFields: ["name"]) # constant of value "Destination" to sort by name
+  pendingMigration: Boolean # tracks if attraction is pending migration between source & target backend envs
+}
+
+input CreateDestinationInput {
+  id: ID
+  name: String
+  icon: String
+  coverImage: S3ObjectInput
+  timezone: String
+  isTravaCreated: Int!
+  coords: CoordsInput!
+  state: String
+  country: String
+  continent: String
+  googlePlaceId: String
+  featured: Boolean
+  authorId: ID
+  label: String
+}
+
+input OpenSearchDestinationsInput {
+  searchString: String
+  centerCoords: CoordsInput
+}
+
+type SearchDestinationItem {
+  id: ID!
+  name: String!
+  icon: String
+  coords: Coords!
+  state: String
+  country: String
+  numberOfExperiences: Int
+}
+
+type OpenSearchDestinationsResponse {
+  featured: [SearchDestinationItem]
+  other: [SearchDestinationItem]
+}

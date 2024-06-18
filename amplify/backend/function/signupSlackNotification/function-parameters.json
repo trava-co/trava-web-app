@@ -1,0 +1,13 @@
+{
+  "lambdaLayers": [],
+  "secretNames": [
+    "SLACK_WEBHOOK_URL"
+  ],
+  "permissions": {
+    "api": {
+      "trava": [
+        "Query"
+      ]
+    }
+  }
+}

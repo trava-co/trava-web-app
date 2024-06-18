@@ -1,0 +1,6 @@
+#if(${context.identity.sub} != ${context.arguments.userId})
+    $utils.unauthorized()
+#else
+##User is authorized, but we return null to continue
+    null
+#end
