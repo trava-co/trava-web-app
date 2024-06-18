@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../css/Assistant.css'; // Import the CSS file for styling
 import axios from 'axios';
 
+// Creates the thread on the assistant
+
 function Assistant() {
   const [destination, setDestination] = useState('');
   const [numDays, setNumDays] = useState(1);

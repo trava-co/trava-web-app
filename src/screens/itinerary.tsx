@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import '../css/itinerary.css';
 import axios from 'axios';
 
+
+
 // establishes all the states, renders the actual table
 function Itinerary() {
 

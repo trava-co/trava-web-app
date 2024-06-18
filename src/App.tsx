@@ -20,7 +20,8 @@ function App() {
     const fetchUser = async () => {
       try {
         const userData = await UserApi.getUserById("4e296663-60d1-461c-bccf-ca76e956f628")
-        console.log('User data:', userData);
+
+        console.log('User data: ' + JSON.stringify(userData));
       } catch (error) {
         console.error('Failed to fetch user:', error);
       }
