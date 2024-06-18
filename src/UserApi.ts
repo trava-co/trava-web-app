@@ -11,7 +11,7 @@ class UserApi {
     });
   }
 
-  async getAttractionsForScheduler(variables: CustomGetAttractionsForSchedulerQueryVariables) {
+  static async getAttractionsForScheduler(variables: CustomGetAttractionsForSchedulerQueryVariables) {
     const result = await ApiCallHandler._apiCall<CustomGetAttractionsForSchedulerQuery>({
       query: customGetAttractionsForScheduler,
       variables,

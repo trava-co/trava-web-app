@@ -89,6 +89,12 @@
           "s3Key": "amplify-builds/keyMetricsReport-4b754a515252695a752b-build.zip",
           "secretsPathAmplifyAppId": "d3nzalola22yka"
         }
+      },
+      "api": {
+        "trava": {}
+      },
+      "storage": {
+        "trava": {}
       }
     }
   }

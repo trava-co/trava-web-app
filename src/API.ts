@@ -5807,6 +5807,64 @@ export type CustomCreateAttractionFromPlaceIdMutation = {
   } | null,
 };
 
+export type GetDataForGenerateTripPlanQueryVariables = {
+  userId: string,
+  tripId: string,
+  destinationId: string,
+};
+
+export type GetDataForGenerateTripPlanQuery = {
+  getUser?:  {
+    __typename: "User",
+    userTrips?:  {
+      __typename: "ModelUserTripConnection",
+      items:  Array< {
+        __typename: "UserTrip",
+        trip?:  {
+          __typename: "Trip",
+          attractionSwipes?:  {
+            __typename: "ModelAttractionSwipeConnection",
+            items:  Array< {
+              __typename: "AttractionSwipe",
+              attractionId: string,
+              swipe: AttractionSwipeResult,
+              userId: string,
+              attraction?:  {
+                __typename: "Attraction",
+                name: string,
+                type: ATTRACTION_TYPE,
+              } | null,
+            } | null >,
+          } | null,
+          members?:  {
+            __typename: "ModelUserTripConnection",
+            items:  Array< {
+              __typename: "UserTrip",
+              status: UserTripStatus,
+              userId: string,
+            } | null >,
+          } | null,
+          tripDestinations?:  {
+            __typename: "ModelTripDestinationConnection",
+            items:  Array< {
+              __typename: "TripDestination",
+              destination?:  {
+                __typename: "Destination",
+                name: string,
+                coords:  {
+                  __typename: "Coords",
+                  lat: number,
+                  long: number,
+                },
+              } | null,
+            } | null >,
+          } | null,
+        } | null,
+      } | null >,
+    } | null,
+  } | null,
+};
+
 export type FederatedSignUpMutationVariables = {
   input?: FederatedSignUpInput | null,
 };
@@ -7032,6 +7090,9 @@ export type DeleteUserByAdminMutation = {
   } | null,
 };
 
+export type DeleteUserBySelfMutationVariables = {
+};
+
 export type DeleteUserBySelfMutation = {
   deleteUserBySelf?: boolean | null,
 };
@@ -7080,6 +7141,9 @@ export type CreateTimelineEntryFlightMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7106,6 +7170,9 @@ export type CreateTimelineEntryRentalPickupMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7132,6 +7199,9 @@ export type CreateTimelineEntryRentalDropoffMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7158,6 +7228,9 @@ export type CreateTimelineEntryLodgingArrivalMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7184,6 +7257,9 @@ export type CreateTimelineEntryLodgingDepartureMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7210,6 +7286,9 @@ export type UpdateTimelineEntryFlightMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7236,6 +7315,9 @@ export type UpdateTimelineEntryRentalPickupMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7262,6 +7344,9 @@ export type UpdateTimelineEntryRentalDropoffMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7288,6 +7373,9 @@ export type UpdateTimelineEntryLodgingArrivalMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7314,6 +7402,9 @@ export type UpdateTimelineEntryLodgingDepartureMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -7340,6 +7431,9 @@ export type DeleteTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -9429,6 +9523,9 @@ export type PrivateCreateTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -9456,6 +9553,9 @@ export type PrivateUpdateTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -9483,6 +9583,9 @@ export type PrivateDeleteTimelineEntryMutation = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -11155,6 +11258,9 @@ export type MapBoxGetPlacesQuery = {
   } | null > | null,
 };
 
+export type MapBoxGetTokenQueryVariables = {
+};
+
 export type MapBoxGetTokenQuery = {
   mapBoxGetToken?:  {
     __typename: "MapboxGetTokenResult",
@@ -11253,6 +11359,9 @@ export type FlightStatsGetScheduleDetailsQueryVariables = {
 export type FlightStatsGetScheduleDetailsQuery = {
   flightStatsGetScheduleDetails?:  {
     __typename: "FlightStatsScheduleDetails",
+    appendix?:  {
+      __typename: "FlightStatsAppendix",
+    } | null,
     scheduledFlights?:  Array< {
       __typename: "FlightStatsScheduledFlights",
       carrierFsCode?: string | null,
@@ -11278,6 +11387,9 @@ export type FlightStatsGetScheduleDetailsQuery = {
       url?: string | null,
     } | null,
   } | null,
+};
+
+export type HomeTabsFeedQueryVariables = {
 };
 
 export type HomeTabsFeedQuery = {
@@ -11422,6 +11534,9 @@ export type NotificationPostQuery = {
   } | null,
 };
 
+export type GetUserContactsQueryVariables = {
+};
+
 export type GetUserContactsQuery = {
   getUserContacts?:  {
     __typename: "GetUserContactsResponse",
@@ -11520,6 +11635,9 @@ export type OpenSearchDestinationsQuery = {
       numberOfExperiences?: number | null,
     } | null > | null,
   } | null,
+};
+
+export type ExploreTopUsersQueryVariables = {
 };
 
 export type ExploreTopUsersQuery = {
@@ -13122,6 +13240,9 @@ export type PrivateGetTimelineEntryQuery = {
     notes?: string | null,
     date: number,
     time: number,
+    flightDetails?:  {
+      __typename: "FlightStatsScheduleDetails",
+    } | null,
     rentalPickupLocation?: string | null,
     rentalDropoffLocation?: string | null,
     lodgingArrivalNameAndAddress?: string | null,
@@ -14579,6 +14700,25 @@ export type OnPutAttractionSwipeByTripIdByDestinationIdSubscription = {
     label: AttractionSwipeLabel,
     createdAt: string,
     updatedAt: string,
+  } | null,
+};
+
+export type CustomGenerateTripPlanQueryVariables = {
+  attractions: Array< TripPlanAttraction | null >,
+  group: TripPlanGroup,
+  config?: GenerateTripPlanConfigInput | null,
+};
+
+export type CustomGenerateTripPlanQuery = {
+  generateTripPlan?:  {
+    __typename: "TripPlanResponse",
+    plan:  Array< {
+      __typename: "TripPlanItem",
+      attractionId: string,
+      locId: string,
+      day: number,
+      order: number,
+    } | null >,
   } | null,
 };
 

@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const openai = new OpenAI({
-    apiKey: "sk-proj-I2O9E4T9ibnv2bEjpa0FT3BlbkFJCBt1LFZmTFR5LiVxOEJT"
+    apiKey: ""
 });
 
 // const doData = XLSX.readFile("activity-excel.xlsx");
