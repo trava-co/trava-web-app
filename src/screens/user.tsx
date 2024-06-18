@@ -72,6 +72,9 @@ function User() {
 
       console.log(mockResponse);
 
+      // at this point, we have our mock response ready. we need to call the getAttractionsForScheduler. We then need to run the local function 
+      // in trava-mobile called getInputForTripPlan. then with the output of that, run the generateTripPlan query
+
 
 
     //   let jsonData = JSON.parse(cleanJson);
@@ -81,7 +84,7 @@ function User() {
       setLoading(true);
       // console.log(cleanJson);
     } catch (error) {
-      console.error('Error sending data:', error);
+      console.error('Error with payload:', error);
       setApiData(null);
     }
   };
