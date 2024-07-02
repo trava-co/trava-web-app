@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 import express from 'express';
 import cors from 'cors';
-// import XLSX from 'xlsx';
-// import fs from 'fs';
+import XLSX from 'xlsx';
+import fs from 'fs';
 
 const app = express();
 const port = 3001;
@@ -14,11 +14,13 @@ const openai = new OpenAI({
     apiKey: ""
 });
 
-// const doData = XLSX.readFile("activity-excel.xlsx");
-// const eatData = XLSX.readFile("restaurant-excel.xlsx");
+const doData = XLSX.readFile("./src/activity-excel.xlsx");
+const eatData = XLSX.readFile("./src/restaurant-excel.xlsx");
 
-// const activityData = XLSX.utils.sheet_to_json(doData.Sheets['chicago things to do'], {header: 1});
-// const restaurantData = XLSX.utils.sheet_to_json(eatData.Sheets['chicago places to eat'], {header: 1})
+const activityData = XLSX.utils.sheet_to_json(doData.Sheets['chicago things to do'], {header: 1});
+const restaurantData = XLSX.utils.sheet_to_json(eatData.Sheets['chicago places to eat'], {header: 1})
+
+const combinedData = activityData.concat(restaurantData);
 
 var assistantID;
 var threadID;
@@ -147,9 +149,9 @@ async function sendSysInstructions(numDays, destination) {
 
 app.post('/file', async(req, res) => {
     if (req.body.params.type === 'do') {
-        res.json(activityData)
+        res.json(combinedData)
     } else if (req.body.type === 'eat') {
-        res.json(restaurantData)
+        res.json(combinedData)
     }
 });
 

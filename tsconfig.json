@@ -1,13 +1,14 @@
 {
     "compilerOptions": {
-      "target": "es022",
-      "module": "commonjs",
-      "jsx": "react"
+      "target": "es2022",
+      "module": "es2022",
+      "jsx": "react",
+      "moduleResolution": "node"
     },
     "include": [
       "src/**/*",
-      "src/screens/assistant.tsx",
-      "src/screens/itinerary.tsx",
-      "src/screens/user.tsx"
+      "src/screens/setup.tsx",
+      "src/screens/itinerary-display.tsx",
+      "src/screens/input.tsx"
     ]
   }

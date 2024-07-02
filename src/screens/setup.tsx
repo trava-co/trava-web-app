@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/Assistant.css'; // Import the CSS file for styling
+import '../css/setup.css'; // Import the CSS file for styling
 import axios from 'axios';
 
 // Creates the thread on the assistant
 
-function Assistant() {
-  const [destination, setDestination] = React.useState('');
-  const [numDays, setNumDays] = React.useState(1);
+function SetupComponent() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [loadingText, setLoadingText] = React.useState('');
+
+  const [destination, setDestination] = React.useState('');
+  const [numDays, setNumDays] = React.useState(1);
+  
   const navigate = useNavigate();
 
   const handleNext = async () => {
@@ -29,7 +31,7 @@ function Assistant() {
             navigate('/user', { state: { destination, numDays } });
         }, 2000);
     } catch (error) {
-        console.error('Error sending data:', error);
+        console.error('Error:', error);
         setLoadingText("Failed to create thread!");
     } finally {
         setTimeout(() => {
@@ -89,4 +91,4 @@ function Assistant() {
   );
 }
 
-export default Assistant;
+export default SetupComponent;
