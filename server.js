@@ -3,6 +3,9 @@ import express from 'express';
 import cors from 'cors';
 import XLSX from 'xlsx';
 import fs from 'fs';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = 3001;
@@ -11,8 +14,10 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const openai = new OpenAI({
-    apiKey: process.env.REACT_APP_OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEY
 });
+
+console.log(process.env.OPENAI_API_KEY)
 
 const doData = XLSX.readFile("./src/activity-excel.xlsx");
 const eatData = XLSX.readFile("./src/restaurant-excel.xlsx");
